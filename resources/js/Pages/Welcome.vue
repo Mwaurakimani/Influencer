@@ -11,7 +11,7 @@ defineProps({
 
 <template>
     <p>hi</p>
-    <img src="/public/storage/download.jpg" alt="">
+    <img src="/storage/download.jpg" alt="">
 </template>
 
 <style>
