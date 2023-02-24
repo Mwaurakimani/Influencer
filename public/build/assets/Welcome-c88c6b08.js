@@ -1,1 +1,0 @@
-import{e as o,o as a,F as n,a as e}from"./app-bc15654e.js";const t=e("p",null,"hi",-1),r=e("img",{src:"/storage/download.jpg",alt:""},null,-1),p={__name:"Welcome",props:{canLogin:Boolean,canRegister:Boolean,laravelVersion:String,phpVersion:String},setup(s){return(l,c)=>(a(),o(n,null,[t,r],64))}};export{p as default};
