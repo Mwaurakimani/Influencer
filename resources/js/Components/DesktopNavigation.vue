@@ -1,4 +1,7 @@
 <script setup>
+import { Link } from "@inertiajs/vue3";
+
+defineProps(['activeNavButton'])
 
 function toggle_dropdown() {
 
@@ -26,13 +29,15 @@ function toggle_dropdown() {
         <div class="logo-display">
             <h1 style="font-size:1.3em;line-height:60px;color:white" class="w-[100%] h-[100%] text-center">Vumisha</h1>
         </div>
-        <div class="dropdown-mobile-menu">
+        <div class="dropdown-desktop-menu">
             <ul class="m-[15px]">
-                <li>Home</li>
-                <li>Find Adverts</li>
-                <li>Post Adverts</li>
-                <li>About Us</li>
-                <li>Contact Us</li>
+                <Link :href="route('home')" as="li" :class="[activeNavButton == 'Home' ? 'active_button' : '']">Home</Link>
+                <Link :href="route('AllProjects')" as="li" :class="[activeNavButton == 'Projects' ? 'active_button' : '']">
+                Projects</Link>
+                <Link :href="route('AboutUs')" as="li" :class="[activeNavButton == 'AboutUs' ? 'active_button' : '']">About us
+                </Link>
+                <Link :href="route('ContactUs')" as="li" :class="[activeNavButton == 'ContactUs' ? 'active_button' : '']">
+                Contact us</Link>
             </ul>
             <ul style="display: flex; justify-content: space-between;" class="m-[15px] ml-[80px]">
                 <li>Log In</li>
@@ -63,19 +68,37 @@ function toggle_dropdown() {
         justify-content: center;
     }
 
-    .dropdown-mobile-menu {
+    .dropdown-desktop-menu {
+        height: 60px;
         width: auto;
-        height: 0px;
-        transition: all ease-in 250ms;
-        background-color: white;
-        box-shadow: 2px 0px 6px grey;
         display: flex;
         color: white;
 
         ul {
             display: flex;
-            li{
-                margin: 0px 10px;
+            height: 100%;
+            padding: 0px;
+            margin: 0px;
+            align-items: center;
+            margin-left: 100px;
+
+            li {
+                height: 40px;
+                line-height: 40px;
+                cursor: pointer;
+                transition: all ease 250ms;
+                border-radius: 8px 8px 0px 0px;
+                padding: 0px 10px;
+                
+                &:hover {
+                    background-color: white;
+                    color: orange;
+                    border-radius: 8px 8px 8px 8px;
+                }
+            }
+
+            .active_button {
+                border-bottom: 2px solid white;
             }
         }
     }
@@ -86,5 +109,4 @@ function toggle_dropdown() {
         display: none;
     }
 
-}
-</style>
+}</style>

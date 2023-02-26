@@ -17,8 +17,8 @@ defineProps({
 
 <template>
     <nav>
-        <MobileNavigationComponent></MobileNavigationComponent>
-        <DesktopNavigationVue></DesktopNavigationVue>
+        <MobileNavigationComponent :activeNavButton="'Home'"></MobileNavigationComponent>
+        <DesktopNavigationVue  :activeNavButton="'Home'"></DesktopNavigationVue>
     </nav>
     <div class="banner">
         <div class="over-lay">
@@ -85,13 +85,7 @@ defineProps({
 </template>
 
 <style lang="scss" scoped>
-nav {
-    width: 100%;
-    position: sticky;
-    top: 0px;
-    z-index: 1000;
-    box-shadow: 0 0 6px grey;
-}
+
 
 .banner {
     width: 100%;
@@ -168,10 +162,7 @@ nav {
     }
 }
 
-footer{
-    height:300px;
-    background-color: rgb(66, 66, 66);
-}
+
 
 @media only screen and (min-width: 980px) {
     .banner {

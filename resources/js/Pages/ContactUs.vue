@@ -17,8 +17,8 @@ defineProps({
 
 <template>
     <nav>
-        <MobileNavigationComponent :activeNavButton="'Projects'"></MobileNavigationComponent>
-        <DesktopNavigationVue :activeNavButton="'Projects'"></DesktopNavigationVue>
+        <MobileNavigationComponent :activeNavButton="'ContactUs'"></MobileNavigationComponent>
+        <DesktopNavigationVue :activeNavButton="'ContactUs'"></DesktopNavigationVue>
     </nav>
     <footer>
 

@@ -1,4 +1,7 @@
 <script setup >
+import {Link} from "@inertiajs/vue3";
+
+defineProps(['activeNavButton'])
 
 function toggle_dropdown() {
 
@@ -18,7 +21,13 @@ function toggle_dropdown() {
 
 
 }
-
+window.addEventListener('resize', function (event) {
+    if (document.body.clientWidth > 980) {
+        $('.dropdown-mobile-menu').css({
+            height: '0px'
+        })
+    }
+}, true);
 </script>
 
 <template>
@@ -31,11 +40,10 @@ function toggle_dropdown() {
         </div>
         <div class="dropdown-mobile-menu">
             <ul class="m-[15px]">
-                <li>Home</li>
-                <li>Find Adverts</li>
-                <li>Post Adverts</li>
-                <li>About Us</li>
-                <li>Contact Us</li>
+                <Link :href="route('home')" as="li" :class="[activeNavButton == 'Home' ?'active_button':'']">Home</Link>
+                <Link :href="route('AllProjects')" as="li" :class="[activeNavButton == 'Projects' ?'active_button':'']">Projects</Link>
+                <Link :href="route('AboutUs')" as="li" :class="[activeNavButton == 'AboutUs' ?'active_button':'']">About us</Link>
+                <Link :href="route('ContactUs')" as="li" :class="[activeNavButton == 'ContactUs' ?'active_button':'']">Contact us</Link>
             </ul>
             <hr style="width: 90%;margin:auto">
             <ul style="display: flex; justify-content: space-between;" class="m-[15px]">
@@ -81,13 +89,17 @@ function toggle_dropdown() {
                 padding: 10px;
             }
         }
+        .active_button{
+            color:orange;
+        }
     }
 }
+
+
 
 @media only screen and (min-width: 980px) {
     .mobile-nav {
         display: none;
     }
-
 }
 </style>
