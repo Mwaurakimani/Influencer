@@ -48,7 +48,7 @@ window.addEventListener('resize', function (event) {
             <hr style="width: 90%;margin:auto">
             <ul style="display: flex; justify-content: space-between;" class="m-[15px]">
                 <li>Log In</li>
-                <li>Sign Up</li>
+                <Link :href="route('SignUpAs')" as="li" :class="[activeNavButton == 'SignUpAs' ? 'active_button' : '']">Join</Link>
             </ul>
         </div>
     </div>

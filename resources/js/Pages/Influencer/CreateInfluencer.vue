@@ -62,23 +62,9 @@ defineProps({
                             <input type="password">
                         </div>
                     </section>
-                    <section>
-                        <div class="input-group">
-                            <label for="">Account Type</label>
-                            <select>
-                                <option>Option1</option>
-                                <option>Option1</option>
-                                <option>Option1</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label for="">Company Name</label>
-                            <input type="text">
-                        </div>
-                    </section>
                 </div>
                 <div class="button-section">
-                    <button>Join</button>
+                    <Link as="button" :href="route('Account')">Join</Link>
                 </div>
             </form>
         </div>

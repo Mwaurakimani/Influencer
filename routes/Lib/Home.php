@@ -29,3 +29,23 @@ Route::get('/AllProjects', function () {
     return Inertia::render('Projects', [
     ]);
 })->name('AllProjects');
+
+Route::get('/ViewProject', function () {
+    return Inertia::render('ViewProject', [
+    ]);
+})->name('ViewProject');
+
+Route::get('/SignUpAs', function () {
+    return Inertia::render('Shared/SignUpAs', [
+    ]);
+})->name('SignUpAs');
+
+Route::get('/SignUpAsInfluencer', function () {
+    return Inertia::render('Influencer/CreateInfluencer', [
+    ]);
+})->name('SignUpAsInfluencer');
+
+Route::get('/SignUpAsEmployer', function () {
+    return Inertia::render('Employer/CreateEmployer', [
+    ]);
+})->name('SignUpAsEmployer');

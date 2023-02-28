@@ -13,6 +13,8 @@ defineProps({
     phpVersion: String,
 });
 
+console.log("hellow");
+
 </script>
 
 <template>
@@ -184,6 +186,7 @@ defineProps({
 @media only screen and (min-width: 849px) {
 
     .available-influencers{
+        overflow: visible;
         ul{
             max-height: 300px;
             overflow: hidden;
@@ -191,8 +194,9 @@ defineProps({
     }
 
     .available-projects{
+        overflow: visible;
         ul{
-            padding: 5px;
+            padding: 15px;
             max-height: fit-content;
         }
     }

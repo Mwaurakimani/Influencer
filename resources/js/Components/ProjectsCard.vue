@@ -1,9 +1,11 @@
 <script setup>
+import { Link } from '@inertiajs/vue3';
+
 
 </script>
 
 <template>
-    <div class="mobile-view">
+    <Link as="div" :href="route('ViewProject')" class="mobile-view">
         <div class="details-section">
             <div class="heading">
                 <h3>Lorem ipsum dolor</h3>
@@ -23,7 +25,7 @@
             <p>Catgeory</p>
             <h3 class="price-tag">Ksh 1,500</h3>
         </div>
-    </div>
+    </Link>
 </template>
 
 <style lang="scss" scoped>
@@ -36,6 +38,8 @@
     box-shadow: 0 0 6px rgb(180, 180, 180);
     padding: 15px;
     margin-bottom: 20px;
+    cursor: pointer;
+    transition:all ease 250ms;
 
 
     .details-section {
@@ -84,6 +88,12 @@
 }
 
 @media only screen and (min-width: 849px) {
+    .mobile-view{
+        &:hover{
+            box-shadow: 0 0 8px rgb(211, 211, 211);
+            transform: scale(1.015);
+        }
+    }
     .details-section {
         .heading {
             padding: 0px 10px 10px 0px;

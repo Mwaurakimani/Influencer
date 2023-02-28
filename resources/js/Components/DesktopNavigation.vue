@@ -41,7 +41,7 @@ function toggle_dropdown() {
             </ul>
             <ul style="display: flex; justify-content: space-between;" class="m-[15px] ml-[80px]">
                 <li>Log In</li>
-                <li>Sign Up</li>
+                <Link :href="route('SignUpAs')" as="li" :class="[activeNavButton == 'SignUpAs' ? 'active_button' : '']">Join</Link>
             </ul>
         </div>
     </div>
@@ -89,6 +89,7 @@ function toggle_dropdown() {
                 transition: all ease 250ms;
                 border-radius: 8px 8px 0px 0px;
                 padding: 0px 10px;
+                margin:0px 10px;
                 
                 &:hover {
                     background-color: white;

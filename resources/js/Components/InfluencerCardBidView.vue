@@ -3,7 +3,7 @@
 
 <template>
     <div class="influencer-card">
-        <div class="card-header">
+        <div class="card-header mb-[5px]">
             <div class="icon-holder">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 762 762" fill="none" shape-rendering="auto" width="512"
                     height="512">
@@ -76,12 +76,14 @@
                     </g>
                 </svg>
             </div>
-            <h3>Username</h3>
-            <p style="color:orange">Class</p>
+            <div>
+                <h3>Username</h3>
+                <p style="color:orange">Class</p>
+                <div class="rating-element">Ratings</div>
+            </div>
         </div>
-        <br>
-        <p>10 Projects completed</p>
-        <div class="rating-element">Ratings</div>
+        <p style="color:orange">10 Projects completed</p>
+        <p class="mb-[28px]">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum minima iste quod, tenetur sed, eos incidunt earum qui sequi cumque dolorum laborum ratione, molestiae fuga architecto inventore excepturi! Nesciunt, voluptatum.</p>
         <div class="pricing">
             <p>Ksh 1500 / 24hrs</p>
         </div>
@@ -89,49 +91,61 @@
 </template>
 
 <style lang="scss" scoped>
-.influencer-card{
+.influencer-card {
     position: relative;
     border-radius: 8px;
     width: 260px;
-    height: 280px;
     box-shadow: 0 0 6px rgb(202, 202, 202);
     margin-bottom: 15px;
     padding: 10px;
     font-size: 0.9em;
-    .icon-holder{
-        width:100px;
+
+    .card-header {
+        display: flex;
+        align-items: flex-start;
+
+        &>div:first-of-type {
+            margin-right: 10px;
+            width: 85px;
+        }
+        &>div:nth-of-type(2) {
+            width: calc(100% - 95px);
+            height: 85px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+    }
+
+    .icon-holder {
+        width: 80px;
         border-radius: 50%;
-        height: 100px;
-        margin: auto;
-        border:2px solid orange;
+        height: 80px;
+        border: 2px solid orange;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         padding: 10px;
         padding-top: 15px;
-        svg{
-            width:100%;
-            height:100%
+
+        svg {
+            width: 100%;
+            height: 100%
         }
     }
-    h3,p{
-        text-align: center;
-    }
-    h3{
+
+    h3 {
         font-weight: 700;
     }
 
-    .rating-element{
-        width: fit-content;
-        margin: auto;
-    }
-    .pricing{
+
+
+    .pricing {
         bottom: 10px;
         right: 10px;
         font-weight: 800;
         position: absolute;
         font-size: 1em;
     }
-}
-</style>
+}</style>
