@@ -1,6 +1,9 @@
 <script setup>
 import { counterStore } from '../Store/stores';
 import { storeToRefs } from 'pinia';
+
+import { ref } from 'vue';
+
 import MobileNavigationComponent from '../Components/MobileNavigationComponent.vue'
 import DesktopNavigationVue from '../Components/DesktopNavigation.vue';
 import InfluencerCard from '../Components/InfluencerCard.vue';
@@ -14,9 +17,28 @@ defineProps({
     phpVersion: String,
 });
 
+const modalVisible = ref(true)
+
+console.log(modalVisible);
+
+function closeModal(){
+    document.body.style.overflow = "auto";
+    modalVisible.value = false
+}
+
+function openModal(){
+    document.body.style.overflow = "hidden";
+    modalVisible.value = true
+}
+
 </script>
 
 <template>
+    <teleport to=body>
+        <modal :visible="modalVisible">
+            <button class="text-white" @click="closeModal" >close</button>
+        </modal>
+    </teleport>
     <nav>
         <MobileNavigationComponent :activeNavButton="'Projects'"></MobileNavigationComponent>
         <DesktopNavigationVue :activeNavButton="'Projects'"></DesktopNavigationVue>
@@ -59,11 +81,11 @@ defineProps({
         </div>
 
         <div class="container bidders-container" style="box-shadow:none">
-            <InfluencerCardBidView></InfluencerCardBidView>
-            <InfluencerCardBidView></InfluencerCardBidView>
-            <InfluencerCardBidView></InfluencerCardBidView>
-            <InfluencerCardBidView></InfluencerCardBidView>
-            <InfluencerCardBidView></InfluencerCardBidView>
+            <InfluencerCardBidView @click="openModal"></InfluencerCardBidView>
+            <InfluencerCardBidView @click="openModal"></InfluencerCardBidView>
+            <InfluencerCardBidView @click="openModal"></InfluencerCardBidView>
+            <InfluencerCardBidView @click="openModal"></InfluencerCardBidView>
+            <InfluencerCardBidView @click="openModal"></InfluencerCardBidView>
         </div>
     </div>
     <footer>

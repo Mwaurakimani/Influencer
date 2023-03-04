@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\Platform;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,27 +28,54 @@ Route::get('/ContactUs', function () {
     ]);
 })->name('ContactUs');
 
-Route::get('/AllProjects', function () {
+Route::get('/Projects', function () {
     return Inertia::render('Projects', [
     ]);
-})->name('AllProjects');
+})->name('Projects');
 
-Route::get('/ViewProject', function () {
-    return Inertia::render('ViewProject', [
+Route::get('/Influencer', function () {
+    return Inertia::render('Influencer', [
     ]);
-})->name('ViewProject');
+})->name('Influencer');
 
-Route::get('/SignUpAs', function () {
-    return Inertia::render('Shared/SignUpAs', [
-    ]);
-})->name('SignUpAs');
 
-Route::get('/SignUpAsInfluencer', function () {
-    return Inertia::render('Influencer/CreateInfluencer', [
-    ]);
-})->name('SignUpAsInfluencer');
+Route::post('/createPlatforms', function (Request $request) {
+    if($request['platforms']){
+        $platforms = $request;
+        
+        
+        DB::beginTransaction();
+        
+        try {
+            foreach($platforms['platforms'] as $platform){
+                                
+                $plat = Platform::create([
+                    'name' => $platform['name'],
+                    'link' => $platform['link']
+                ]);
 
-Route::get('/SignUpAsEmployer', function () {
-    return Inertia::render('Employer/CreateEmployer', [
-    ]);
-})->name('SignUpAsEmployer');
+                foreach($platform['classes'] as $class_key => $class ){
+                    $influencer_class = $plat->influencerClass()->create([
+                        'name' => $class['name'],
+                        'min_count' => $class['min'],
+                        'max_count' => $class['max'],
+                    ]);
+                }
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            return [$e];
+            DB::rollBack();
+        }
+
+        return "success";
+
+    }else{
+        return abort(404,"No records found");
+    }
+})->name('Influencer');
+
+
+
+

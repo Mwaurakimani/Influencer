@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,15 +15,14 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-})->name('home');
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// })->name('home');
 
 Route::middleware([
     // 'auth:sanctum',
@@ -32,10 +32,14 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-
-
-
-    include_once 'Lib/Auth/Home.php';
 });
 
-include_once 'Lib/Home.php';
+include 'Lib/assignment.php';
+include 'Lib/bid.php';
+include 'Lib/finance.php';
+include 'Lib/Home.php';
+include 'Lib/influencer.php';
+include 'Lib/marketer.php';
+include 'Lib/media.php';
+include 'Lib/project.php';
+include 'Lib/user.php';
