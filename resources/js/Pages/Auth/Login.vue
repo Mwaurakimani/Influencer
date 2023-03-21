@@ -35,18 +35,18 @@ const form = useForm({
             <p class="mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Odit
                 asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus
                 illum. Sit autem nesciunt totam deserunt!</p>
-            <form @submit.prevent="form.post(route('LogInAccount'))">
+            <form @submit.prevent="form.post(route('login'))">
                 <h1>Log In</h1>
                 <div class="form-content">
                     <section>
                         <div class="input-group">
                             <label for="">Email</label>
-                            <input type="email">
+                            <input type="email" v-model="form.email">
                         </div>
 
                         <div class="input-group">
                             <label for="">Password</label>
-                            <input type="password">
+                            <input type="password" v-model="form.password">
                         </div>
                     </section>
                 </div>

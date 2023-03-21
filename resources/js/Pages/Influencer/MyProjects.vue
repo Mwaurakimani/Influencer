@@ -5,12 +5,15 @@ import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
 import InfluencerCard from '../../Components/InfluencerCard.vue';
 import ProjectCard from '../../Components/ProjectsCard.vue';
 
-defineProps({
+const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
+    influencer:Object
 });
+
+const myProjects = props.influencer && props.influencer.projects ? props.influencer.projects : null
 
 </script>
 
@@ -37,12 +40,8 @@ defineProps({
     </header>
     <div class="content-area">
         <div class="mobile-content-area">
-            <div class="container">
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
+            <div v-if="myProjects != null"  class="container"  v-for="project in myProjects">
+                <ProjectCard :key="project.id" :project="project"></ProjectCard>
             </div>
             <div class="container">
                 <div class="pagination">

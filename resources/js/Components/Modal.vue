@@ -20,7 +20,7 @@ defineProps(['visible'])
         left:0px;
         width:100vw;
         height:100vh;
-        background-color: rgba(26, 26, 26, 0.322);
+        background-color: rgba(24, 24, 24, 0.62);
         z-index: -1000;
     }
 

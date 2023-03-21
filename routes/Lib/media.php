@@ -12,9 +12,5 @@ Route::middleware([
     // config('jetstream.auth_session'),
     // 'verified',
 ])->group(function () {
-
-    Route::get('/uploadMedia/{id}', function () {
-        return "success";
-    });
-
+    Route::delete('/deleteMedia',[\App\Http\Controllers\MediaController::class,'DeleteMedia'])->name('DeleteMedia');
 });

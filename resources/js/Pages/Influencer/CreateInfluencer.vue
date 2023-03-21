@@ -1,5 +1,5 @@
 <script  setup>
-import { Link } from '@inertiajs/vue3';
+import {Link, router, useForm} from '@inertiajs/vue3';
 import MobileNavigationComponent from '../../Components/MobileNavigationComponent.vue'
 import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
 
@@ -9,6 +9,25 @@ defineProps({
     laravelVersion: String,
     phpVersion: String,
 });
+
+const influencerForm = useForm({
+    'first_name' :null,
+    'last_name' :null,
+    'email' :null,
+    'phone' :null,
+    'password' :null,
+    'confirm_password' :null,
+})
+
+function submit(){
+
+    axios.post(route('createInfluencer'),influencerForm)
+        .then((resp) => {
+            if(resp.data.status){
+                router.visit('login')
+            }
+        })
+}
 
 </script>
 
@@ -31,40 +50,40 @@ defineProps({
             <p class="mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Odit
                 asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus
                 illum. Sit autem nesciunt totam deserunt!</p>
-            <form action="">
+            <form action="" @submit.prevent="submit">
                 <h1>Registration Form</h1>
                 <div class="form-content">
                     <section>
                         <div class="splitter">
                             <div class="input-group">
                                 <label for="">First Name</label>
-                                <input type="text">
+                                <input type="text" v-model="influencerForm.first_name">
                             </div>
                             <div class="input-group">
                                 <label for="">Last Name</label>
-                                <input type="text">
+                                <input type="text" v-model="influencerForm.last_name">
                             </div>
                         </div>
                         <div class="input-group">
                             <label for="">Email</label>
-                            <input type="email">
+                            <input type="email" v-model="influencerForm.email">
                         </div>
                         <div class="input-group">
                             <label for="">Phone</label>
-                            <input type="tel">
+                            <input type="tel" v-model="influencerForm.phone">
                         </div>
                         <div class="input-group">
                             <label for="">Password</label>
-                            <input type="password">
+                            <input type="password" v-model="influencerForm.password">
                         </div>
                         <div class="input-group">
                             <label for="">Confirm Password</label>
-                            <input type="password">
+                            <input type="password" v-model="influencerForm.confirm_password">
                         </div>
                     </section>
                 </div>
                 <div class="button-section">
-                    <Link as="button" :href="route('Account')">Join</Link>
+                    <button type="submit">Join</button>
                 </div>
             </form>
         </div>

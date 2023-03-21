@@ -182,6 +182,7 @@ class ComposerStaticInitbe46d0b391820e6c18925a577ddbdf05
         ),
         'A' => 
         array (
+            'App\\Models\\' => 11,
             'App\\' => 4,
         ),
     );
@@ -556,6 +557,10 @@ class ComposerStaticInitbe46d0b391820e6c18925a577ddbdf05
         array (
             0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
+        'App\\Models\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app/Models',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -597,6 +602,7 @@ class ComposerStaticInitbe46d0b391820e6c18925a577ddbdf05
         'App\\Http\\Controllers\\InfluencerController' => __DIR__ . '/../..' . '/app/Http/Controllers/InfluencerController.php',
         'App\\Http\\Controllers\\MarketersController' => __DIR__ . '/../..' . '/app/Http/Controllers/MarketersController.php',
         'App\\Http\\Controllers\\MediaController' => __DIR__ . '/../..' . '/app/Http/Controllers/MediaController.php',
+        'App\\Http\\Controllers\\ProjectRequirementsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProjectRequirementsController.php',
         'App\\Http\\Controllers\\ProjectsController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProjectsController.php',
         'App\\Http\\Controllers\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/UserController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
@@ -610,6 +616,7 @@ class ComposerStaticInitbe46d0b391820e6c18925a577ddbdf05
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\ValidateSignature' => __DIR__ . '/../..' . '/app/Http/Middleware/ValidateSignature.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Http\\Requests\\AssignmentFileUploadRequest' => __DIR__ . '/../..' . '/app/Http/Requests/AssignmentFileUploadRequest.php',
         'App\\Models\\Assignment' => __DIR__ . '/../..' . '/app/Models/Assignment.php',
         'App\\Models\\Bid' => __DIR__ . '/../..' . '/app/Models/Bid.php',
         'App\\Models\\Chat' => __DIR__ . '/../..' . '/app/Models/Chat.php',
@@ -826,6 +833,7 @@ class ComposerStaticInitbe46d0b391820e6c18925a577ddbdf05
         'Database\\Seeders\\MarketerSeeder' => __DIR__ . '/../..' . '/database/seeders/MarketerSeeder.php',
         'Database\\Seeders\\MediaSeeder' => __DIR__ . '/../..' . '/database/seeders/MediaSeeder.php',
         'Database\\Seeders\\PlatformSeeder' => __DIR__ . '/../..' . '/database/seeders/PlatformSeeder.php',
+        'Database\\Seeders\\ProjectRequirementsSeeder' => __DIR__ . '/../..' . '/database/seeders/ProjectRequirementsSeeder.php',
         'Database\\Seeders\\ProjectSeeder' => __DIR__ . '/../..' . '/database/seeders/ProjectSeeder.php',
         'Database\\Seeders\\SocialAccountSeeder' => __DIR__ . '/../..' . '/database/seeders/SocialAccountSeeder.php',
         'Database\\Seeders\\TagsSeeder' => __DIR__ . '/../..' . '/database/seeders/TagsSeeder.php',

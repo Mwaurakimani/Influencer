@@ -4,11 +4,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-//no auth needed
-Route::get('/', function () {
-    return "success";
-});
-
 //required
 Route::middleware([
     // 'auth:sanctum',
@@ -31,5 +26,7 @@ Route::middleware([
     Route::get('/sendMessage/marketer/{id}/influencer/{influencer}', function () {
         return "success";
     });
+
+    Route::post('/SendMessage',[\App\Http\Controllers\AssignmentController::class,'sendMessage'])->name('sendMessage');
 
 });

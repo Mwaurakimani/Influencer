@@ -5,22 +5,25 @@ import MobileNavigationComponent from '../Components/MobileNavigationComponent.v
 import DesktopNavigationVue from '../Components/DesktopNavigation.vue';
 import InfluencerCard from '../Components/InfluencerCard.vue';
 import ProjectCard from '../Components/ProjectsCard.vue';
+import {authStore} from "../Store/AuthStore";
 
-defineProps({
+const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
+    projects:Object
 });
 
-console.log("hellow");
+const auth = authStore()
+const { status, user } = storeToRefs(auth)
 
 </script>
 
 <template>
     <nav>
         <MobileNavigationComponent :activeNavButton="'Home'"></MobileNavigationComponent>
-        <DesktopNavigationVue  :activeNavButton="'Home'"></DesktopNavigationVue>
+        <DesktopNavigationVue  :activeNavButton="'Home'" :authenticated="status"></DesktopNavigationVue>
     </nav>
     <div class="banner">
         <div class="over-lay">
@@ -69,15 +72,14 @@ console.log("hellow");
             <InfluencerCard></InfluencerCard>
             <InfluencerCard></InfluencerCard>
             <InfluencerCard></InfluencerCard>
-            <InfluencerCard></InfluencerCard>
         </ul>
     </div>
     <div class="container available-influencers available-projects">
         <h2>Available Projects</h2>
         <ul>
-            <ProjectCard :key="1"></ProjectCard>
-            <ProjectCard :key="2"></ProjectCard>
-            <ProjectCard :key="3"></ProjectCard>
+            <div class="container" v-for="project in props.projects.splice(0, 3)">
+                <ProjectCard :key="project.id" :project="project"></ProjectCard>
+            </div>
         </ul>
     </div>
     <footer>
@@ -92,7 +94,6 @@ console.log("hellow");
 .banner {
     width: 100%;
     height: calc(100vh - 60px);
-    background-color: red;
     background-image: url('/storage/mobile-banner.jpg');
     background-position: center;
 

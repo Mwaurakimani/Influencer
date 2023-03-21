@@ -1,5 +1,7 @@
 <script  setup>
 import { Link } from '@inertiajs/vue3';
+
+const props = defineProps(['user'])
 </script>
 
 <template>
@@ -10,7 +12,7 @@ import { Link } from '@inertiajs/vue3';
                     <img>
                 </div>
                 <div class="details-section">
-                    <h2>Username</h2>
+                    <h2>{{ props.user.first_name+' '+props.user.last_name }}</h2>
                     <div class="ratting-card">
 
                     </div>
@@ -18,7 +20,7 @@ import { Link } from '@inertiajs/vue3';
                 </div>
             </div>
             <div class="left-section">
-                <button>Edit</button>
+                <button>Update</button>
             </div>
         </section>
         <section class="description-section">

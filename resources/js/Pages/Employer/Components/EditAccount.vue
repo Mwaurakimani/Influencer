@@ -1,5 +1,9 @@
 <script  setup>
 import { Link } from '@inertiajs/vue3';
+import {defineProps} from "vue";
+
+const props = defineProps(['user'])
+
 </script>
 
 <template>
@@ -9,7 +13,7 @@ import { Link } from '@inertiajs/vue3';
                 <h2>Account Details</h2>
             </div>
             <div class="left-section">
-                <button>Edit</button>
+                <button>Update</button>
             </div>
         </section>
         <section>
@@ -20,42 +24,33 @@ import { Link } from '@inertiajs/vue3';
                         <div class="splitter">
                             <div class="input-group">
                                 <label for="">First Name</label>
-                                <input type="text">
+                                <input type="text" v-model="props.user.first_name">
                             </div>
                             <div class="input-group">
                                 <label for="">Last Name</label>
-                                <input type="text">
+                                <input type="text" v-model="props.user.last_name">
                             </div>
                         </div>
                         <div class="input-group">
                             <label for="">Email</label>
-                            <input type="email">
+                            <input type="email" v-model="props.user.email">
                         </div>
                         <div class="input-group">
                             <label for="">Phone</label>
-                            <input type="tel">
-                        </div>
-                        <div class="input-group">
-                            <label for="">Password</label>
-                            <input type="password">
-                        </div>
-                        <div class="input-group">
-                            <label for="">Confirm Password</label>
-                            <input type="password">
+                            <input type="tel" v-model="props.user.phone">
                         </div>
                     </section>
                     <section>
                         <div class="input-group">
                             <label for="">Account Type</label>
-                            <select>
-                                <option>Option1</option>
-                                <option>Option1</option>
-                                <option>Option1</option>
+                            <select v-model="props.user.account_type">
+                                <option value="Single">Single</option>
+                                <option value="Company" >Company</option>
                             </select>
                         </div>
-                        <div class="input-group">
+                        <div v-if="props.user.account_type == 'Company'" class="input-group">
                             <label for="">Company Name</label>
-                            <input type="text">
+                            <input type="text" v-model="props.user.company_name">
                         </div>
                     </section>
                 </div>

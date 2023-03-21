@@ -6,11 +6,12 @@ import DesktopNavigationVue from '../Components/DesktopNavigation.vue';
 import InfluencerCard from '../Components/InfluencerCard.vue';
 import ProjectCard from '../Components/ProjectsCard.vue';
 
-defineProps({
+const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
+    projects:Object
 });
 
 </script>
@@ -38,12 +39,8 @@ defineProps({
     </header>
     <div class="content-area">
         <div class="mobile-content-area">
-            <div class="container">
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
+            <div class="container" v-for="project in props.projects">
+                <ProjectCard :key="project.id" :project="project"></ProjectCard>
             </div>
             <div class="container">
                 <div class="pagination">
@@ -94,6 +91,23 @@ header {
             padding: 20px 10px;
             h1{
                 font-size: 2em;
+            }
+        }
+    }
+
+    .actions{
+        button{
+            border-radius: 3px;
+            font-size: 0.9em;
+            padding:5px 10px !important;
+            border:1px solid orange !important;
+            background-color: transparent !important;
+            margin: 0px 5px;
+            color: orange;
+
+            &:hover{
+                background-color: orange !important;
+                color: white !important;
             }
         }
     }

@@ -23,16 +23,16 @@ Route::post('/createEmployer', function (Request $request) {
             'first_name' => $request['first_name'],
             'last_name' => $request['last_name'],
             'email' => $request['email'],
+            'phone' => $request['phone'],
             'password' => bcrypt($request['password']),
         ]);
 
         $user->marketer()->create([
-            "type" => $request['type'],
+            "type" => $request['account_type'],
         ]);
 
 
-
-        if ($request['type'] == 'company' && $request['company_name'] != null) {
+        if ($request['account_type'] == 'Company' && $request['company_name'] != null) {
             $user->marketer->company()->create([
                 'name' => $request['company_name']
             ]);
@@ -40,19 +40,21 @@ Route::post('/createEmployer', function (Request $request) {
 
         DB::commit();
     } catch (Exception $e) {
-        return $e;
         DB::rollBack();
+         dd($e);
     }
 
-    return [$user];
-});
+    return [
+        'status' => true
+    ];
+})->name('createEmployer');
 
 
 //required
 Route::middleware([
-    // 'auth:sanctum',
-    // config('jetstream.auth_session'),
-    // 'verified',
+     'auth:sanctum',
+     config('jetstream.auth_session'),
+     'verified',
 ])->group(function () {
 
     Route::get('/viewEmployer/{id}', function (Request $request, $id) {
@@ -111,6 +113,7 @@ Route::middleware([
             return abort(404, "User not found");
         }
     });
+
     Route::post('/updatePassword/{id}', function (Request $request, $id) {
         $user = User::find($id);
 
@@ -142,6 +145,8 @@ Route::middleware([
         }
     });
 
-    Route::post('/HireInfluencer/influencer/{influencer}/Project/{project}/marketer/{marketer}', [MarketersController::class,'hireInfluencer']);
+    Route::post('/HireInfluencer/influencer', [MarketersController::class,'hireInfluencer'])->name('hireInfluencer');
+
+    Route::get('/Workspace/{id}', [MarketersController::class,'openWorkspace'])->name('EmployerWorkspace');
 
 });

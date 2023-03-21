@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\BidController;
 use App\Http\Controllers\ProjectsController;
+use App\Models\Influencer;
 use App\Models\InfluencerClass;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -22,16 +24,16 @@ Route::get('/ViewProject', function () {
 
 //required
 Route::middleware([
-    // 'auth:sanctum',
-    // config('jetstream.auth_session'),
-    // 'verified',
+//     'auth:sanctum',
+//     config('jetstream.auth_session'),
+//     'verified',
 ])->group(function () {
 
     Route::get('/PostProject', function () {
         return Inertia::render('Employer/PostAdvert');
-    })->name('PostProject');
+    })->name('createProject');
 
-    Route::post('/createProject/{id}', [ProjectsController::class, 'createProject'])->name('PostProject');
+    Route::post('/createProject', [ProjectsController::class, 'createProject'])->name('PostProject');
 
     Route::get('/AllProjects', function () {
 
@@ -52,12 +54,14 @@ Route::middleware([
             $modified_projects->push($modified_project);
         });
 
-        return $modified_projects;
+        return Inertia::render('Projects',[
+            'projects' => $modified_projects
+        ]);
 
-    });
+    })->name('AllProjects');
 
-    Route::get('/ListOwnedProjects/{id}', function (Request $request, $id) {
-        $user = User::find($id);
+    Route::get('/ListOwnedProjects', function (Request $request) {
+        $user = User::find(Auth::user()->id);
 
         if ($user) {
             $marketer = $user->marketer;
@@ -80,13 +84,15 @@ Route::middleware([
                     $modified_projects->push($modified_project);
                 });
 
-                return $modified_projects;
+                return Inertia::render('Employer/MyProjects',[
+                    'projects' => $modified_projects
+                ]);
             }
         }
-    });
+    })->name('ListOwnedProjects');
 
-    Route::get('/ViewOwnedProjects/{id}/user/{user}', function (Request $request, $id, $user) {
-        $user = User::find($user);
+    Route::get('/ViewOwnedProject/{id}', function (Request $request,$id) {
+        $user = User::find(Auth::user()->id);
 
         if ($user) {
             $marketer = $user->marketer;
@@ -106,13 +112,31 @@ Route::middleware([
                             }
                         });
                     }
+
+                    if ($project->bids) {
+                        $modified_project->bids->each(function ($bid) use ($project) {
+                            if ($bid->influencer_id) {
+                                $influencer_id = $bid->influencer_id;
+                                $influencer = Influencer::find($influencer_id);
+                                $user = User::with('influencer')->find($influencer->user_id);
+                                $user->influencer = $influencer;
+                                $bid['user'] = $user;
+                                $bid['user']['social_accounts'] = \App\Models\SocialAccount::
+                                        with('platform','influencerClass')
+                                    ->where('influencer_id',$bid->influencer_id)
+                                    ->get();
+                            }
+                        });
+                    }
                     $modified_projects->push($modified_project);
                 });
 
-                return $modified_projects;
+                return Inertia::render('Employer/ViewProject',[
+                    'project' => $modified_projects
+                ]);
             }
         }
-    });
+    })->name('ViewOwnedProject');
 
     Route::get('/ViewProject/{id}', function (Request $request, $id) {
         $projects = Project::where('id', $id)->with('platforms','bids')->get();
@@ -129,19 +153,41 @@ Route::middleware([
                     }
                 });
             }
+
+            if ($project->bids) {
+                $modified_project->bids->each(function ($bid) use ($project) {
+                    if ($bid->influencer_id) {
+                        $influencer_id = $bid->influencer_id;
+                        $influencer = Influencer::find($influencer_id);
+                        $user = User::with('influencer')->find($influencer->user_id);
+                        $user->influencer = $influencer;
+                        $bid['user'] = $user;
+                        $bid['user']['social_accounts'] = \App\Models\SocialAccount::
+                        with('platform','influencerClass')
+                            ->where('influencer_id',$bid->influencer_id)
+                            ->get();
+                    }
+                });
+            }
+
+
             $modified_projects->push($modified_project);
         });
 
-        return $modified_projects[0];
-    });
+        return Inertia::render('ViewProject',[
+            'project' =>$modified_projects
+        ]);
+    })->name('ViewProject');
 
     Route::get('/influencerListViableProjects/{id}', function () {
         return "success";
     });
 
-    Route::post('/bid/project/{project}/user/{user}', [BidController::class,'makeBid']);
+    Route::post('/bid/project/{project}', [BidController::class,'makeBid'])->name('MakeBid');
 
     Route::get('/randomizeProjects', function () {
         return "success";
     });
+
+    Route::post('/fileUpload', [ProjectsController::class,'fileUpload'])->name('uploadFile');
 });

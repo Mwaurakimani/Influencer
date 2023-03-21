@@ -4,13 +4,26 @@ import MobileNavigationComponent from '../../Components/MobileNavigationComponen
 import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
 import InfluencerCard from '../../Components/InfluencerCard.vue';
 import ProjectCard from '../../Components/ProjectsCard.vue';
+import {router} from "@inertiajs/vue3";
+import {authStore} from "../../Store/AuthStore";
+import {storeToRefs} from "pinia/dist/pinia";
+import {inject} from "vue";
 
-defineProps({
+const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
+    projects:Object
 });
+
+const currentUser = inject('currentUser');
+const auth = authStore()
+if (currentUser() != null) {
+    auth.authenticate()
+}
+const {status, user} = storeToRefs(auth)
+
 
 </script>
 
@@ -31,18 +44,18 @@ defineProps({
                 </section>
                 <section>
                     <p>100 Projects found</p>
+                    <ul>
+                        <button @click.prevent="router.visit(route('createProject'))">Add Project</button>
+                    </ul>
+
                 </section>
             </div>
         </div>
     </header>
     <div class="content-area">
         <div class="mobile-content-area">
-            <div class="container">
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
-                <ProjectCard></ProjectCard>
+            <div class="container" v-for="project in props.projects">
+                <ProjectCard :key="project.id" :project="project" :owner="true"></ProjectCard>
             </div>
             <div class="container">
                 <div class="pagination">
@@ -94,6 +107,20 @@ header {
             h1{
                 font-size: 2em;
             }
+        }
+    }
+
+    button {
+        border: 1px solid orange !important;
+        padding: 5px 10px !important;
+        border-radius: 4px;
+        color: orange;
+        background-color: transparent !important;
+
+        &:active,
+        &:hover {
+            background-color: orange !important;
+            color: white;
         }
     }
 }

@@ -1,4 +1,12 @@
 <script setup>
+
+
+const props = defineProps([
+    'editMode',
+    'bid'
+])
+
+
 </script>
 
 <template>
@@ -77,15 +85,13 @@
                 </svg>
             </div>
             <div>
-                <h3>Username</h3>
-                <p style="color:orange">Class</p>
-                <div class="rating-element">Ratings</div>
+                <h3>{{ props.bid.user.first_name+' '+props.bid.user.last_name }}</h3>
+<!--                <div class="rating-element">Ratings</div>-->
             </div>
         </div>
-        <p style="color:orange">10 Projects completed</p>
-        <p class="mb-[28px]">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum minima iste quod, tenetur sed, eos incidunt earum qui sequi cumque dolorum laborum ratione, molestiae fuga architecto inventore excepturi! Nesciunt, voluptatum.</p>
+        <p class="mb-[28px]">{{ props.bid.description }}</p>
         <div class="pricing">
-            <p>Ksh 1500 / 24hrs</p>
+            <p>Ksh {{ (props.bid.bid_amount) }}</p>
         </div>
     </div>
 </template>

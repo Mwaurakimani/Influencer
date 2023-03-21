@@ -1,26 +1,90 @@
 <script  setup>
-import { Link } from '@inertiajs/vue3';
+import {Link, router, useForm} from '@inertiajs/vue3';
 import MobileNavigationComponent from '../../Components/MobileNavigationComponent.vue'
 import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
 import AccountSummaryVue from './Components/AccountSummary.vue';
 import EditAccountVue from './Components/EditAccount.vue';
 import SocialMediaVue from './Components/SocialMedia.vue';
+import authenticate from "../Shared/authenticate";
+import {onBeforeMount, ref} from "vue";
+import {authStore} from "../../Store/AuthStore";
+import confirmAuthentication from "../Shared/confimAuthentication";
 
-defineProps({
+const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
+    user:Object
 });
+
+authenticate();
+
+const auth = authStore();
+const authenticated = ref(false);
+
+onBeforeMount(async () => {
+    const result = await confirmAuthentication(auth);
+    authenticated.value = result;
+
+    if (result == false){
+        $('.spinner-elem').css({
+            display:"flex"
+        })
+        router.visit('/login')
+    }else {
+        $('.spinner-elem').css({
+            display:"none"
+        })
+    }
+});
+
+const userForm = useForm({
+    user:props.user,
+    influencer:props.user.influencer,
+    social_accounts:[
+        {
+            name:"Facebook",
+            username:"",
+            followers:0,
+            engagementScore:null,
+            status:false,
+        },
+        {
+            name: "Twitter",
+            username: null,
+            followers: 0,
+            engagementScore: null,
+            status: false,
+        },
+        {
+            name:"Instagram",
+            username:null,
+            followers:0,
+            engagementScore:null,
+            status:false,
+        }
+    ]
+})
+
+function updateUser(){
+    axios.post(route('updateInfluencer'),userForm).then((resp) => {
+        console.log(resp);
+    }).catch((err) => {
+        console.log(err)
+    })
+}
+
+
 
 </script>
 
 <template>
-    <nav>
+    <nav v-if="authenticated">
         <MobileNavigationComponent :activeNavButton="'Projects'"></MobileNavigationComponent>
         <DesktopNavigationVue :activeNavButton="'Projects'"></DesktopNavigationVue>
     </nav>
-    <header>
+    <header v-if="authenticated">
         <div class="modile-header">
             <div class="container">
                 <section>
@@ -29,16 +93,23 @@ defineProps({
             </div>
         </div>
     </header>
-    <div class="content-area">
+    <div class="content-area" v-if="authenticated">
         <div class="container">
-            <AccountSummaryVue class="mb-[40px]"></AccountSummaryVue>
-            <SocialMediaVue class="mb-[40px]"></SocialMediaVue>
+            <AccountSummaryVue :user="props.user" class="mb-[40px]"></AccountSummaryVue>
+            <SocialMediaVue :social="userForm.social_accounts" v-on:updateUser="updateUser" class="mb-[40px]"></SocialMediaVue>
             <EditAccountVue class="mb-[40px]"></EditAccountVue>
         </div>
     </div>
-    <footer>
+    <footer v-if="authenticated">
 
     </footer>
+    <div v-else class="spinner-elem">
+        <div class="spinner">
+
+        </div>
+    </div>
+
+
 </template>
 
 <style lang="scss" scoped>

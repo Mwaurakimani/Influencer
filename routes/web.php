@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\InfluencerClass;
+use App\Models\Project;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -15,14 +17,33 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// })->name('home');
+ Route::get('/', function () {
+     $projects = Project::with('platforms','bids')->get();
+     $modified_projects = collect();
+
+     $projects->each(function ($project) use ($modified_projects) {
+         $modified_project = $project;
+         if ($project->platforms) {
+             $modified_project->platforms->each(function ($platform) {
+                 if ($platform->pivot) {
+                     $influencer_class_id = $platform->pivot->influencer_classes_id;
+                     $influencer_class = InfluencerClass::find($influencer_class_id);
+                     $platform->pivot['influencer_data'] = $influencer_class;
+                 }
+             });
+         }
+         $modified_projects->push($modified_project);
+     });
+
+
+     return Inertia::render('Welcome', [
+         'canLogin' => Route::has('login'),
+         'canRegister' => Route::has('register'),
+         'laravelVersion' => Application::VERSION,
+         'phpVersion' => PHP_VERSION,
+         'projects' => $modified_projects
+     ]);
+ })->name('home');
 
 Route::middleware([
     // 'auth:sanctum',

@@ -1,28 +1,30 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import convertDate from "../Helpers/convertDate";
 
+
+const props = defineProps([
+    'project',
+    'owner'
+])
 
 </script>
 
 <template>
-    <Link as="div" :href="route('ViewProject')" class="mobile-view">
+    <Link as="div" :href="props.owner ? route('ViewOwnedProject',[props.project.id]) : route('ViewProject',[props.project.id])" class="mobile-view">
         <div class="details-section">
             <div class="heading">
-                <h3>Lorem ipsum dolor</h3>
-                <p style="color: orange;">10 Bids</p>
+                <h3>{{ props.project.title }}</h3>
+                <p style="color: orange;">{{ props.project.bids.length }} Bids</p>
             </div>
-            <p class="mb-[10px]">Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident blanditiis iure, maiores
-                laborum odio doloremque incidunt deserunt. Consequatur nesciunt fugiat, optio sunt ad dolore, autem debitis,
-                fuga non vero expedita.</p>
-            <ul>
-                <li>Youtube : Nano-Influencer</li>
-                <li>Facebook : Nano-Influencer</li>
-                <li>Twitter : Mega-Influencer</li>
+            <p class="mb-[10px]">{{ props.project.description }}</p>
+            <ul v-for="platform in props.project.platforms">
+
+                <li>{{platform.name}} : {{platform.pivot.influencer_data.name}}</li>
             </ul>
         </div>
         <div class="sub-details-section">
-            <p>Posted on: 20/2/2023</p>
-            <p>Catgeory</p>
+            <p>Posted on: {{ convertDate(props.created_at) }} </p>
             <h3 class="price-tag">Ksh 1,500</h3>
         </div>
     </Link>

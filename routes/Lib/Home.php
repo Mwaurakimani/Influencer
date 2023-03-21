@@ -42,13 +42,13 @@ Route::get('/Influencer', function () {
 Route::post('/createPlatforms', function (Request $request) {
     if($request['platforms']){
         $platforms = $request;
-        
-        
+
+
         DB::beginTransaction();
-        
+
         try {
             foreach($platforms['platforms'] as $platform){
-                                
+
                 $plat = Platform::create([
                     'name' => $platform['name'],
                     'link' => $platform['link']
@@ -57,8 +57,8 @@ Route::post('/createPlatforms', function (Request $request) {
                 foreach($platform['classes'] as $class_key => $class ){
                     $influencer_class = $plat->influencerClass()->create([
                         'name' => $class['name'],
-                        'min_count' => $class['min'],
-                        'max_count' => $class['max'],
+                        'min_count' => $class['min_count'],
+                        'max_count' => $class['max_count'],
                     ]);
                 }
             }

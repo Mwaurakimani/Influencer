@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -9,66 +11,76 @@ use Inertia\Inertia;
 Route::get('/SignUpAs', function () {
     return Inertia::render('Shared/SignUpAs', [
     ]);
-})->name('SignUpAs');
+})->middleware('guest')->name('SignUpAs');
 
 
 Route::get('/SignUpAsInfluencer', function () {
     return Inertia::render('Influencer/CreateInfluencer', [
     ]);
-})->name('SignUpAsInfluencer');
+})
+    ->middleware('guest')
+    ->name('SignUpAsInfluencer');
 
 
 Route::get('/SignUpAsEmployer', function () {
     return Inertia::render('Employer/CreateEmployer', [
     ]);
-})->name('SignUpAsEmployer');
+})
+    ->middleware('guest')
+    ->name('SignUpAsEmployer');
 
 Route::get('/login', function () {
     return Inertia::render('Auth/Login');
-})->name('login');
+})->middleware('guest')->name('login');
 
-Route::post('/login', function () {
-    return "loging in";
-    // return redirect()->route('Account');
-})->name('LogInAccount');
+Route::post('/testIfLoggedIn',function (){
+    if(Auth::check()){
+        return true;
+    }else{
+        return false;
+    }
 
-Route::post('/logout', function () {
-    return "loging in";
-    // return redirect()->route('Account');
-})->name('LogInAccount');
-
+})->name('routeIsLoggedIn');
 
 //required
 Route::middleware([
-    // 'auth:sanctum',
-    // config('jetstream.auth_session'),
-    // 'verified',
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
 ])->group(function () {
 
-    Route::get('/Account/{id}', function () {
-        $account = 'Marketer';
-    
-        if($account == 'Influencer'){
+    Route::get('/Account', function (Request $request) {
+        $user = Auth::user();
+
+        if ($user->influencer) {
+            $user = ( new \App\Http\Controllers\InfluencerController)->getUserDetails($request, $user);
+
             return Inertia::render('Influencer/Account', [
+                'user' => $user
             ]);
-        }else if($account == 'Marketer'){
+        } else if ($user->marketer) {
+            $user = $user;
+            $marketer = $user->marketer;
+            $company = $user->marketer->company;
+
             return Inertia::render('Employer/Account', [
+                'user' => $user,
+                'marketer' => $marketer,
+                'company' => $company,
             ]);
         }
-    
+
     })->name('Account');
 
-    Route::get('/MyProjects/{id}', function () {
-        $account = 'Marketer';
-    
-        if($account == 'Influencer'){
-            return Inertia::render('Influencer/MyProjects', [
-            ]);
-        }else if($account == 'Marketer'){
-            return Inertia::render('Employer/MyProjects', [
-            ]);
+    Route::get('/MyProjects', function () {
+        $user = Auth::user();
+
+        if ($user->influencer) {
+            return redirect()->route('ListActiveInfluencerProjects');
+        } else if ($user->marketer) {
+            return redirect()->route('ListOwnedProjects');
         }
-    
+
     })->name('MyProjects');
 
 });

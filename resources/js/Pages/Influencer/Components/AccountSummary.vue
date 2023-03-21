@@ -1,5 +1,8 @@
 <script  setup>
 import { Link } from '@inertiajs/vue3';
+import {defineProps} from "vue";
+
+const props = defineProps(['user'])
 </script>
 
 <template>
@@ -10,12 +13,11 @@ import { Link } from '@inertiajs/vue3';
                     <img>
                 </div>
                 <div class="details-section">
-                    <h2>Username</h2>
-                    <div class="ratting-card">
-
-                    </div>
+                    <h2>{{ props.user.first_name + ' '+props.user.last_name }}</h2>
+<!--                    <div class="ratting-card">-->
+<!--                    </div>-->
                     <p>100 Projects Completed</p>
-                    <p>Ksh 5,000/hr</p>
+                    <p>Ksh {{props.user.influencer.price}} {{props.user.influencer.unit}}</p>
                 </div>
             </div>
             <div class="left-section">
@@ -23,24 +25,21 @@ import { Link } from '@inertiajs/vue3';
                 <button>Stats</button>
             </div>
         </section>
-        <section class="tags-section">
-            <h2>Tags</h2>
-            <ul>
-                <li>Real estate</li>
-                <li>Real estate</li>
-                <li>Real estate</li>
-                <li>Real estate</li>
-                <li>Real estate</li>
-                <li>Real estate</li>
-                <li>Real estate</li>
-            </ul>
-        </section>
+<!--        <section class="tags-section">-->
+<!--            <h2>Tags</h2>-->
+<!--            <ul>-->
+<!--                <li>Real estate</li>-->
+<!--                <li>Real estate</li>-->
+<!--                <li>Real estate</li>-->
+<!--                <li>Real estate</li>-->
+<!--                <li>Real estate</li>-->
+<!--                <li>Real estate</li>-->
+<!--                <li>Real estate</li>-->
+<!--            </ul>-->
+<!--        </section>-->
         <section class="description-section">
             <h2>Bio</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem accusamus commodi eligendi quos doloremque?
-                Pariatur quidem odit quas culpa quo neque harum esse incidunt corrupti! Sint ipsum autem non cupiditate.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem accusamus commodi eligendi quos doloremque?
-                Pariatur quidem odit quas culpa quo neque harum esse incidunt corrupti! Sint ipsum autem non cupiditate.</p>
+            <p>{{ props.user.influencer.description != null ? props.user.influencer.description : 'N/A'  }}</p>
         </section>
 
         <section class="account-status">

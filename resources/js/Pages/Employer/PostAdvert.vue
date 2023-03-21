@@ -1,5 +1,5 @@
-<script  setup>
-import { Link } from '@inertiajs/vue3';
+<script setup>
+import {Link, router, useForm} from '@inertiajs/vue3';
 import MobileNavigationComponent from '../../Components/MobileNavigationComponent.vue'
 import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
 
@@ -10,13 +10,56 @@ defineProps({
     phpVersion: String,
 });
 
+
+const projectForm = useForm({
+    title: null,
+    description: null,
+    budget: null,
+    location: null,
+    notes: null,
+    runtime: null,
+    metric: null,
+    position: null,
+    kpi: null,
+    social: [
+        {
+            name: "Facebook",
+            active: false,
+            influencerClass: null,
+            targetValue: null
+        },
+        {
+            name: "Twitter",
+            active: false,
+            influencerClass: null,
+            targetValue: null
+        },
+        {
+            name: "Instagram",
+            active: false,
+            influencerClass: null,
+            targetValue: null
+        }
+    ]
+})
+
+function submitProject() {
+    axios.post(route('PostProject'), projectForm).then((resp) => {
+        if(resp){
+            router.visit(route("ViewOwnedProject",{
+                id:resp.data.project.id
+            }))
+        }
+    })
+}
+
 </script>
 
 <template>
     <nav>
         <MobileNavigationComponent :activeNavButton="'Projects'"></MobileNavigationComponent>
-    <DesktopNavigationVue :activeNavButton="'Projects'"></DesktopNavigationVue>
-</nav>
+        <DesktopNavigationVue :activeNavButton="'Projects'"></DesktopNavigationVue>
+    </nav>
     <header>
         <div class="modile-header">
             <div class="container">
@@ -31,95 +74,140 @@ defineProps({
             <!-- <p class="mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Odit
                         asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus
                         illum. Sit autem nesciunt totam deserunt!</p> -->
-            <form action="">
+            <form @submit.prevent="submitProject">
                 <!-- <h1>Registration Form</h1> -->
                 <div class="form-content">
                     <section>
                         <div class="input-group">
                             <label for="">Title</label>
-                            <input type="text">
-                        </div>
-                        <div class="input-group">
-                            <label for="">Category</label>
-                            <select>
-                                <option>Option1</option>
-                                <option>Option1</option>
-                                <option>Option1</option>
-                            </select>
+                            <input type="text" v-model="projectForm.title">
                         </div>
                         <div class="input-group">
                             <label for="">Description</label>
-                            <textarea></textarea>
+                            <textarea v-model="projectForm.description"></textarea>
                         </div>
                         <div class="input-group">
                             <label for="">Budget</label>
-                            <input type="number">
+                            <input type="number" v-model="projectForm.budget">
+                        </div>
+                        <div class="input-group">
+                            <label for="">Key Performance Indicator(KPI)</label>
+                            <select v-model="projectForm.kpi">
+                                <option value="Airtime">Airtime</option>
+                                <option value="Impressions">Impressions</option>
+                                <option value="Content_Reach">Content Reach</option>
+                                <option value="Account_Growth">Account Growth</option>
+                                <option value="Promo_Code">Promo Code</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="">Project Runtime</label>
+                            <div class="text-group flex">
+                                <input type="number" class="mr-[10px]" v-model="projectForm.runtime">
+                                <select v-model="projectForm.metric">
+                                    <option value="Hrs">Hr(s)</option>
+                                    <option value="Week">Week(s)</option>
+                                    <option value="Month">Month(s)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group" v-if="true">
+                            <label for="">Display Position</label>
+                            <select v-model="projectForm.position">
+                                <option value="Airtime">Airtime</option>
+                                <option value="Impressions">Impressions</option>
+                                <option value="Content_Reach">Content Reach</option>
+                                <option value="Account_Growth">Account Growth</option>
+                                <option value="Promo_Code">Promo Code</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="">Notes</label>
+                            <textarea v-model="projectForm.notes"></textarea>
+                        </div>
+
+                    </section>
+                    <section>
+                        <div class="input-group">
+                            <label for="">Location</label>
+                            <input type="text" v-model="projectForm.location">
                         </div>
                         <div class="input-group" id="platform-select">
                             <label for="">Platform Requirements</label>
                             <div>
                                 <article>
                                     <section>
-                                        <input type="checkbox" >
+                                        <input
+                                            type="checkbox" v-model="projectForm.social[0].active"
+                                            true-value=true
+                                            false-value=false
+                                        >
                                         <label>Facebook</label>
                                     </section>
-                                    <section>
-                                        <select>
-                                            <option>Nano Influencer : 1K - 5K</option>
-                                            <option>Nano Influencer : 1K - 5K</option>
-                                            <option>Nano Influencer : 1K - 5K</option>
-                                            <option>Nano Influencer : 1K - 5K</option>
+                                    <section class="flex">
+                                        <label>Class</label>
+                                        <select v-model="projectForm.social[0].influencerClass">
+                                            <option value="Nano-Influencer">Nano Influencer : 1K - 10K</option>
+                                            <option value="Micro-Influencer">Micro Influencer : 10K - 50K</option>
+                                            <option value="Macro-Influencer">Macro Influencer : 50K - 200K</option>
+                                            <option value="Mega-Influencer">Mega Influencer : 200K - 1M</option>
                                         </select>
+                                    </section>
+                                    <section class="flex">
+                                        <label>Target</label>
+                                        <input type="number" v-model="projectForm.social[0].targetValue">
                                     </section>
                                 </article>
                                 <article>
                                     <section>
-                                        <input type="checkbox" >
+                                        <input type="checkbox" v-model="projectForm.social[1].active"
+                                               true-value=true
+                                               false-value=false>
                                         <label>Twitter</label>
                                     </section>
-                                    <section>
-                                        <select>
-                                            <option>Nano Influencer : 1K - 5K</option>
-                                            <option>Nano Influencer : 1K - 5K</option>
-                                            <option>Nano Influencer : 1K - 5K</option>
-                                            <option>Nano Influencer : 1K - 5K</option>
+                                    <section class="flex">
+                                        <label>Class</label>
+                                        <select v-model="projectForm.social[1].influencerClass">
+                                            <option value="Nano-Influencer">Nano Influencer : 1K - 10K</option>
+                                            <option value="Micro-Influencer">Micro Influencer : 10K - 50K</option>
+                                            <option value="Macro-Influencer">Macro Influencer : 50K - 200K</option>
+                                            <option value="Mega-Influencer">Mega Influencer : 200K - 1M</option>
                                         </select>
+                                    </section>
+                                    <section class="flex">
+                                        <label>Target</label>
+                                        <input type="number" v-model="projectForm.social[1].targetValue">
                                     </section>
                                 </article>
                                 <article>
                                     <section>
-                                        <input type="checkbox" >
+                                        <input
+                                            type="checkbox" v-model="projectForm.social[2].active"
+                                            true-value=true
+                                            false-value=false
+                                        >
                                         <label>Instagram</label>
                                     </section>
-                                    <section>
-                                        <select>
-                                            <option>Nano Influencer : 1K - 5K</option>
-                                            <option>Nano Influencer : 1K - 5K</option>
-                                            <option>Nano Influencer : 1K - 5K</option>
-                                            <option>Nano Influencer : 1K - 5K</option>
+                                    <section class="flex">
+                                        <label>Class</label>
+                                        <select v-model="projectForm.social[2].influencerClass">
+                                            <option value="Nano-Influencer">Nano Influencer : 1K - 10K</option>
+                                            <option value="Micro-Influencer">Micro Influencer : 10K - 50K</option>
+                                            <option value="Macro-Influencer">Macro Influencer : 50K - 200K</option>
+                                            <option value="Mega-Influencer">Mega Influencer : 200K - 1M</option>
                                         </select>
+                                    </section>
+                                    <section class="flex">
+                                        <label>Target</label>
+                                        <input type="number" v-model="projectForm.social[2].targetValue">
                                     </section>
                                 </article>
                             </div>
                         </div>
                     </section>
-                    <section>
-                        <!-- <div class="input-group">
-                            <label for="">Attachments</label>
-                            <textarea></textarea>
-                        </div> -->
-                        <div class="input-group">
-                            <label for="">Location</label>
-                            <input type="text">
-                        </div>
-                        <div class="input-group">
-                            <label for="">Notes</label>
-                            <textarea></textarea>
-                        </div>
-                    </section>
                 </div>
                 <div class="button-section">
-                    <button>Post</button>
+                    <button type="submit">Post</button>
                 </div>
             </form>
         </div>
@@ -244,30 +332,38 @@ form {
 
 #platform-select {
 
-    &>div {
+    & > div {
         width: 100%;
         display: flex;
         flex-direction: column;
-        &>article{
-            display:flex;
-            &>section{
-                width:100%;
-                border:none !important;
-                &>select{
-                    width:100%;
+
+        & > article {
+            display: flex;
+            flex-wrap: wrap;
+
+            & > section {
+                width: 100%;
+                border: none !important;
+
+                & > select {
+                    width: 100%;
                 }
             }
-            &>section:nth-of-type(1){
-                width: 110px;
-                display:flex;
+
+            & > section:nth-of-type(1) {
+                width: 100%;
+                display: flex;
                 align-items: center;
-                &>input{
-                    width:15px;
-                    height:15px;
-                    margin-right:5px
+                margin-bottom: 0px;
+
+                & > input {
+                    width: 15px;
+                    height: 15px;
+                    margin-right: 5px
                 }
-                label{
-                    padding-top:7px;
+
+                label {
+                    padding-top: 7px;
                 }
             }
         }
@@ -328,12 +424,14 @@ form {
     }
 }
 
-#platform-select{
-    padding:10px;
-    section{
+#platform-select {
+    padding: 10px;
+
+    section {
         padding: 10px !important;
     }
 }
 
-@media only screen and (min-width: 849px) {}
+@media only screen and (min-width: 849px) {
+}
 </style>

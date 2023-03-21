@@ -7,37 +7,51 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class BidController extends Controller
 {
-    public function makeBid (Request $request,Project $project,User $user) {
+    /**
+     * @throws \ErrorException
+     */
+    public function makeBid (Request $request, Project $project) {
+        $user = Auth::user();
 
         if($user){
             $bid = null;
 
-            if($user->influencer->bid){
-                //TODO:: ask the user to cancel the bid and re-create another
-                return;
+            if($user->influencer->bids()->where('project_id',$project->id)->first() != null){
+                return [
+                    'status' => false,
+                    'message' => "Bid already made"
+                ];
             }else{
                 DB::beginTransaction();
 
                 try{
+                    if($user->marketer){
+                        throw new \ErrorException('Error found');
+                    }
+
+
                     $bid = $user->influencer->bids()->create([
                         'project_id' => $project->id,
                         'bid_amount' => $request['amount'],
-                        'description' => $request['description'],
+                        'description' => $request['comment'],
                     ]);
-    
+
                     DB::commit();
-    
+
                 }catch (Exception $e){
-                    return $e;
-    
                     DB::rollback();
+                    throw new \ErrorException('Error creating bid');
                 }
-    
-                return $bid;
+
+                return [
+                    'status' => true,
+                    'bid' => $bid
+                ];
             }
         }
     }

@@ -20,6 +20,8 @@
         "vue": "^3.2.31"
     },
     "dependencies": {
+        "pdf.js": "^0.1.0",
+        "pdfjs-dist": "^3.4.120",
         "pinia": "^2.0.32",
         "ziggy-js": "^1.5.0"
     }

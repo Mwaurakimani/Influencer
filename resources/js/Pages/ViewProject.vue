@@ -1,43 +1,94 @@
 <script setup>
-import { counterStore } from '../Store/stores';
-import { storeToRefs } from 'pinia';
-
-import { ref } from 'vue';
-
+import {storeToRefs} from 'pinia';
+import {inject, reactive} from 'vue';
 import MobileNavigationComponent from '../Components/MobileNavigationComponent.vue'
 import DesktopNavigationVue from '../Components/DesktopNavigation.vue';
-import InfluencerCard from '../Components/InfluencerCard.vue';
-import ProjectCard from '../Components/ProjectsCard.vue';
 import InfluencerCardBidView from '../Components/InfluencerCardBidView.vue';
+import convertDate from "../Helpers/convertDate";
+import {authStore} from "../Store/AuthStore";
+import {router, useForm} from "@inertiajs/vue3";
+import Modal from "../Components/Modal.vue"
 
-defineProps({
+
+const currentUser = inject('currentUser');
+const auth = authStore()
+if (currentUser() != null) {
+    auth.authenticate()
+}
+const {status, user} = storeToRefs(auth)
+
+
+const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
+    project: Object
 });
+const project = reactive(props.project)
 
-const modalVisible = ref(true)
-
-console.log(modalVisible);
-
-function closeModal(){
-    document.body.style.overflow = "auto";
-    modalVisible.value = false
+const modal = {
+    properties: reactive({
+        visible: false
+    }),
+    openModal: () => {
+        document.body.style.overflow = "hidden";
+        modal.properties.visible = true
+    },
+    closeModal: () => {
+        document.body.style.overflow = "auto";
+        modal.properties.visible = false
+    }
 }
 
-function openModal(){
-    document.body.style.overflow = "hidden";
-    modalVisible.value = true
+const bidForm = useForm({
+    amount: null,
+    comment: null
+})
+
+function submitBid() {
+    axios.post(route('MakeBid', [project[0].id]), bidForm).then((resp) => {
+        if (resp.data.status) {
+            alert("Bid was done successfully");
+            router.visit(route('ViewProject',[project[0].id]))
+        }else {
+            alert("Bid could not be made.Ensure you dont have an active bid with this project")
+        }
+    }).catch((err) => {
+        alert("Error Bidding. Only an influencer can bid on projects");
+    }).finally(() => {
+    })
 }
+
 
 </script>
 
 <template>
     <teleport to=body>
-        <modal :visible="modalVisible">
-            <button class="text-white" @click="closeModal" >close</button>
-        </modal>
+        <Modal :visible="modal.properties.visible">
+            <div class="bid-display">
+                <div class="bid-container">
+                    <div class="header">
+                        <h3>Bid for Project</h3>
+                        <button class="text-white" @click="modal.closeModal()">X</button>
+                    </div>
+                    <div class="body">
+                        <form @submit.prevent="">
+                            <div class="input-group">
+                                <label>Amount</label>
+                                <input type="number" v-model="bidForm.amount">
+                            </div>
+                            <div class="input-group">
+                                <label>Comment</label>
+                                <textarea v-model="bidForm.comment"></textarea>
+                            </div>
+                            <button type="submit" @click.prevent="submitBid">Submit</button>
+                        </form>
+                    </div>
+                    <div class="footer"></div>
+                </div>
+            </div>
+        </Modal>
     </teleport>
     <nav>
         <MobileNavigationComponent :activeNavButton="'Projects'"></MobileNavigationComponent>
@@ -58,7 +109,7 @@ function openModal(){
                 <div class="left-section">
                     <div class="cont-bid">
                         <label>Bid</label>
-                        <p>1</p>
+                        <p>{{ (project[0].bids).length }}</p>
                     </div>
                     <div class="cont-budget">
                         <label>Budget</label>
@@ -66,26 +117,24 @@ function openModal(){
                     </div>
                     <div class="cont-location">
                         <label>Location</label>
-                        <p>Nairobi</p>
+                        <p>{{ project[0].location }}</p>
                     </div>
                 </div>
                 <div class="right-section">
-                    <button>Bid</button>
-                    <p class="desktop-date">Date Posted : <span>March 3, 2020</span></p>
+                    <button v-if="status == false" @click.prevent="router.visit(route('login'))">Bid</button>
+                    <button v-else-if="status == true  " @click.prevent='modal.openModal()'>Bid</button>
+                    <p class="desktop-date">Date Posted : <span>{{ convertDate(project[0].created_at) }}</span></p>
                 </div>
             </div>
             <div class="description-section">
                 <h3>Description</h3>
-                <p style="color:grey">Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti eum libero praesentium vitae, ut fuga dolorum assumenda repellendus expedita doloribus quod quia veritatis consequatur incidunt officiis similique tempore voluptas rem.</p>
+                <p style="color:grey">{{ project[0].description }}</p>
             </div>
         </div>
 
         <div class="container bidders-container" style="box-shadow:none">
-            <InfluencerCardBidView @click="openModal"></InfluencerCardBidView>
-            <InfluencerCardBidView @click="openModal"></InfluencerCardBidView>
-            <InfluencerCardBidView @click="openModal"></InfluencerCardBidView>
-            <InfluencerCardBidView @click="openModal"></InfluencerCardBidView>
-            <InfluencerCardBidView @click="openModal"></InfluencerCardBidView>
+            <InfluencerCardBidView v-for="viewProject in project[0].bids"
+                                   :bid="viewProject"></InfluencerCardBidView>
         </div>
     </div>
     <footer>
@@ -94,9 +143,10 @@ function openModal(){
 </template>
 
 <style lang="scss" scoped>
-*{
+* {
     font-size: 0.96em;
 }
+
 header {
     width: 100%;
     box-shadow: 0 0 6px rgb(182, 182, 182);
@@ -130,54 +180,62 @@ header {
     }
 }
 
-.content-area{
-    padding:10px;
-    .container{
-    border-radius: 3px;
-        padding:10px;
+.content-area {
+    padding: 10px;
+
+    .container {
+        border-radius: 3px;
+        padding: 10px;
         box-shadow: 0 0 6px grey;
         margin-bottom: 20px;
-        .top-section{
-            display:flex;
+
+        .top-section {
+            display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
 
-            .left-section{
-                &>div{
-                    display:flex;
+            .left-section {
+                & > div {
+                    display: flex;
                     margin-bottom: 5px;
-                    label{
-                        width:70px;
-                        font-weight:600 ;
-                    }
-                }                
-            }
 
-            .right-section{
-                display:flex;
-                flex-direction: column;
-                align-items: flex-end;
-                button{
-                    margin-bottom: 10px;
-                    border:1px solid orange;
-                    padding:5px 20px;
-                    color:orange;
-                    border-radius: 4px;
-                    transition:all ease 100ms;
-                    &:active{
-                        background-color: orange;
-                        color:white;
+                    label {
+                        width: 70px;
+                        font-weight: 600;
                     }
                 }
-                .desktop-date{
+            }
+
+            .right-section {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+
+                button {
+                    margin-bottom: 10px;
+                    border: 1px solid orange;
+                    padding: 5px 20px;
+                    color: orange;
+                    border-radius: 4px;
+                    transition: all ease 100ms;
+
+                    &:active {
+                        background-color: orange;
+                        color: white;
+                    }
+                }
+
+                .desktop-date {
                     font-size: 0.8em;
                     font-weight: 800;
                 }
             }
         }
-        &>div{
+
+        & > div {
             margin-bottom: 10px;
-            h3{
+
+            h3 {
                 font-size: 1em;
                 font-weight: 800;
                 margin-bottom: 5px;
@@ -186,12 +244,101 @@ header {
     }
 }
 
-.bidders-container{
+.bidders-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    &>div{
+
+    & > div {
         margin: 10px;
+    }
+}
+
+.bid-display {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .bid-container {
+        border-radius: 6px;
+        box-shadow: 0 0 6px #7a7a7a;
+        width: 320px;
+        background-color: white;
+
+        .header {
+            padding: 0 10px;
+            width: 100%;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid lightgrey;
+
+            h3 {
+                font-weight: bolder;
+            }
+
+            & > button {
+                background-color: red;
+                color: white;
+                width: 20px;
+                border-radius: 50%;
+
+            }
+        }
+
+        .body {
+            width: 100%;
+            padding: 15px;
+
+            form {
+                .input-group {
+                    margin-bottom: 10px;
+                    width: 100%;
+                    display: flex;
+                    flex-wrap: wrap;
+
+                    input, textarea {
+                        width: 100%;
+                        border-radius: 5px;
+                        height: 30px;
+                        padding: 0px 5px;
+                        margin: 0px;
+                        border: 1px solid lightgrey;
+                    }
+
+                    textarea {
+                        height: 200px;
+                        margin-bottom: 20px;
+                    }
+
+                    label {
+                        width: 100%;
+                        margin-bottom: 10px;
+                    }
+
+                }
+
+                button {
+                    border-radius: 5px;
+                    width: 90%;
+                    height: 40px;
+                    color: orange;
+                    display: block;
+                    margin: auto;
+                    text-align: center;
+                    line-height: 30px;
+                    border: 1px solid orange;
+
+                    &:hover {
+                        background-color: orange;
+                        color: white;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -208,5 +355,6 @@ header {
     }
 }
 
-@media only screen and (min-width: 849px) {}
+@media only screen and (min-width: 849px) {
+}
 </style>
