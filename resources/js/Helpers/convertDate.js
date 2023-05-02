@@ -1,5 +1,5 @@
-export default function convertDate(){
-    const dateString = '2023-03-11T18:28:21.000000Z';
+export default function convertDate(convert_date){
+    const dateString = convert_date;
     const date = new Date(dateString);
     const month = date.toLocaleString('default', { month: 'long' });
     const day = date.getDate();

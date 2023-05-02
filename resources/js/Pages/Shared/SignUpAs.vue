@@ -82,15 +82,15 @@ header {
 
     button{
         min-width: 200px;
-        border: 1px solid orange;
+        border: 1px solid purple;
         margin: 20px auto;
         padding: 20px 30px;
         border-radius: 4px;
         font-weight: 700;
-        color:orange;
+        color:purple;
 
         &:active,&:hover{
-            background-color: orange;
+            background-color: purple;
             color:white;
         }
     }

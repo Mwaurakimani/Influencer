@@ -1,205 +1,129 @@
 <script setup>
-import { counterStore } from '../Store/stores';
-import { storeToRefs } from 'pinia';
-import MobileNavigationComponent from '../Components/MobileNavigationComponent.vue'
-import DesktopNavigationVue from '../Components/DesktopNavigation.vue';
-import InfluencerCard from '../Components/InfluencerCard.vue';
-import ProjectCard from '../Components/ProjectsCard.vue';
-import {authStore} from "../Store/AuthStore";
+import MobileNavigationComponent from "./../Components/MobileNavigationComponent.vue";
+import {inject} from "vue";
 
-const props = defineProps({
-    canLogin: Boolean,
-    canRegister: Boolean,
-    laravelVersion: String,
-    phpVersion: String,
-    projects:Object
-});
+const currentUser = inject('currentUser');
 
-const auth = authStore()
-const { status, user } = storeToRefs(auth)
-
+console.log(currentUser)
 </script>
 
 <template>
     <nav>
-        <MobileNavigationComponent :activeNavButton="'Home'"></MobileNavigationComponent>
-        <DesktopNavigationVue  :activeNavButton="'Home'" :authenticated="status"></DesktopNavigationVue>
+        <MobileNavigationComponent :active-nav-button="'Home'"></MobileNavigationComponent>
     </nav>
-    <div class="banner">
-        <div class="over-lay">
-            <button>Join Our Influencer Community</button>
-            <button>Join Our Marketer Community</button>
+    <div class="banner flex flex-col justify-center align-middle mb-[50px]"
+         style="align-items: center; height: calc(100vh - 60px)">
+        <h3 class="text-center text-white mb-[20px] ">Welcome to Vumisha where brands and influencers make magic happen
+            . . .</h3>
+        <img class="p-[10px] w-[90px] mb-[10px]  h-[90px] bg-white" style="border-radius: 50%"
+             src="/storage/DESIGN/WORKSPACE/LOGO/SVG/logo-icon.svg">
+        <div class="banner-image">
         </div>
     </div>
-    <div class="container how-it-works">
-        <h2>How it works</h2>
-        <ul>
-            <li>
-                <div class="icon-holder">
-                    <img src="/storage/addvert.png" alt="">
+    <section class="mb-[50px]">
+        <h4 class=" text-center text-grey-400 mb-[20px]">What we do ...</h4>
+        <div class="">
+            <div class=" mx-[auto] description card-shadowed mb-[10px]   w-[300px] h-[350px]" v-for="item in 3"
+                 style="position: relative;border-radius: 8px">
+                <div class="text-holder pb-[20px] flex" style="align-items: flex-end;justify-content: center">
                 </div>
-                <p>Welcome to Kenyas best influencer hub. Where you can post and receive ads.</p>
-            </li>
-            <li>
-                <div class="icon-holder">
-                    <img src="/storage/projects.png" alt="">
-                </div>
-                <p>We siplify searching for the best adverts and influencers to ensure you get exactly what you need.</p>
-            </li>
-            <li>
-                <div class="icon-holder">
-                    <img src="/storage/get-updates.png" alt="">
-                </div>
-                <p>Get the the right exposer for your product hustle free</p>
-            </li>
-            <li>
-                <div class="icon-holder">
-                    <img src="/storage/secure-payment.png" alt="">
-                </div>
-                <p>Trust that your money is safe throughout the whole process untill the project is completed</p>
-            </li>
-            <li>
-                <div class="icon-holder">
-                    <img src="/storage/release-payment.png" alt="">
-                </div>
-                <p>Payment is released once the project is completed</p>
-            </li>
-        </ul>
-    </div>
-    <div class="container available-influencers">
-        <h2>Available Influencers</h2>
-        <ul>
-            <InfluencerCard></InfluencerCard>
-            <InfluencerCard></InfluencerCard>
-            <InfluencerCard></InfluencerCard>
-        </ul>
-    </div>
-    <div class="container available-influencers available-projects">
-        <h2>Available Projects</h2>
-        <ul>
-            <div class="container" v-for="project in props.projects.splice(0, 3)">
-                <ProjectCard :key="project.id" :project="project"></ProjectCard>
+                <p class="p4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis laudantium
+                    nisi odit quod reprehenderit. Assumenda deleniti dignissimos doloribus eligendi, et qui. At deserunt
+                    illum libero nulla officia quaerat quibusdam quidem.</p>
+                <h6>Influencer</h6>
             </div>
+        </div>
+    </section>
+    <section>
+        <ul class="tab">
+            <li class="p3 active">Influencer</li>
+            <li class="p3">Marketer</li>
         </ul>
-    </div>
+        <div class="body" style="background-color: var(--light-grey)">
+            <p class="px-[7%] py-[20px] p4 text-center ">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, consequatur cumque, deserunt dolorem
+                dolorum, exercitationem iusto molestiae neque nisi quo quos reiciendis sequi. Earum id, itaque labore
+                libero minus optio!</p>
+            <div class="journey-map h-[500px] bg-white ">
+
+            </div>
+        </div>
+    </section>
+    <section class="h-[300px] flex flex-col justify-around items-center" >
+        <h3>Join the community</h3>
+        <p class="p4 p-[30px] text-center ">Get to choose which brand to workwit,
+            get value for your content with Vumisha</p>
+        <button class="pink"> Take me there</button>
+    </section>
     <footer>
-
     </footer>
-
 </template>
 
 <style lang="scss" scoped>
+@import 'sassLoader';
 
+.description {
+    overflow: hidden;
+
+    h6 {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+    }
+
+    p {
+        z-index: 10;
+        top: 0px;
+        width: 100%;
+        padding: 20px;
+        position: absolute;
+        color: white;
+    }
+}
+
+.text-holder {
+    border-radius: 50%;
+    width: 900px;
+    height: 900px;
+    background-color: var(--t-purple);
+    position: absolute;
+    top: -630px;
+    left: -95%;
+    z-index: 5;
+}
 
 .banner {
+    background-color: var(--pink);
+
+    .banner-image {
+        width: 80%;
+        height: 200px;
+    }
+}
+
+.tab {
     width: 100%;
-    height: calc(100vh - 60px);
-    background-image: url('/storage/mobile-banner.jpg');
-    background-position: center;
+    display: flex;
 
-    .over-lay {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-
-        button {
-            background-color: orange;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 3px rgb(172, 172, 172);
-            margin: 20px 0px;
-            color: white;
-        }
-    }
-}
-
-.how-it-works{
-    padding: 40px 0px;
-    h2{
-        font-size: large;
-        font-weight: 700;
-        margin-bottom: 20px;
+    li {
         text-align: center;
+        width: 50%;
+        padding: 10px;
     }
-    ul{
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        margin: 20px;
-        li{
-            margin-bottom: 15px;
-            padding: 10px;
-            .icon-holder{
-                margin: auto;
-                padding: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            p{
-                text-align: center;
-                max-width: 150px;
-                font-size: smaller;
-            }
-        }
+
+    .active {
+        background-color: var(--light-grey);
+        color: var(--t-purple);
     }
 }
 
-.available-influencers{
-    padding: 40px 0px;
-    h2{
-        font-size: large;
-        font-weight: 700;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    ul{
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        margin: 20px;
-        gap: 8px;
-    }
+section > .body {
+    background-color: var(--light-grey);
+    padding-bottom: 20px;
 }
 
+@include s-screens {
 
-
-@media only screen and (min-width: 980px) {
-    .banner {
-        background-image: url('/storage/desktop-banner.jpg');
-
-        .over-lay {
-            flex-direction: row !important;
-
-            button {
-                margin: 0px 30px;
-            }
-        }
-
-    }
-
-
-
-}
-@media only screen and (min-width: 849px) {
-
-    .available-influencers{
-        overflow: visible;
-        ul{
-            max-height: 300px;
-            overflow: hidden;
-        }
-    }
-
-    .available-projects{
-        overflow: visible;
-        ul{
-            padding: 15px;
-            max-height: fit-content;
-        }
-    }
 }
 </style>

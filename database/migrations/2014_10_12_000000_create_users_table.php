@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('designation')->nullable();
+            $table->decimal('creditBalance',15,2)->default(0);
             $table->timestamps();
         });
     }

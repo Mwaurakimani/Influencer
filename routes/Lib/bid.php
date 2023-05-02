@@ -1,18 +1,15 @@
 <?php
 
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\BidController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-
-//no auth needed
-
 
 //required
 Route::middleware([
-    // 'auth:sanctum',
-    // config('jetstream.auth_session'),
-    // 'verified',
+     'auth:sanctum',
+     config('jetstream.auth_session'),
+     'verified',
 ])->group(function () {
+    Route::post('/bid/project/{project}', [BidController::class, 'makeBid'])->name('MakeBid');
 
     Route::get('/viewBidderAccount/project/{project}/influencer/{influencer}', function () {
         return "success";

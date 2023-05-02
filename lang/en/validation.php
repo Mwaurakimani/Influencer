@@ -166,6 +166,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'password' => [
+            'confirmed' => 'The passwords do not match',
+        ],
     ],
 
     /*

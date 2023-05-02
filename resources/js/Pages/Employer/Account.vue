@@ -1,5 +1,8 @@
 <script setup>
 import {Link, router, useForm} from '@inertiajs/vue3';
+import MobileInfluencerDashboardLayout from "../../Layouts/MobileInfluencerDashboardLayout.vue";
+import MobileDashboardHeader from '../../Components/MobilOnlyComponents/MobileDashboardHeader.vue';
+
 import MobileNavigationComponent from '../../Components/MobileNavigationComponent.vue'
 import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
 import AccountSummaryVue from './Components/AccountSummary.vue';
@@ -7,139 +10,92 @@ import EditAccountVue from './Components/EditAccount.vue';
 import SocialMediaVue from './Components/SocialMedia.vue';
 import {authStore} from "../../Store/AuthStore";
 import {storeToRefs} from "pinia";
-import {onBeforeMount, ref, useAttrs} from "vue";
+import {inject, onBeforeMount, ref, useAttrs} from "vue";
 import authenticate from "../Shared/authenticate";
-import confirmAuthentication from "../Shared/confimAuthentication";
+import MarketerAboutCard from "../../Components/Shared/MarketerAboutCard.vue";
 
 const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
-    user:Object,
-    marketer:Object,
-    company:Object
+    user: Object,
+    marketer: Object,
+    company: Object
 });
 
 authenticate();
 
 const auth = authStore();
 const authenticated = ref(false);
+const currentUser = inject('currentUser');
 
-onBeforeMount(async () => {
-    const result = await confirmAuthentication(auth);
-    authenticated.value = result;
-
-    if (result == false){
-        $('.spinner-elem').css({
-            display:"flex"
-        })
-        router.visit('/login')
-    }else {
-        $('.spinner-elem').css({
-            display:"none"
-        })
-    }
-});
-
-
-const employerForm = useForm({
-    'first_name' :props.user.first_name,
-    'last_name' :props.user.last_name,
-    'email' :props.user.email,
-    'phone' :props.user.phone,
-    'account_type' :props.marketer.type,
-    'company_name' :props.company ? props.company.company_name : null
-})
+if (currentUser == null || currentUser == 'undefined'){
+    window.location.href = window.location.href
+}
 
 
 
 </script>
 
 <template>
-    <nav v-if="authenticated">
-        <MobileNavigationComponent :activeNavButton="'Projects'"></MobileNavigationComponent>
-        <DesktopNavigationVue :activeNavButton="'Projects'"></DesktopNavigationVue>
-    </nav>
-    <header v-if="authenticated">
-        <div class="modile-header">
-            <div class="container">
-                <section>
-                    <h1>Account</h1>
-                </section>
+    <teleport to="body">
+        <MobileInfluencerDashboardLayout :activePage="'Account'">
+        </MobileInfluencerDashboardLayout>
+    </teleport>
+    <MobileDashboardHeader class="mb-[10px]" :title="'Account'"/>
+    <div class="intro mb-[20px]">
+        <p class="p2 mb-[5px] " style="text-align: center"> {{ props.user.first_name }}  {{ props.user.last_name }}</p>
+        <div class="h-[25px] flex items-center justify-center" style="width: fit-content">
+            <div class="star-icon w-[100%] h-[100%] p-[3px]">
+                <img style="max-width: 20px;max-height: 20px" src="/storage/icons8-star-100.png">
             </div>
+            <p class="pt-[3px]" >4.5</p>
         </div>
-    </header>
-    <div v-if="authenticated" class="content-area">
-        <div class="container">
-            <AccountSummaryVue :user="props.user" class="mb-[40px]"></AccountSummaryVue>
-            <EditAccountVue :user="employerForm" class="mb-[40px]"></EditAccountVue>
-        </div>
+        <!--        TODO::add status-->
+        <p class="p3 mb-[5px] " style="text-align: center;color: var(--light-green)">Available</p>
+        <Link :href="'editAccount'" as="span" class="icon w-[30px] h-[30px] p-[5px] ">
+            <img src="/storage/DESIGN/WORKSPACE/PLATFORM%20DESIGN/icons8-pencil-64.png">
+        </Link>
     </div>
-    <footer v-if="authenticated">
-
-    </footer>
-    <div v-else class="spinner-elem">
-        <div class="spinner">
-
-        </div>
-    </div>
-
+    <MarketerAboutCard :user.camel="props.user" class="w-[95%] mx-[auto] mt-[10px] mb-[20px]"></MarketerAboutCard>
 </template>
 
 <style lang="scss" scoped>
-* {
-    font-size: 0.96em;
-}
+@import "../sassLoader";
 
-header {
-    width: 100%;
-    box-shadow: 0 0 6px rgb(182, 182, 182);
+.intro {
+    width: 90%;
+    margin: auto;
     margin-bottom: 20px;
-    min-height: 80px;
+    height: 100px;
+    display: grid;
+    grid-template-columns: 1fr 40px;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas:
+    "name edit"
+    "rating edit"
+    "status edit";
 
-    section {
-        padding: 10px 10px;
-        display: flex;
-        justify-content: space-between;
+    p:nth-of-type(1) {
+        text-align: left;
+        width: fit-content;
+        grid-area: name;
+    }
 
-        h1 {
-            font-weight: 800;
-            font-size: 1.3em;
-        }
+    p:nth-of-type(2) {
+        text-align: left;
+        width: fit-content;
+        grid-area: status;
+    }
 
-        .actions {
-            button {
-                border-radius: 3px;
-                font-size: 0.9em;
-                padding: 2px;
-                border: 1px solid rgb(201, 201, 201);
-                background-color: rgb(226, 226, 226);
-                margin: 0px 5px;
-            }
-        }
+    div{
+        grid-area: rating;
+    }
 
-        p {
-            color: grey;
-        }
+    span{
+        grid-area: edit;
     }
 }
 
-.container {
-}
-
-@media only screen and (min-width: 980px) {
-    header {
-        section {
-            padding: 20px 10px;
-
-            h1 {
-                font-size: 2em;
-            }
-        }
-    }
-}
-
-@media only screen and (min-width: 849px) {
-}
 </style>

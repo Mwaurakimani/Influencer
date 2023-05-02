@@ -19,7 +19,6 @@ onMounted(async () => {
         // console.log(encodedUrl)
         //
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-        pdfjsLib.verbosity = 0;
         // Load the PDF document
         const pdf = await pdfjsLib.getDocument(encodedUrl).promise
 

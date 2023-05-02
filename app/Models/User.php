@@ -62,4 +62,19 @@ class User extends Authenticatable
     public function marketer(){
         return $this->hasOne(Marketer::class);
     }
+
+    public function media()
+    {
+        return $this->belongsToMany(Media::class, 'media_owner', 'user_id', 'media_id')->withPivot('id');
+    }
+
+    public function deposits()
+    {
+        return $this->hasMany(Deposit::class,'user_id','id');
+    }
+
+    public function withdrawals()
+    {
+        return $this->hasMany(Withdrawal::class,'user_id','id');
+    }
 }

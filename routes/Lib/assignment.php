@@ -6,9 +6,9 @@ use Inertia\Inertia;
 
 //required
 Route::middleware([
-    // 'auth:sanctum',
-    // config('jetstream.auth_session'),
-    // 'verified',
+     'auth:sanctum',
+     config('jetstream.auth_session'),
+     'verified',
 ])->group(function () {
 
     Route::get('/marketerHiresInfluencer/{id}', function () {
@@ -28,5 +28,9 @@ Route::middleware([
     });
 
     Route::post('/SendMessage',[\App\Http\Controllers\AssignmentController::class,'sendMessage'])->name('sendMessage');
+
+    Route::post('/MMarkAsComplete',[\App\Http\Controllers\AssignmentController::class,'MarketerMarkAsComplete'])->name('MarketerMarkAsComplete');
+
+    Route::post('/IMarkAsComplete',[\App\Http\Controllers\AssignmentController::class,'InfluencerMarkAsComplete'])->name('InfluencerMarkAsComplete');
 
 });

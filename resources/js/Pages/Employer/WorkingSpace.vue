@@ -18,7 +18,7 @@ import pdfViewModal from "./Components/pdfViewModal.vue";
 
 const currentUser = inject('currentUser');
 const auth = authStore()
-if (currentUser() != null) {
+if (currentUser != null) {
     auth.authenticate()
 }
 const {status, user} = storeToRefs(auth)
@@ -31,7 +31,9 @@ const props = defineProps({
     phpVersion: String,
     project: Object,
     media: Object,
-    chats:Object
+    chats:Object,
+    assignment:Object,
+    account_type:String
 });
 const project = reactive(props.project)
 
@@ -170,11 +172,25 @@ function sendMessage(message){
     axios.post(route('sendMessage'),
         payload)
         .then((resp) => {
-            console.log(resp)
+            let element = $('#chatWindow');
+
+            props.chats.push(resp.data.chat)
+
+            element.animate({
+                scrollTop: element.get(0).scrollHeight
+            }, 1000)
         }).catch((err) => {
         console.log(err)
     })
 }
+
+let project_status = reactive([])
+
+function assignProjectStatus(){
+    project_status[0] = props.assignment[0].assignments.marketer_status
+}
+
+assignProjectStatus()
 
 </script>
 
@@ -238,15 +254,14 @@ function sendMessage(message){
                 <p style="color:grey">{{ project[0].description }}</p>
             </div>
         </div>
-
         <div class="container actions-section">
-            <select>
-                <option>Assigned</option>
-                <option>Started</option>
-                <option>Finished</option>
-                <option>Done</option>
+            <select v-model="project_status[0]" >
+                <option value="Assigned" >Assigned</option>
+                <option value="Assigned" >Assigned</option>
+                <option value="Progressing" >Progressing</option>
+                <option value="Finished" >Finished</option>
             </select>
-            <button>Update Status</button>
+            <button v-if="props.account_type == 'Marketer'"  @click.prevent="update_status()">Update Status</button>
         </div>
 
         <div class="container working-area">

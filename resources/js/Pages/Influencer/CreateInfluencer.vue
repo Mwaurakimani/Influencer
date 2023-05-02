@@ -1,7 +1,20 @@
-<script  setup>
+<script setup>
 import {Link, router, useForm} from '@inertiajs/vue3';
 import MobileNavigationComponent from '../../Components/MobileNavigationComponent.vue'
 import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
+import {inject, reactive, ref} from "vue";
+import {authStore} from "../../Store/AuthStore";
+import {storeToRefs} from "pinia";
+import MobileInfleuncerModifySocialAccountsComponent
+    from "../../Components/MobilOnlyComponents/MobileInfleuncerModifySocialAccountsComponent.vue";
+
+
+const currentUser = inject('currentUser');
+const auth = authStore()
+if (currentUser != null) {
+    auth.authenticate()
+}
+const {status, user} = storeToRefs(auth)
 
 defineProps({
     canLogin: Boolean,
@@ -11,24 +24,158 @@ defineProps({
 });
 
 const influencerForm = useForm({
-    'first_name' :null,
-    'last_name' :null,
-    'email' :null,
-    'phone' :null,
-    'password' :null,
-    'confirm_password' :null,
+    'first_name': "Mwaura",
+    'last_name': "Kimani",
+    'email': "mwaura@gmail.com",
+    'phone': "0700000001",
+    'password': "password",
+    'password_confirmation': "password",
+    'bio': "This is my main account",
+    'social_account': {
+        facebook: {
+            username: "mwaurakimani_fb",
+            influencerClass: "Nano-Influencer",
+            // platformDetail: {
+            //     'Cover Photo': {
+            //         status: false,
+            //         unit: "hr",
+            //         value: 1000,
+            //         options: [
+            //             'hr',
+            //             'day',
+            //             'week'
+            //         ]
+            //     },
+            //     post: {
+            //         status: false,
+            //         value: 0
+            //     },
+            //     timeline: {
+            //         status: false,
+            //         value: 0
+            //     },
+            //     stories: {
+            //         status: false,
+            //         value: 0
+            //     },
+            //     reels: {
+            //         status: false,
+            //         unit: null,
+            //         value: 0,
+            //         options: [
+            //             'hr',
+            //             'day',
+            //             'week'
+            //         ]
+            //     },
+            // },
+        },
+        twitter: {
+            username: "mwaurakimani_tw",
+            influencerClass: "Nano-Influencer",
+            // platformDetail: {
+            //     post: {
+            //         status: false,
+            //         value: 0
+            //     },
+            //     timeline: {
+            //         status: false,
+            //         value: 0
+            //     },
+            // },
+        },
+        instagram: {
+            username: "mwaurakimani_ig",
+            influencerClass: "Nano-Influencer",
+            // platformDetail: {
+            //     post: {
+            //         status: false,
+            //         value: 0
+            //     },
+            //     stories: {
+            //         status: false,
+            //         value: 0
+            //     },
+            // },
+        },
+        tiktok: {
+            username: "mwaurakimani_tiktok",
+            influencerClass: "Nano-Influencer",
+            // platformDetail: {
+            //     post: {
+            //         status: false,
+            //         value: 0
+            //     },
+            // },
+        }
+    },
 })
 
-function submit(){
+const activePanel = ref('Account');
+const errors = reactive({
+    status: false,
+    errors: {}
+});
 
-    axios.post(route('createInfluencer'),influencerForm)
+function moveTo(payload) {
+    influencerForm.check = payload
+    axios.post(route('createInfluencerValidate'), influencerForm)
         .then((resp) => {
-            if(resp.data.status){
-                router.visit('login')
+            if (resp.data.status) {
+                errors.errors = {}
+                errors.status = false;
+                activePanel.value = payload
             }
-        })
+        }).catch((err) => {
+        if (err.response.status === 422) {
+            errors.errors = err.response.data.errors;
+            errors.status = true;
+        } else {
+            errors.errors = {}
+            errors.status = false;
+        }
+    })
 }
 
+function validate(payload) {
+    console.log(payload)
+}
+
+function submit() {
+
+    axios.post(route('createUser',['Influencer']), influencerForm)
+        .then((resp) => {
+            if (resp.data.status) {
+                errors.errors = {}
+                errors.status = false;
+                activePanel.value = 'Finish'
+            } else {
+                alert("Sorry. Something went wrong...")
+                // alert(resp.data.message)
+            }
+        }).catch((err) => {
+        alert("Error creating Account")
+    })
+}
+
+function debounce(func, wait) {
+    let timer;
+    return function (...args) {
+        if (timer) {
+            clearTimeout(timer); // clear any pre-existing timer
+        }
+        const context = this; // get the current context
+        timer = setTimeout(() => {
+            fn.apply(context, args); // call the function if time expires
+        }, wait);
+    }
+}
+
+function keyCount() {
+    console.log("hi")
+}
+
+const categories = reactive([])
 </script>
 
 <template>
@@ -40,50 +187,161 @@ function submit(){
         <div class="modile-header">
             <div class="container">
                 <section>
-                    <h1>Join Marketers</h1>
+                    <h4 class="pt-[13px]" style="color: var(--t-purple)">Join The Influencer Community</h4>
                 </section>
             </div>
         </div>
     </header>
     <div class="content-area">
-        <div class="container">
-            <p class="mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Odit
+        <div v-if="activePanel === 'Account'" class="container">
+            <p class="p3 p-[20px]  mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit. Odit
                 asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus
                 illum. Sit autem nesciunt totam deserunt!</p>
-            <form action="" @submit.prevent="submit">
-                <h1>Registration Form</h1>
+            <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
+                <h6 class="p-[15px] mb-[20px]  text-center">Join The Influencer Community</h6>
                 <div class="form-content">
                     <section>
-                        <div class="splitter">
-                            <div class="input-group">
-                                <label for="">First Name</label>
-                                <input type="text" v-model="influencerForm.first_name">
-                            </div>
-                            <div class="input-group">
-                                <label for="">Last Name</label>
-                                <input type="text" v-model="influencerForm.last_name">
-                            </div>
+                        <div class="input-group">
+                            <label for="">First Name</label>
+                            <input type="text" v-model="influencerForm.first_name">
+                            <span v-if="errors.errors && errors.errors.first_name"
+                                  class="error span-3 py-[10px] text-red-500">{{ errors.errors.first_name[0] }}</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="">Last Name</label>
+                            <input type="text" v-model="influencerForm.last_name">
+                            <span v-if="errors.errors && errors.errors.last_name"
+                                  class="error span-3 py-[10px] text-red-500">{{ errors.errors.last_name[0] }}</span>
                         </div>
                         <div class="input-group">
                             <label for="">Email</label>
                             <input type="email" v-model="influencerForm.email">
+                            <span v-if="errors.errors && errors.errors.email"
+                                  class="error span-3 py-[10px] text-red-500">{{ errors.errors.email[0] }}</span>
                         </div>
                         <div class="input-group">
                             <label for="">Phone</label>
                             <input type="tel" v-model="influencerForm.phone">
+                            <span v-if="errors.errors && errors.errors.phone"
+                                  class="error span-3 py-[10px] text-red-500">{{ errors.errors.phone[0] }}</span>
                         </div>
                         <div class="input-group">
                             <label for="">Password</label>
                             <input type="password" v-model="influencerForm.password">
+                            <span v-if="errors.errors && errors.errors.password"
+                                  class="error span-3 py-[10px] text-red-500">{{ errors.errors.password[0] }}</span>
                         </div>
                         <div class="input-group">
                             <label for="">Confirm Password</label>
-                            <input type="password" v-model="influencerForm.confirm_password">
+                            <input type="password" v-model="influencerForm.password_confirmation">
+                            <span v-if="errors.errors && errors.errors.password_confirmation"
+                                  class="error span-3 py-[10px] text-red-500">{{
+                                    errors.errors.password_confirmation [0]
+                                }}</span>
                         </div>
                     </section>
                 </div>
-                <div class="button-section">
-                    <button type="submit">Join</button>
+                <div class="button-section flex justify-end p-[20px]">
+                    <button @click.prevent="moveTo('SocialAccounts')" class="purple" type="submit">Social Accounts
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div v-if="activePanel === 'SocialAccounts'" class="container">
+            <p class="p3 p-[20px]  mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit. Odit
+                asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus
+                illum. Sit autem nesciunt totam deserunt!</p>
+            <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
+                <h6 class="p-[15px] mb-[20px]  text-center">Add social accounts</h6>
+                <div class="form-content ">
+                    <MobileInfleuncerModifySocialAccountsComponent :supportedPlatforms="influencerForm"
+                                                                   class="w-[100%]"></MobileInfleuncerModifySocialAccountsComponent>
+                </div>
+                <div class="button-section flex justify-between p-[20px]">
+                    <button @click.prevent="moveTo('Account')" class="purple" type="submit">Account</button>
+                    <button @click.prevent="moveTo('Bio')" class="purple" type="submit">Bio</button>
+                </div>
+            </form>
+        </div>
+        <div v-if="activePanel === 'Bio'" class="container">
+            <p class="p3 p-[20px]  mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit. Odit
+                asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus
+                illum. Sit autem nesciunt totam deserunt!</p>
+            <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
+                <h6 class="p-[15px] mb-[20px]  text-center">Bio</h6>
+                <div class="form-content">
+                    <textarea class="w-[100%] h-[200px]" @keyup="debounce(keyCount,300)" v-model="influencerForm.bio">
+
+                    </textarea>
+                    <span class="span-2 text-grey-200 ">0/500</span>
+                </div>
+                <div class="button-section flex justify-between p-[20px]">
+                    <button @click.prevent="moveTo('SocialAccounts')" class="purple" type="submit">Social Accounts
+                    </button>
+                    <button @click.prevent="moveTo('Categories')" class="purple" type="submit">Categories</button>
+                </div>
+            </form>
+        </div>
+        <div v-if="activePanel === 'Categories'" class="container">
+            <p class="p3 p-[20px]  mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit. Odit
+                asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus
+                illum. Sit autem nesciunt totam deserunt!</p>
+            <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
+                <h6 class="p-[15px] mb-[20px]  text-center">Add Categories</h6>
+                <div class="form-content">
+                    <p class="p2  ">Select Categories</p>
+                    <input style="width: 80%">
+                    <button style="width: 40px;height: 40px" class="p-[10px] purple w-[100px] ">+</button>
+                    <div class="mb-[40px] w-[100%]" style="background-color:var(--light-grey)">
+                        <ul>
+                            <li v-for="category in categories" class="p-[5px]">{{ category }}</li>
+                        </ul>
+                    </div>
+                    <ul class="w-[100%] flax flex-wrap gap-1  ">
+                        <li class="inline-flex gap-1">
+                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>
+                            </p>
+                        </li>
+                        <li class="inline-flex gap-1">
+                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>
+                            </p>
+                        </li>
+                        <li class="inline-flex gap-1">
+                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>
+                            </p>
+                        </li>
+                        <li class="inline-flex gap-1">
+                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>
+                            </p>
+                        </li>
+                        <li class="inline-flex gap-1">
+                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="button-section flex justify-between         p-[20px]">
+                    <button @click.prevent="moveTo('Bio')" class="purple" type="submit">Bio</button>
+                    <button @click.prevent="submit()" class="purple" type="submit">Finish</button>
+                </div>
+            </form>
+        </div>
+        <div v-if="activePanel === 'Finish'" class="container">
+            <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
+                <h6 class="p-[15px] mb-[20px]  text-center">Welcome</h6>
+                <div class="form-content">
+                    <p class="p3 p-[20px]  mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur,
+                        adipisicing elit. Odit
+                        asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex,
+                        perferendis minus
+                        illum. Sit autem nesciunt totam deserunt!</p>
+                </div>
+                <div class="button-section flex justify-between         p-[20px]">
+                    <Link as="button" :href="'/login'" class="purple" type="submit">Log In</Link>
                 </div>
             </form>
         </div>
@@ -94,156 +352,19 @@ function submit(){
 </template>
 
 <style lang="scss" scoped>
-* {
-    font-size: 0.96em;
-}
+@import "../sassLoader";
 
-header {
-    width: 100%;
-    box-shadow: 0 0 6px rgb(182, 182, 182);
-    margin-bottom: 20px;
-    min-height: 80px;
-
-    section {
-        padding: 10px 10px;
-        display: flex;
-        justify-content: space-between;
-
-        h1 {
-            font-weight: 800;
-            font-size: 1.3em;
-        }
-
-        .actions {
-            button {
-                border-radius: 3px;
-                font-size: 0.9em;
-                padding: 2px;
-                border: 1px solid rgb(201, 201, 201);
-                background-color: rgb(226, 226, 226);
-                margin: 0px 5px;
-            }
-        }
-
-        p {
-            color: grey;
-        }
-    }
-}
-
-.container {
-    display: flex;
-    flex-wrap: wrap;
-
-    button {
-        border: 1px solid orange;
-        margin: 20px auto;
-        padding: 10px 30px;
-        border-radius: 4px;
-        font-weight: 700;
-        color: orange;
-
-        &:active,
-        &:hover {
-            background-color: orange;
-            color: white;
-        }
-    }
-}
-
-.content-area {
-    max-width: 1200px;
-    margin: auto;
-}
-
-form {
-    border-radius: 4px;
-    background-color: white;
-    padding: 20px;
-    width: 100%;
-    box-shadow: 0 0 6px grey;
-    margin-bottom: 40px;
-
-    h1 {
-        font-size: 1.1em;
-        font-weight: 700;
-        margin-bottom: 10px;
-        text-decoration: underline;
-    }
-    .form-content{
-        section:nth-of-type(1){
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-            border-bottom:1px solid rgb(209, 209, 209);
-        }
-        .input-group{
-            margin-bottom: 10px;
-        }
-        label{
-            margin-bottom: 5px;
-            width: 100%;
-        }
-        input,select{
-            border-radius: 3px !important;
-            width: 100%;
-            height: 35px;
-            padding: 5px;
-        }
-    }
-    button{
-        padding:10px 15px
-    }
-}
-
-@media only screen and (min-width: 980px) {
-    header {
-        section {
-            padding: 20px 10px;
-
-            h1 {
-                font-size: 2em;
-            }
-        }
-    }
-
-    form{
-        h1{
-            font-size: 1.5em;
-            text-decoration: underline;
-            margin-bottom: 20px;
-        }
-        .form-content{
-            display: flex;
-            justify-content: center;
-        }
-        section{
-            padding: 30px;
-            width:40%;
-            border:none;
-
-            .input-group{
-                margin: auto;
-            }
-
-            .splitter{
-                display: flex;
-                .input-group:nth-of-type(1){
-                    margin-right: 10px;
+.form-content {
+    div {
+        ul {
+            li {
+                &:hover {
+                    background-color: var(--t-pink);
+                    color: white;
                 }
             }
         }
-
-        section:nth-of-type(1){
-            border:none !important;
-            border-right: 1px solid rgb(209, 209, 209) !important;
-        }
-
-        .button-section{
-            padding:10px 20px !important;
-            display: flex;
-        }
     }
 }
 
-@media only screen and (min-width: 849px) {}
 </style>

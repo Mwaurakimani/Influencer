@@ -21,7 +21,11 @@ return new class extends Migration
             $table->decimal('max_count',15,0)->default(0);
             $table->timestamps();
 
-            $table->foreign('platform_id')->references('id')->on('platforms');
+            $table->foreign('platform_id')
+                ->references('id')
+                ->on('platforms')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

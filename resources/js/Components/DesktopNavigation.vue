@@ -2,7 +2,7 @@
 import {Link, router} from "@inertiajs/vue3";
 import {onBeforeMount, onMounted, ref, toRef, useAttrs} from "vue";
 import {authStore} from "../Store/AuthStore";
-import {storeToRefs} from "pinia/dist/pinia";
+import {storeToRefs} from "pinia";
 import { inject } from 'vue';
 
 const currentUser = inject('currentUser');
@@ -18,7 +18,7 @@ const authenticated = ref(false);
 const logeIn = ref(false);
 
 onBeforeMount(() => {
-    const authUser = currentUser();
+    const authUser = currentUser;
     const {status, user} = storeToRefs(auth)
     logeIn.value = status.value
 })
@@ -71,6 +71,10 @@ onMounted(() => {
                 <Link :class="[activeNavButton == 'Projects' ? 'active_button' : '']" :href="route('AllProjects')"
                       as="li">
                     Projects
+                </Link>
+                <Link :class="[activeNavButton == 'Influencers' ? 'active_button' : '']" :href="route('Influencer')"
+                      as="li">
+                    Influencer
                 </Link>
                 <Link :class="[activeNavButton == 'AboutUs' ? 'active_button' : '']" :href="route('AboutUs')" as="li">
                     About us

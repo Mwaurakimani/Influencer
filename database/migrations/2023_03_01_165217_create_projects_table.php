@@ -17,18 +17,21 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('marketer_id');
             $table->string('title');
-            $table->text('description');
-            $table->string('location')->nullable();
-            $table->text('notes')->nullable();
-            $table->string('kpi');
-            $table->string('runtime');
+            $table->string('type');
+            $table->text('description')->nullable();
+            $table->string('budget');
             $table->string('metrics');
-            $table->string('position');
+            $table->string('runtime');
+            $table->text('notes')->nullable();
+            $table->string('location')->nullable();
             $table->string('status')->default('active');
-            $table->string('tags')->nullable();
             $table->timestamps();
 
-            $table->foreign('marketer_id')->references('id')->on('marketers');
+            $table->foreign('marketer_id')
+                ->references('id')
+                ->on('marketers')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

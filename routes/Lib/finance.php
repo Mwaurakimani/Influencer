@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -9,31 +10,22 @@ use Inertia\Inertia;
 
 //required
 Route::middleware([
-    // 'auth:sanctum',
-    // config('jetstream.auth_session'),
-    // 'verified',
+     'auth:sanctum',
+     config('jetstream.auth_session'),
+     'verified',
 ])->group(function () {
 
-    Route::get('/Finance/{id}', function () {
-        $account = 'Marketer';
-    
-        if($account == 'Influencer'){
-            return Inertia::render('Influencer/Finance', [
-            ]);
-        }else if($account == 'Marketer'){
-            return Inertia::render('Employer/Finance', [
-            ]);
+    Route::get('/Finance', function () {
+        if(!Auth::check()) {
+            return \Illuminate\Support\Facades\Redirect::to('/');
         }
-    
+
+        $data = (new \App\Http\Controllers\FinanceController)->FinanceAccount();
+
+        return Inertia::render('Shared/Finance',[
+            'finance' => $data
+        ]);
     })->name('Finance');
-
-    Route::get('/addCredits/{id}', function () {
-        return "success";
-    });
-
-    Route::get('/withdrawCredits/{id}', function () {
-        return "success";
-    });
 
     Route::get('/approveTransaction/{id}', function () {
         return "success";
@@ -43,4 +35,8 @@ Route::middleware([
         return "success";
     });
 
+
+    Route::post('/addCredits', [\App\Http\Controllers\FinanceController::class,'makeDeposit'])->name('makeDeposit');
+
+    Route::post('/withdrawCredits', [\App\Http\Controllers\FinanceController::class,'makeWithdrawal'])->name('makeWithdrawal');
 });

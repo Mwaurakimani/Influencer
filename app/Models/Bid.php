@@ -15,4 +15,11 @@ class Bid extends Model
         return $this->belongsTo(Influencer::class);
     }
 
+    public function assignments(){
+        return $this->hasOne(Assignment::class);
+    }
+
+    public function media(){
+        return $this->hasManyThrough(Media::class,Assignment::class);
+    }
 }

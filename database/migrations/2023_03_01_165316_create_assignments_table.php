@@ -22,7 +22,12 @@ return new class extends Migration
             $table->string('general_status')->default('running');
             $table->timestamps();
 
-            $table->foreign('bid_id')->references('id')->on('bids');
+            $table->foreign('bid_id')
+                ->references('id')
+                ->on('bids')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
         });
     }
 

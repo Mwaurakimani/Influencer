@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        PlatformSeeder::run('Platform','./database/Data/InfluencerClasses.json');
+        PlatformSeeder::run('./database/Data/platforms.json');
+        InfluencerClassSeeder::run('./database/Data/InfluencerClasses.json');
     }
 }

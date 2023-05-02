@@ -16,14 +16,23 @@ return new class extends Migration
         Schema::create('bids', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('influencer_id');
-            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('project_id')->nullable();
             $table->decimal('bid_amount',15,2)->default(0);
             $table->text('description')->nullable();
             $table->string('status')->default('unassigned');
             $table->timestamps();
 
-            $table->foreign('influencer_id')->references('id')->on('influencers');
-            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('influencer_id')
+                ->references('id')
+                ->on('influencers')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('project_id')
+                ->references('id')
+                ->on('projects')
+                ->onUpdate('cascade')
+                ->onDelete('set null');
         });
     }
 

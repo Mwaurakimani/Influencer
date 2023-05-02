@@ -1,6 +1,5 @@
 <script  setup>
 import { Link } from '@inertiajs/vue3';
-import {defineProps} from "vue";
 
 const props = defineProps(['user'])
 </script>
@@ -13,33 +12,23 @@ const props = defineProps(['user'])
                     <img>
                 </div>
                 <div class="details-section">
-                    <h2>{{ props.user.first_name + ' '+props.user.last_name }}</h2>
-<!--                    <div class="ratting-card">-->
-<!--                    </div>-->
-                    <p>100 Projects Completed</p>
-                    <p>Ksh {{props.user.influencer.price}} {{props.user.influencer.unit}}</p>
+                    <h2>{{ props.user.first_name+' '+props.user.last_name }}</h2>
+                    <div class="ratting-card">
+
+                    </div>
+                    <p>100 Projects Posted</p>
                 </div>
             </div>
             <div class="left-section">
-                <button>Edit</button>
-                <button>Stats</button>
+                <button>Update</button>
             </div>
         </section>
-<!--        <section class="tags-section">-->
-<!--            <h2>Tags</h2>-->
-<!--            <ul>-->
-<!--                <li>Real estate</li>-->
-<!--                <li>Real estate</li>-->
-<!--                <li>Real estate</li>-->
-<!--                <li>Real estate</li>-->
-<!--                <li>Real estate</li>-->
-<!--                <li>Real estate</li>-->
-<!--                <li>Real estate</li>-->
-<!--            </ul>-->
-<!--        </section>-->
         <section class="description-section">
             <h2>Bio</h2>
-            <p>{{ props.user.influencer.description != null ? props.user.influencer.description : 'N/A'  }}</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem accusamus commodi eligendi quos doloremque?
+                Pariatur quidem odit quas culpa quo neque harum esse incidunt corrupti! Sint ipsum autem non cupiditate.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem accusamus commodi eligendi quos doloremque?
+                Pariatur quidem odit quas culpa quo neque harum esse incidunt corrupti! Sint ipsum autem non cupiditate.</p>
         </section>
 
         <section class="account-status">

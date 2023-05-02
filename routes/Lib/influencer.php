@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\InfluencerController;
+use App\Http\Requests\CreateInfleuncerRequest;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Influencer;
@@ -11,43 +12,21 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 
 //no auth needed
-Route::post('/createInfluencer', function (Request $request) {
 
 
-    DB::beginTransaction();
 
-    try {
-
-        $user = User::create([
-            'first_name' => $request['first_name'],
-            'last_name' => $request['last_name'],
-            'email' => $request['email'],
-            'phone' => $request['phone'],
-            'password' => bcrypt($request['password']),
-        ]);
-
-        $influencer = $user->influencer()->create([
-            "price" => "0",
-            "unit" => "per Hour",
-        ]);
-
-        DB::commit();
-    } catch (Exception $e) {
-        DB::rollBack();
-        dd($e);
-    }
-
+Route::post('/CreateInfluencerValidate',function (CreateInfleuncerRequest $request){
     return [
-        'status' => true
+        'status' =>true
     ];
-})->name('createInfluencer');
+})->name('createInfluencerValidate');
 
 //required
 
 Route::middleware([
-    // 'auth:sanctum',
-    // config('jetstream.auth_session'),
-    // 'verified',
+     'auth:sanctum',
+     config('jetstream.auth_session'),
+     'verified',
 ])->group(function () {
 
     Route::get('/viewInfluencer/{id}', function (Request $request, $id) {
@@ -55,16 +34,25 @@ Route::middleware([
 
         if ($user && $user->influencer) {
             $user->influencer = $user->influencer;
-
             return $user;
         } else {
             return abort(404, "User not Found");
         }
     });
 
-    Route::get('/viewAllInfluencerAccounts', function () {
-        return "success";
-    });
+    Route::get('/ViewAllInfluencer', function () {
+        $influencers = User::all()->filter(function ( $value ){
+            if($value->influencer){
+                return $value;
+            }
+        });
+
+        return Inertia::render('Influencers',[
+            'influencers' => $influencers
+        ]);
+
+
+    })->name('Influencer');
 
     Route::get('/randomizeInfluencerAccounts', function () {
         return "success";

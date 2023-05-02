@@ -1,22 +1,24 @@
 <script setup>
 import {storeToRefs} from 'pinia';
-import {inject, reactive} from 'vue';
-import MobileNavigationComponent from '../../Components/MobileNavigationComponent.vue'
-import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
-import InfluencerCardBidView from '../../Components/InfluencerCardBidView.vue';
-import convertDate from "../../Helpers/convertDate";
+import {inject, onMounted, provide, reactive, ref} from 'vue';
 import {authStore} from "../../Store/AuthStore";
-import {router, useForm} from "@inertiajs/vue3";
-import Modal from "../../Components/Modal.vue"
-import InfluencerDisplayCard from "./InfluencerDisplayCard.vue";
+import {router, useForm, usePage} from "@inertiajs/vue3";
+import MobileInfluencerDashboardLayout from "../../Layouts/MobileInfluencerDashboardLayout.vue";
+import MobileDashboardHeader from '../../Components/MobilOnlyComponents/MobileDashboardHeader.vue';
+import ProjectDisplay from "./Components/ProjectDisplay.vue";
+import BidDisplay from "../../Components/BidDisplay.vue";
+import MediaDispay from "./Components/mediaDispay.vue";
+import route from "ziggy-js/src/js/index.js";
+import ChatsDisplay from "./Components/chatsDisplay.vue";
 
 
 const currentUser = inject('currentUser');
 const auth = authStore()
-if (currentUser() != null) {
+if (currentUser != null) {
     auth.authenticate()
 }
 const {status, user} = storeToRefs(auth)
+const activeTab = ref('Project')
 
 
 const props = defineProps({
@@ -31,7 +33,7 @@ const project = reactive(props.project)
 const modal = {
     properties: reactive({
         visible: false,
-        bid:null
+        bid: null
     }),
     openModal: (payload) => {
         document.body.style.overflow = "hidden";
@@ -49,12 +51,20 @@ const bidForm = useForm({
     amount: null,
     comment: null
 })
+const fileForm = useForm({
+    fileUpload: null
+})
+
+const assignmentDetails = reactive({
+    is_assigned: is_assigned(),
+    assignment: assignment()
+})
 
 function submitBid() {
     axios.post(route('MakeBid', [project[0].id]), bidForm).then((resp) => {
         if (resp.data.status) {
             alert("Bid was done successfully");
-            router.visit(route('ViewProject',[project[0].id]))
+            router.visit(route('ViewProject', [project[0].id]))
         }
     }).catch((err) => {
         alert("Error Bidding");
@@ -62,284 +72,203 @@ function submitBid() {
     })
 }
 
-function openWorkspace(payload){
-    router.visit(route('EmployerWorkspace',payload))
+function openWorkspace(payload) {
+    router.visit(route('EmployerWorkspace', payload))
 }
 
+let errorBag = reactive([])
 
+onMounted(() => {
+    // console.log(usePage().props.errors)
+    if (usePage().props.errors != null) {
+        if (usePage().props.errors.WorkspaceError != null) {
+            errorBag[0] = usePage().props.errors
+        }
+    }
+})
+
+function switchTabs(payload) {
+    activeTab.value = payload
+}
+
+function is_assigned() {
+    let response = false;
+    if (props.project != null) {
+        if (props.project.bids != null) {
+            for (let bid of props.project.bids) {
+                if (bid.assignment != null) {
+                    response = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    return response
+}
+
+function assignment() {
+    let assignment = null;
+    if (props.project != null) {
+        if (props.project.bids != null) {
+            for (let bid of props.project.bids) {
+                if (bid.assignment != null) {
+                    assignment = bid.assignment
+
+                    break;
+                }
+            }
+        }
+    }
+
+    return assignment
+}
+
+function uploadFile(payload) {
+    fileForm.fileUpload = payload
+
+    axios.post(route('uploadFile'), {
+        project: props.project,
+        fileData: fileForm.fileUpload
+    }, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }).then((resp) => {
+        if (resp.data.status) {
+            alert("File Uploaded")
+            window.location.reload();
+        } else {
+            alert(resp.data.error)
+        }
+
+
+    }).catch((err) => {
+        alert("File is missing or is unsupported")
+    })
+}
+
+function sendMessage(message) {
+    let payload = {
+        project: project,
+        message: message.message
+    }
+
+    axios.post(route('sendMessage'),
+        payload)
+        .then((resp) => {
+            let element = $('#chatWindow');
+
+            if (props.project.chats) {
+                props.project.chats.push(resp.data.chat)
+            }else {
+                props.project.chats = []
+                props.project.chats.push(resp.data.chat)
+            }
+
+
+            element.animate({
+                scrollTop: element.get(0).scrollHeight
+            }, 1000)
+        }).catch((err) => {
+        console.log(err)
+    })
+}
+
+function remove(media) {
+    if (confirm("Are you sure you want to delete this media?")) {
+        axios.delete(route('DeleteMedia', {
+            media: media
+        }))
+            .then((response) => {
+                if (response.data.status) {
+                    alert("Media deleted successfully.");
+                    window.location.reload();
+                } else {
+                    alert("Error deleting media.");
+                }
+            })
+            .catch((error) => {
+                alert("Error deleting media.");
+            });
+    }
+}
+
+function markAsComplete(payload) {
+    if (true || confirm('Please confirm project completion.')) {
+        axios.post(route('MarketerMarkAsComplete', payload))
+            .then((response) => {
+                if (response.data.status) {
+                    // alert("Project was marked as complete.");
+                    // alert("Credits have been transferred to the influencer");
+                    window.location.reload();
+                } else {
+                    // alert("Error marking project as complete.");
+                }
+            })
+            .catch((error) => {
+                // alert("Error marking project as complete.");
+            });
+    }
+}
+
+provide('assignmentDetails', assignmentDetails)
 </script>
 
 <template>
     <teleport to=body>
-        <Modal :visible="modal.properties.visible">
-            <InfluencerDisplayCard :bid="modal.properties.bid" v-on:closeModal="modal.closeModal()"/>
-        </Modal>
+        <MobileInfluencerDashboardLayout :activePage="'Projects'">
+        </MobileInfluencerDashboardLayout>
     </teleport>
+    <MobileDashboardHeader :backButton="true" :title="'Projects'"/>
     <nav>
-        <MobileNavigationComponent :activeNavButton="'Projects'"></MobileNavigationComponent>
-        <DesktopNavigationVue :activeNavButton="'Projects'"></DesktopNavigationVue>
+        <ul class="w-[100%] h-[50px] items-center flex justify-around">
+            <li @click.prevent="switchTabs('Project')"
+                :class="['w-[33.3%]','text-center',activeTab === 'Project' ? 'active-tab':'' ]">Project
+            </li>
+            <li @click.prevent="switchTabs('Bids')"
+                :class="['w-[33.3%]','text-center',activeTab === 'Bids' ? 'active-tab':'' ]">Bids
+            </li>
+            <li @click.prevent="switchTabs('Media')" v-if="is_assigned()"
+                :class="['w-[33.3%]','text-center',activeTab === 'Media' ? 'active-tab':'' ]">Media
+            </li>
+            <li @click.prevent="switchTabs('Chat')" v-if="is_assigned()"
+                :class="['w-[33.3%]','text-center',activeTab === 'Chat' ? 'active-tab':'' ]">Chat
+            </li>
+        </ul>
     </nav>
-    <header>
-        <div class="modile-header">
-            <div class="container">
-                <section>
-                    <h1>Projects</h1>
-                </section>
-            </div>
-        </div>
-    </header>
-    <div class="content-area">
-        <div class="container">
-            <div class="top-section">
-                <div class="left-section">
-                    <div class="cont-bid">
-                        <label>Bid</label>
-                        <p>{{ (project[0].bids).length }}</p>
-                    </div>
-                    <div class="cont-budget">
-                        <label>Budget</label>
-                        <p>Ksh 15,000</p>
-                    </div>
-                    <div class="cont-location">
-                        <label>Location</label>
-                        <p>{{ project[0].location }}</p>
-                    </div>
-                </div>
-                <div class="right-section">
-                    <button @click.prevent="openWorkspace(project[0].id)" >Workspace</button>
-                    <p class="desktop-date">Date Posted : <span>{{ convertDate(project[0].created_at) }}</span></p>
-                </div>
-            </div>
-            <div class="description-section">
-                <h3>Description</h3>
-                <p style="color:grey">{{ project[0].description }}</p>
-            </div>
-        </div>
-
-        <div class="container bidders-container" style="box-shadow:none">
-            <InfluencerCardBidView
-                :editMode="true"
-                v-for="bid in project[0].bids"
-                :bid="bid"
-                @click="modal.openModal(bid)">
-            </InfluencerCardBidView>
-        </div>
+    <div class="container">
+        <ProjectDisplay v-if="activeTab == 'Project'"
+                        v-on:markAsComplete="markAsComplete"
+                        :assignmentDetails="assignmentDetails"
+                        :project="project"/>
+        <BidDisplay v-if="activeTab == 'Bids'" :bids="props.project.bids" :marketerHandle.camel="true"
+                    :influencer="false"/>
+        <media-dispay v-if="activeTab == 'Media'" v-on:uploadFile="uploadFile" v-on:DeleteMedia="remove"
+                      :assignmentDetails="assignmentDetails"></media-dispay>
+        <ChatsDisplay v-if="activeTab == 'Chat'" v-on:sendMessage="sendMessage"
+                      :chats="props.project.chats"></ChatsDisplay>
     </div>
-    <footer>
-
-    </footer>
 </template>
 <style lang="scss" scoped>
-* {
-    font-size: 0.96em;
-}
+@import "../sassLoader";
 
-header {
-    width: 100%;
-    box-shadow: 0 0 6px rgb(182, 182, 182);
-    margin-bottom: 20px;
-    min-height: 80px;
-
-    section {
-        padding: 10px 10px;
-        display: flex;
-        justify-content: space-between;
-
-        h1 {
-            font-weight: 800;
-            font-size: 1.3em;
-        }
-
-        .actions {
-            button {
-                border-radius: 3px;
-                font-size: 0.9em;
-                padding: 2px;
-                border: 1px solid rgb(201, 201, 201);
-                background-color: rgb(226, 226, 226);
-                margin: 0px 5px;
-            }
-        }
-
-        p {
-            color: grey;
-        }
-    }
-}
-
-.content-area {
-    padding: 10px;
-
-    .container {
-        border-radius: 3px;
-        padding: 10px;
-        box-shadow: 0 0 6px grey;
-        margin-bottom: 20px;
-
-        .top-section {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-
-            .left-section {
-                & > div {
-                    display: flex;
-                    margin-bottom: 5px;
-
-                    label {
-                        width: 70px;
-                        font-weight: 600;
-                    }
-                }
-            }
-
-            .right-section {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-end;
-
-                button {
-                    margin-bottom: 10px;
-                    border: 1px solid orange;
-                    padding: 5px 20px;
-                    color: orange;
-                    border-radius: 4px;
-                    transition: all ease 100ms;
-
-                    &:active {
-                        background-color: orange;
-                        color: white;
-                    }
-                }
-
-                .desktop-date {
-                    font-size: 0.8em;
-                    font-weight: 800;
-                }
-            }
-        }
-
-        & > div {
-            margin-bottom: 10px;
-
-            h3 {
-                font-size: 1em;
-                font-weight: 800;
-                margin-bottom: 5px;
-            }
-        }
-    }
-}
-
-.bidders-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-
-    & > div {
-        margin: 10px;
-    }
-}
-
-.bid-display {
-    width: 100%;
+.active-tab {
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .bid-container {
-        border-radius: 6px;
-        box-shadow: 0 0 6px #7a7a7a;
-        width: 320px;
-        background-color: white;
-
-        .header {
-            padding: 0 10px;
-            width: 100%;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid lightgrey;
-
-            h3 {
-                font-weight: bolder;
-            }
-
-            & > button {
-                background-color: red;
-                color: white;
-                width: 20px;
-                border-radius: 50%;
-
-            }
-        }
-
-        .body {
-            width: 100%;
-            padding: 15px;
-
-            form {
-                .input-group {
-                    margin-bottom: 10px;
-                    width: 100%;
-                    display: flex;
-                    flex-wrap: wrap;
-
-                    input, textarea {
-                        width: 100%;
-                        border-radius: 5px;
-                        height: 30px;
-                        padding: 0px 5px;
-                        margin: 0px;
-                        border: 1px solid lightgrey;
-                    }
-
-                    textarea {
-                        height: 200px;
-                        margin-bottom: 20px;
-                    }
-
-                    label {
-                        width: 100%;
-                        margin-bottom: 10px;
-                    }
-
-                }
-
-                button {
-                    border-radius: 5px;
-                    width: 90%;
-                    height: 40px;
-                    color: orange;
-                    display: block;
-                    margin: auto;
-                    text-align: center;
-                    line-height: 30px;
-                    border: 1px solid orange;
-
-                    &:hover {
-                        background-color: orange;
-                        color: white;
-                    }
-                }
-            }
-        }
-    }
+    line-height: 50px;
+    background-color: var(--light-grey);
 }
 
+nav {
+    box-shadow: 0 3px 2px lightgrey;
+    position: sticky;
+    top: 60px;
+    background-color: white;
+    margin-bottom: 20px;
+    z-index: 500;
+}
 
 @media only screen and (min-width: 980px) {
-    header {
-        section {
-            padding: 20px 10px;
-
-            h1 {
-                font-size: 2em;
-            }
-        }
-    }
 }
 
 @media only screen and (min-width: 849px) {

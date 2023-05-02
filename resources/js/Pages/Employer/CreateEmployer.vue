@@ -1,7 +1,8 @@
-<script  setup>
+<script setup>
 import {Link, router, useForm} from '@inertiajs/vue3';
 import MobileNavigationComponent from '../../Components/MobileNavigationComponent.vue'
 import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
+import {onMounted, ref} from "vue";
 
 
 defineProps({
@@ -12,23 +13,29 @@ defineProps({
 });
 
 const employerForm = useForm({
-    'first_name' :null,
-    'last_name' :null,
-    'email' :null,
-    'phone' :null,
-    'password' :null,
-    'confirm_password' :null,
-    'account_type' :'Single',
-    'company_name' :null
+    'first_name': "Marketer",
+    'last_name': "One",
+    'email': "marketerone@gmail.com",
+    'phone': "0700000002",
+    'password': "password",
+    'account_type':'single',
+    'confirm_password': "password",
+    'brand_name': null
 })
 
-function createEmployer(){
-    axios.post(route('createEmployer'),employerForm)
+function createEmployer() {
+    axios.post(route('createUser',['Marketer']), employerForm)
         .then((resp) => {
-            if(resp.data.status){
+            if (resp.data.status) {
                 router.visit('login')
             }
-    })
+        })
+}
+
+const activePanel = ref('Account');
+
+function moveTo(payload) {
+    activePanel.value = payload
 }
 
 </script>
@@ -42,63 +49,60 @@ function createEmployer(){
         <div class="modile-header">
             <div class="container">
                 <section>
-                    <h1>Join Marketers</h1>
+                    <h4 class="pt-[13px]" style="color: var(--t-purple)">Join The Marketers Community</h4>
                 </section>
             </div>
         </div>
     </header>
     <div class="content-area">
-        <div class="container">
-            <p class="mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Odit
+        <div v-if="activePanel === 'Account'" class="container">
+            <p class="p3 p-[20px]  mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit. Odit
                 asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus
                 illum. Sit autem nesciunt totam deserunt!</p>
-            <form action="" @submit.prevent="createEmployer">
-                <h1>Registration Form</h1>
+            <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
+                <h6 class="p-[15px] mb-[20px]  text-center">Join The Influencer Community</h6>
                 <div class="form-content">
                     <section>
-                        <div class="splitter">
-                            <div class="input-group">
-                                <label for="">First Name</label>
-                                <input type="text" v-model="employerForm.first_name">
-                            </div>
-                            <div class="input-group">
-                                <label for="">Last Name</label>
-                                <input type="text" v-model="employerForm.last_name">
-                            </div>
+                        <div class="input-group">
+                            <label for="">First Name</label>
+                            <input type="text" v-model="employerForm.first_name">
+<!--                            <span class="error span-3 py-[10px] text-red-500">Error</span>-->
+                        </div>
+                        <div class="input-group">
+                            <label for="">Last Name</label>
+                            <input type="text" v-model="employerForm.last_name">
+<!--                            <span class="error span-3 py-[10px] text-red-500">Error</span>-->
                         </div>
                         <div class="input-group">
                             <label for="">Email</label>
                             <input type="email" v-model="employerForm.email">
+<!--                            <span class="error span-3 py-[10px] text-red-500">Error</span>-->
                         </div>
                         <div class="input-group">
                             <label for="">Phone</label>
                             <input type="tel" v-model="employerForm.phone">
+<!--                            <span class="error span-3 py-[10px] text-red-500">Error</span>-->
                         </div>
+<!--                        <div class="input-group">-->
+<!--                            <label for="">Brand Name</label>-->
+<!--                            <input type="email" v-model="employerForm.brand_name">-->
+<!--                            <span class="error span-3 py-[10px] text-red-500">Error</span>-->
+<!--                        </div>-->
                         <div class="input-group">
                             <label for="">Password</label>
                             <input type="password" v-model="employerForm.password">
+<!--                            <span class="error span-3 py-[10px] text-red-500">Error</span>-->
                         </div>
                         <div class="input-group">
                             <label for="">Confirm Password</label>
                             <input type="password" v-model="employerForm.confirm_password">
-                        </div>
-                    </section>
-                    <section>
-                        <div class="input-group">
-                            <label for="">Account Type</label>
-                            <select v-model="employerForm.account_type">
-                                <option value="Single">Single</option>
-                                <option value="Company">Company</option>
-                            </select>
-                        </div>
-                        <div v-if="employerForm.account_type == 'Company'" class="input-group">
-                            <label for="">Company Name</label>
-                            <input type="text" v-model="employerForm.company_name">
+<!--                            <span class="error  span-3 py-[10px] text-red-500">Error</span>-->
                         </div>
                     </section>
                 </div>
-                <div class="button-section">
-                    <button type="submit">Join</button>
+                <div class="button-section flex justify-end p-[20px]">
+                    <button @click.prevent="createEmployer" class="purple">Register</button>
                 </div>
             </form>
         </div>
@@ -109,156 +113,5 @@ function createEmployer(){
 </template>
 
 <style lang="scss" scoped>
-* {
-    font-size: 0.96em;
-}
-
-header {
-    width: 100%;
-    box-shadow: 0 0 6px rgb(182, 182, 182);
-    margin-bottom: 20px;
-    min-height: 80px;
-
-    section {
-        padding: 10px 10px;
-        display: flex;
-        justify-content: space-between;
-
-        h1 {
-            font-weight: 800;
-            font-size: 1.3em;
-        }
-
-        .actions {
-            button {
-                border-radius: 3px;
-                font-size: 0.9em;
-                padding: 2px;
-                border: 1px solid rgb(201, 201, 201);
-                background-color: rgb(226, 226, 226);
-                margin: 0px 5px;
-            }
-        }
-
-        p {
-            color: grey;
-        }
-    }
-}
-
-.container {
-    display: flex;
-    flex-wrap: wrap;
-
-    button {
-        border: 1px solid orange;
-        margin: 20px auto;
-        padding: 10px 30px;
-        border-radius: 4px;
-        font-weight: 700;
-        color: orange;
-
-        &:active,
-        &:hover {
-            background-color: orange;
-            color: white;
-        }
-    }
-}
-
-.content-area {
-    max-width: 1200px;
-    margin: auto;
-}
-
-form {
-    border-radius: 4px;
-    background-color: white;
-    padding: 20px;
-    width: 100%;
-    box-shadow: 0 0 6px grey;
-    margin-bottom: 40px;
-
-    h1 {
-        font-size: 1.1em;
-        font-weight: 700;
-        margin-bottom: 10px;
-        text-decoration: underline;
-    }
-    .form-content{
-        section:nth-of-type(1){
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-            border-bottom:1px solid rgb(209, 209, 209);
-        }
-        .input-group{
-            margin-bottom: 10px;
-        }
-        label{
-            margin-bottom: 5px;
-            width: 100%;
-        }
-        input,select{
-            border-radius: 3px !important;
-            width: 100%;
-            height: 35px;
-            padding: 5px;
-        }
-    }
-    button{
-        padding:10px 15px
-    }
-}
-
-@media only screen and (min-width: 980px) {
-    header {
-        section {
-            padding: 20px 10px;
-
-            h1 {
-                font-size: 2em;
-            }
-        }
-    }
-
-    form{
-        h1{
-            font-size: 1.5em;
-            text-decoration: underline;
-            margin-bottom: 20px;
-        }
-        .form-content{
-            display: flex;
-            justify-content: center;
-        }
-        section{
-            padding: 30px;
-            width:40%;
-            border:none;
-
-            .input-group{
-                margin: auto;
-            }
-
-            .splitter{
-                display: flex;
-                .input-group:nth-of-type(1){
-                    margin-right: 10px;
-                }
-            }
-        }
-
-        section:nth-of-type(1){
-            border:none !important;
-            border-right: 1px solid rgb(209, 209, 209) !important;
-        }
-
-        .button-section{
-            padding:10px 20px !important;
-            display: flex;
-        }
-    }
-}
-
-@media only screen and (min-width: 849px) {}
+@import "../sassLoader";
 </style>

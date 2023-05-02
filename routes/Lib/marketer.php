@@ -11,44 +11,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 
-//no auth needed
-Route::post('/createEmployer', function (Request $request) {
-    $user = null;
-
-    DB::beginTransaction();
-
-    try {
-
-        $user = User::create([
-            'first_name' => $request['first_name'],
-            'last_name' => $request['last_name'],
-            'email' => $request['email'],
-            'phone' => $request['phone'],
-            'password' => bcrypt($request['password']),
-        ]);
-
-        $user->marketer()->create([
-            "type" => $request['account_type'],
-        ]);
-
-
-        if ($request['account_type'] == 'Company' && $request['company_name'] != null) {
-            $user->marketer->company()->create([
-                'name' => $request['company_name']
-            ]);
-        }
-
-        DB::commit();
-    } catch (Exception $e) {
-        DB::rollBack();
-         dd($e);
-    }
-
-    return [
-        'status' => true
-    ];
-})->name('createEmployer');
-
 
 //required
 Route::middleware([
@@ -145,7 +107,9 @@ Route::middleware([
         }
     });
 
-    Route::post('/HireInfluencer/influencer', [MarketersController::class,'hireInfluencer'])->name('hireInfluencer');
+    Route::post('/HireInfluencer/influencer/{id}', [MarketersController::class,'hireInfluencer'])->name('AcceptBid');
+
+    Route::post('/RejectInfluencer/influencer/{id}', [MarketersController::class,'rejectInfluencer'])->name('RejectBid');
 
     Route::get('/Workspace/{id}', [MarketersController::class,'openWorkspace'])->name('EmployerWorkspace');
 

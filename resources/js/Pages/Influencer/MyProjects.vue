@@ -1,101 +1,78 @@
 <script setup>
-import { counterStore } from '../../Store/stores';
+import {counterStore} from '../../Store/stores';
 import MobileNavigationComponent from '../../Components/MobileNavigationComponent.vue'
 import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
 import InfluencerCard from '../../Components/InfluencerCard.vue';
 import ProjectCard from '../../Components/ProjectsCard.vue';
+import {router} from "@inertiajs/vue3";
+import {authStore} from "../../Store/AuthStore";
+import {storeToRefs} from "pinia";
+import {inject} from "vue";
+import MobileInfluencerDashboardLayout from "../../Layouts/MobileInfluencerDashboardLayout.vue";
+import MobileDashboardHeader from '../../Components/MobilOnlyComponents/MobileDashboardHeader.vue';
+import PaginationComponent from "../../Components/Shared/PaginationComponent.vue";
+import MobileProjectDisplayCard from '../../Components/MobilOnlyComponents/MobileProjectDisplayCard.vue'
+import {Link} from "@inertiajs/vue3";
+
 
 const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
     phpVersion: String,
-    influencer:Object
+    projects: Object
 });
 
-const myProjects = props.influencer && props.influencer.projects ? props.influencer.projects : null
+const currentUser = inject('currentUser');
+const auth = authStore()
+if (currentUser != null) {
+    auth.authenticate()
+}
+const {status, user} = storeToRefs(auth)
+
+function createProject(){
+    router.visit(route('createProject'))
+}
+
 
 </script>
 
 <template>
-    <nav>
-        <MobileNavigationComponent :activeNavButton="'Projects'"></MobileNavigationComponent>
-        <DesktopNavigationVue :activeNavButton="'Projects'"></DesktopNavigationVue>
-    </nav>
-    <header>
-        <div class="modile-header">
-            <div class="container">
-                <section>
-                    <h1>Projects</h1>
-                    <div class="actions">
-                        <button>Filters</button>
-                        <button>Sort</button>
-                    </div>
-                </section>
-                <section>
-                    <p>100 Projects found</p>
-                </section>
-            </div>
+    <teleport to="body">
+        <MobileInfluencerDashboardLayout :activePage="'Projects'">
+        </MobileInfluencerDashboardLayout>
+    </teleport>
+    <MobileDashboardHeader :title="'Projects'"/>
+    <header v-if="props.projects && props.projects.length > 0" class="h-[60px] flex items-center justify-between px-[10px]">
+        <p class="p3 text-grey-100 ">{{ props.projects.length }} projects found</p>
+        <div class="icon-holder flex items-center justify-center flex-wrap ">
+            <img class="w-[50px] h-[50px]" src="/storage/DESIGN/WORKSPACE/PLATFORM%20DESIGN/icons8-configuration-67.png"
+                 alt="">
         </div>
     </header>
+    <div v-else class="w-[90%] mx-[auto] h-[100px] flex" style="align-items: center;justify-content: center"  >
+        <h5>No Projects Found..</h5>
+    </div>
     <div class="content-area">
-        <div class="mobile-content-area">
-            <div v-if="myProjects != null"  class="container"  v-for="project in myProjects">
-                <ProjectCard :key="project.id" :project="project"></ProjectCard>
+        <div v-if="props.projects && props.projects.length > 0" class="mobile-content-area">
+            <div class="container mb-[30px] " v-for="project in props.projects">
+                <MobileProjectDisplayCard :project="project" :link="'ViewBidProject'"></MobileProjectDisplayCard>
             </div>
-            <div class="container">
-                <div class="pagination">
-
-                </div>
+            <div class="container flex justify-center items-center">
+                <pagination-component class="mb-[100px]"></pagination-component>
             </div>
         </div>
     </div>
-    <footer>
 
-    </footer>
 </template>
 
 <style lang="scss" scoped>
+@import "../sassLoader";
+
 header {
-    width: 100%;
-    box-shadow: 0 0 6px rgb(182, 182, 182);
-    margin-bottom: 20px;
-    section{
-        padding: 10px 10px;
-        display: flex;
-        justify-content: space-between;
-        h1{
-            font-weight: 800;
-            font-size: 1.3em;
-        }
-
-        .actions{
-            button{
-                border-radius: 3px;
-                font-size: 0.9em;
-                padding:2px;
-                border:1px solid rgb(201, 201, 201);
-                background-color: rgb(226, 226, 226);
-                margin: 0px 5px;
-            }
-        }
-        p{
-            color: grey;
-        }
+    .icon-holder{
+        z-index: 500;
     }
 }
 
-
-@media only screen and (min-width: 980px) {
-    header{
-        section{
-            padding: 20px 10px;
-            h1{
-                font-size: 2em;
-            }
-        }
-    }
-}
-
-@media only screen and (min-width: 849px) {}
 </style>

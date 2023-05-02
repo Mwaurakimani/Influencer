@@ -5,6 +5,15 @@ import MobileNavigationComponent from '../Components/MobileNavigationComponent.v
 import DesktopNavigationVue from '../Components/DesktopNavigation.vue';
 import InfluencerCard from '../Components/InfluencerCard.vue';
 import ProjectCard from '../Components/ProjectsCard.vue';
+import {inject} from "vue";
+import {authStore} from "../Store/AuthStore";
+
+const currentUser = inject('currentUser');
+const auth = authStore()
+if (currentUser != null) {
+    auth.authenticate()
+}
+const {status, user} = storeToRefs(auth)
 
 defineProps({
     canLogin: Boolean,

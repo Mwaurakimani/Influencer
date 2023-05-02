@@ -5,6 +5,17 @@ import MobileNavigationComponent from '../Components/MobileNavigationComponent.v
 import DesktopNavigationVue from '../Components/DesktopNavigation.vue';
 import InfluencerCard from '../Components/InfluencerCard.vue';
 import ProjectCard from '../Components/ProjectsCard.vue';
+import {inject} from "vue";
+import {authStore} from "../Store/AuthStore";
+import PaginationComponent from "./../Components/Shared/PaginationComponent.vue";
+import MobileProjectDisplayCard from "../Components/MobilOnlyComponents/MobileProjectDisplayCard.vue";
+
+const currentUser = inject('currentUser');
+const auth = authStore()
+if (currentUser != null) {
+    auth.authenticate()
+}
+const {status, user} = storeToRefs(auth)
 
 const props = defineProps({
     canLogin: Boolean,
@@ -25,27 +36,28 @@ const props = defineProps({
         <div class="modile-header">
             <div class="container">
                 <section>
-                    <h1>Projects</h1>
-                    <div class="actions">
+                    <h1 class="pt-[13px]" style="color: var(--t-purple)"  >Projects</h1>
+                    <div class="actions pt-[10px] ">
                         <button>Filters</button>
                         <button>Sort</button>
                     </div>
                 </section>
-                <section>
-                    <p>100 Projects found</p>
+                <section class="flex-wrap" >
+                    <p class="block mb-[10px] " >100 Projects found</p>
+                    <ul class="flex flex-wrap gap-1 w-[100%] ">
+                        <li> <p class="p4 category-pill text-white ">Facebook</p> </li>
+                    </ul>
                 </section>
             </div>
         </div>
     </header>
     <div class="content-area">
         <div class="mobile-content-area">
-            <div class="container" v-for="project in props.projects">
-                <ProjectCard :key="project.id" :project="project"></ProjectCard>
+            <div class="container mb-[30px]" v-for="project in props.projects">
+                <MobileProjectDisplayCard :project="project" :link="'ViewProject'"></MobileProjectDisplayCard>
             </div>
-            <div class="container">
-                <div class="pagination">
-
-                </div>
+            <div class="container pl-[20px] mb-[50px]  flex justify-center">
+                <PaginationComponent></PaginationComponent>
             </div>
         </div>
     </div>
@@ -55,34 +67,8 @@ const props = defineProps({
 </template>
 
 <style lang="scss" scoped>
-header {
-    width: 100%;
-    box-shadow: 0 0 6px rgb(182, 182, 182);
-    margin-bottom: 20px;
-    section{
-        padding: 10px 10px;
-        display: flex;
-        justify-content: space-between;
-        h1{
-            font-weight: 800;
-            font-size: 1.3em;
-        }
+@import "sassLoader";
 
-        .actions{
-            button{
-                border-radius: 3px;
-                font-size: 0.9em;
-                padding:2px;
-                border:1px solid rgb(201, 201, 201);
-                background-color: rgb(226, 226, 226);
-                margin: 0px 5px;
-            }
-        }
-        p{
-            color: grey;
-        }
-    }
-}
 
 
 @media only screen and (min-width: 980px) {

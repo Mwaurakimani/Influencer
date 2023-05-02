@@ -33,8 +33,13 @@ Route::get('/Projects', function () {
     ]);
 })->name('Projects');
 
+Route::get('/viewProject', function () {
+    return Inertia::render('Home/ViewProject', [
+    ]);
+})->name('viewProjectProto');
+
 Route::get('/Influencer', function () {
-    return Inertia::render('Influencer', [
+    return Inertia::render('Influencers', [
     ]);
 })->name('Influencer');
 

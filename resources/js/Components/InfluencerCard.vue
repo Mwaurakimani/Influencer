@@ -1,4 +1,10 @@
 <script setup>
+
+let props = defineProps([
+    'influencer'
+])
+
+
 </script>
 
 <template>
@@ -76,14 +82,12 @@
                     </g>
                 </svg>
             </div>
-            <h3>Username</h3>
-            <p style="color:orange">Class</p>
+            <h3>{{ influencer.first_name }} {{ influencer.last_name }}</h3>
         </div>
         <br>
-        <p>10 Projects completed</p>
-        <div class="rating-element">Ratings</div>
+        <p>0 Projects completed</p>
         <div class="pricing">
-            <p>Ksh 1500 / 24hrs</p>
+            <p>Ksh {{ influencer.influencer.price }} {{ influencer.influencer.unit }}</p>
         </div>
     </div>
 </template>

@@ -8,9 +8,9 @@ use Inertia\Inertia;
 
 //required
 Route::middleware([
-    // 'auth:sanctum',
-    // config('jetstream.auth_session'),
-    // 'verified',
+     'auth:sanctum',
+     config('jetstream.auth_session'),
+     'verified',
 ])->group(function () {
     Route::delete('/deleteMedia',[\App\Http\Controllers\MediaController::class,'DeleteMedia'])->name('DeleteMedia');
 });

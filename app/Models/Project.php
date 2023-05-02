@@ -22,12 +22,15 @@ class Project extends Model
             Platform::class,
             'project_requirements',
             'project_id','platform_id')->withPivot(
-                'targetValue',
-                'influencer_classes_id')
-                ;
+                'influencer_classes_id');
     }
 
     public function bids(){
         return $this->hasMany(Bid::class);
     }
+
+    public function marketer(){
+        return $this->belongsTo(Marketer::class);
+    }
+
 }

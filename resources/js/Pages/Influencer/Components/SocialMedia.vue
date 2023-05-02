@@ -1,10 +1,5 @@
 <script  setup>
 import { Link } from '@inertiajs/vue3';
-import {defineProps} from "vue";
-
-const props = defineProps(['social'])
-
-console.log(props.social[0])
 </script>
 
 <template>
@@ -14,7 +9,7 @@ console.log(props.social[0])
                 <h2>Social Accounts</h2>
             </div>
             <div class="left-section">
-                <button @click.prevent="$emit('updateUser')">Update</button>
+                <button>Edit</button>
             </div>
         </section>
         <section class="social-section">
@@ -22,31 +17,11 @@ console.log(props.social[0])
                 <h3>Facebook:</h3>
                 <div class="input-group">
                     <label for="">Username:</label>
-                    <input type="text" v-model="props.social[0].username">
+                    <input type="text">
                 </div>
                 <div class="input-group">
                     <label for="">Followers:</label>
-                    <input type="text" v-model="props.social[0].followers">
-                </div>
-                <div class="input-group">
-                    <label for="">Engagement:</label>
-                    <p>90%</p>
-                </div>
-                <div class="input-group">
-                    <label for="">Status:</label>
-                    <p>Verified</p>
-                </div>
-            </article>
-
-            <article>
-                <h3>Twitter:</h3>
-                <div class="input-group">
-                    <label for="">Username:</label>
-                    <input type="text" v-model="props.social[1].username">
-                </div>
-                <div class="input-group">
-                    <label for="">Followers:</label>
-                    <input type="text" v-model="props.social[1].followers">
+                    <input type="text">
                 </div>
                 <div class="input-group">
                     <label for="">Engagement:</label>
@@ -62,11 +37,31 @@ console.log(props.social[0])
                 <h3>Instagram:</h3>
                 <div class="input-group">
                     <label for="">Username:</label>
-                    <input type="text" v-model="props.social[2].username">
+                    <input type="text">
                 </div>
                 <div class="input-group">
                     <label for="">Followers:</label>
-                    <input type="text" v-model="props.social[2].followers">
+                    <input type="text">
+                </div>
+                <div class="input-group">
+                    <label for="">Engagement:</label>
+                    <p>90%</p>
+                </div>
+                <div class="input-group">
+                    <label for="">Status:</label>
+                    <p>Verified</p>
+                </div>
+            </article>
+
+            <article>
+                <h3>Twitter:</h3>
+                <div class="input-group">
+                    <label for="">Username:</label>
+                    <input type="text">
+                </div>
+                <div class="input-group">
+                    <label for="">Followers:</label>
+                    <input type="text">
                 </div>
                 <div class="input-group">
                     <label for="">Engagement:</label>
