@@ -1,0 +1,1 @@
+import{A as a}from"./AdminLayout-ab81a547.js";import{h as o,o as r,D as t}from"./app-6ca4d7f9.js";import"./_plugin-vue_export-helper-c27b6911.js";const m={__name:"Dashboard",props:{},setup(e){return t("activeSideNavigationLink","dashboard"),(s,i)=>(r(),o(a))}};export{m as default};

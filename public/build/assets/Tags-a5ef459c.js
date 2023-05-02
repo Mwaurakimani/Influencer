@@ -1,0 +1,1 @@
+import{A as a}from"./AdminLayout-ab81a547.js";import{h as t,j as e,o as s,a as o,D as r}from"./app-6ca4d7f9.js";import"./_plugin-vue_export-helper-c27b6911.js";const i=o("h4",{class:"text-grey-300"},"Tags",-1),l={__name:"Tags",props:{},setup(c){return r("activeSideNavigationLink","Tags"),(n,p)=>(s(),t(a,null,{default:e(()=>[i]),_:1}))}};export{l as default};

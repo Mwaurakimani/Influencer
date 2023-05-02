@@ -1,0 +1,1 @@
+import{A as a}from"./AdminLayout-ab81a547.js";import{h as e,j as t,o,a as s,D as i}from"./app-6ca4d7f9.js";import"./_plugin-vue_export-helper-c27b6911.js";const r=s("h4",{class:"text-grey-300"},"Media",-1),l={__name:"Media",props:{},setup(c){return i("activeSideNavigationLink","Media"),(n,p)=>(o(),e(a,null,{default:t(()=>[r]),_:1}))}};export{l as default};

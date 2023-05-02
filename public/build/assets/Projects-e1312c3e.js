@@ -1,0 +1,1 @@
+import{A as t}from"./AdminLayout-ab81a547.js";import{h as e,j as o,o as a,a as s,D as r}from"./app-6ca4d7f9.js";import"./_plugin-vue_export-helper-c27b6911.js";const c=s("h4",{class:"text-grey-300"},"Projects",-1),l={__name:"Projects",props:{},setup(i){return r("activeSideNavigationLink","Projects"),(n,p)=>(a(),e(t,null,{default:o(()=>[c]),_:1}))}};export{l as default};
