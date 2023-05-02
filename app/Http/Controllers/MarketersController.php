@@ -10,6 +10,7 @@ use App\Models\InfluencerClass;
 use App\Models\Marketer;
 use App\Models\Media;
 use App\Models\Platform;
+use App\Models\SocialAccount;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -264,7 +265,7 @@ class MarketersController extends Controller
                             $user = User::with('influencer')->find($influencer->user_id);
                             $user->influencer = $influencer;
                             $bid['user'] = $user;
-                            $bid['user']['social_accounts'] = \App\Models\SocialAccount::
+                            $bid['user']['social_accounts'] = SocialAccount::
                             with('platform', 'influencerClass')
                                 ->where('influencer_id', $bid->influencer_id)
                                 ->get();
@@ -399,7 +400,7 @@ class MarketersController extends Controller
                 $user->load('influencer');
                 $user->influencer = $influencer;
                 $bid['user'] = $user;
-                $social_accounts = \App\Models\SocialAccount::
+                $social_accounts = SocialAccount::
                 with('platform', 'influencerClass')
                     ->where('influencer_id', $bid->influencer_id)
                     ->get();

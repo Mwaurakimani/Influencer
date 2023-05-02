@@ -7,6 +7,7 @@ use App\Models\InfluencerClass;
 use App\Models\Platform;
 use App\Models\ProjectRequirements;
 use App\Models\SocialAccount;
+use ErrorException;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\User;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 class BidController extends Controller
 {
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function makeBid(Request $request, Project $project)
     {
@@ -41,7 +42,7 @@ class BidController extends Controller
 
                 try {
                     if ($user->marketer) {
-                        throw new \ErrorException('Error found');
+                        throw new ErrorException('Error found');
                     }
 
                     $can_bid = $this->canBid($user, $project);

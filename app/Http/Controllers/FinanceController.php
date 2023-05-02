@@ -159,8 +159,8 @@ class FinanceController extends Controller
     {
         $financialData = null;
 
-        $user = \Illuminate\Support\Facades\Auth::user();
-        $user = User::where('id', \Illuminate\Support\Facades\Auth::user()->id)->first();
+        $user = Auth::user();
+        $user = User::where('id', Auth::user()->id)->first();
 
         //credit balance
         $financialData['Balance']['creditBalance'] = $user->creditBalance;

@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use App\Models\InfluencerClass;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -28,7 +30,7 @@ Route::get('/Portal', function () {
     ]);
 })->name('AdminLogin');
 
-Route::post('/AdminLogin', function (\Illuminate\Http\Request $request) {
+Route::post('/AdminLogin', function (Request $request) {
 
 
     $credentials = $request->validate([
@@ -36,7 +38,7 @@ Route::post('/AdminLogin', function (\Illuminate\Http\Request $request) {
         'password' => ['required'],
     ]);
 
-    $user = \App\Models\User::where('email', $request->email)->first();
+    $user = User::where('email', $request->email)->first();
 
     if ($user->designation == null) {
         return Redirect::to('/');
@@ -67,7 +69,7 @@ Route::middleware([
 
         try {
 
-            $response = (new \App\Http\Controllers\UserController)->createUser($request);
+            $response = (new UserController)->createUser($request);
 
         } catch (Exception $e) {
             return [
@@ -83,7 +85,7 @@ Route::middleware([
     })->name('CreateUser');
 
     Route::get('/Admin/Users/{type?}', function ($type = null) {
-        $users = \App\Models\User::with('influencer', 'marketer')->get();
+        $users = User::with('influencer', 'marketer')->get();
 
         if ($type != null) {
             if ($type == 'Influencers') {
@@ -112,7 +114,7 @@ Route::middleware([
     Route::get('/Admin/Users/View/{id}', function ($id) {
         $data = null;
 
-        $data = (new \App\Http\Controllers\UserController())->AdminViewUser($id);
+        $data = (new UserController())->AdminViewUser($id);
 
         return Inertia::render('Portal/User/ViewUsers', [
             'user' => $data,
@@ -124,7 +126,7 @@ Route::middleware([
 
         try {
 
-            $response = (new \App\Http\Controllers\UserController)->updateUser($request,$id);
+            $response = (new UserController)->updateUser($request,$id);
 
         } catch (Exception $e) {
             return [
@@ -144,7 +146,7 @@ Route::middleware([
 
         try {
 
-            $response = (new \App\Http\Controllers\UserController)->updateSocialAccountStatus($request,$id);
+            $response = (new UserController)->updateSocialAccountStatus($request,$id);
 
         } catch (Exception $e) {
             return [

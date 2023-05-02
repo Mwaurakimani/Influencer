@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Withdrawal extends Model
 {
@@ -11,12 +12,12 @@ class Withdrawal extends Model
 
     protected $guarded = [];
 
-    public function Agent(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function Agent(): BelongsTo
     {
         return $this->belongsTo(User::class,'agent_id','id');
     }
 
-    public function User(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function User(): BelongsTo
     {
         return $this->belongsTo(User::class,'user_id','id');
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\InfluencerController;
+use App\Http\Controllers\MarketersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,11 +46,11 @@ Route::middleware(['guest'])->group(function () {
         try {
 
             if ($type == 'Influencer') {
-                $response = (new \App\Http\Controllers\InfluencerController)->createInfluencer($request);
+                $response = (new InfluencerController)->createInfluencer($request);
             } else if ($type == 'Marketer') {
-                $response = (new \App\Http\Controllers\MarketersController)->createMarketer($request);
+                $response = (new MarketersController)->createMarketer($request);
             }else{
-                throw new \InvalidArgumentException;
+                throw new InvalidArgumentException;
             }
         } catch (Exception $e) {
             return [
@@ -80,7 +81,7 @@ Route::middleware([
 
 
             //get users social accounts
-            $user = (new \App\Http\Controllers\InfluencerController)->attachSocialMediaAccounts($request, $user);
+            $user = (new InfluencerController)->attachSocialMediaAccounts($request, $user);
 
             return Inertia::render('Influencer/Account', [
                 'user' => $user

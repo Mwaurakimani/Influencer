@@ -15,6 +15,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -93,7 +94,7 @@ class InfluencerController extends Controller
     }
 
     //This method receives a user and returns the user with theis social media account information
-    public function attachSocialMediaAccounts(Request $request, $user): \Illuminate\Support\Collection
+    public function attachSocialMediaAccounts(Request $request, $user): Collection
     {
         $modifiedUser = collect();
         if ($user) {
@@ -113,7 +114,7 @@ class InfluencerController extends Controller
 
     public function update(Request $request)
     {
-        $user = User::find(\Illuminate\Support\Facades\Auth::user()->id);
+        $user = User::find(Auth::user()->id);
         $userUpdate = $request['user'];
         $influencerUpdate = Influencer::where('user_id', $user->id)->first();
         $social_accountUpdate = $userUpdate['social_account'];
@@ -243,7 +244,7 @@ class InfluencerController extends Controller
                 $user->load('influencer');
                 $user->influencer = $influencer;
                 $bid['user'] = $user;
-                $social_accounts = \App\Models\SocialAccount::
+                $social_accounts = SocialAccount::
                 with('platform', 'influencerClass')
                     ->where('influencer_id', $bid->influencer_id)
                     ->get();
@@ -344,7 +345,7 @@ class InfluencerController extends Controller
         }
     }
 
-    private function uploadProfilePicture(array|\Illuminate\Http\UploadedFile $file)
+    private function uploadProfilePicture(array|UploadedFile $file)
     {
         $uploadedFile = new UploadedFile($file, $file->getClientOriginalName());
         $filePath = $uploadedFile->getPathname();

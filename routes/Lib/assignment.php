@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssignmentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -27,10 +28,10 @@ Route::middleware([
         return "success";
     });
 
-    Route::post('/SendMessage',[\App\Http\Controllers\AssignmentController::class,'sendMessage'])->name('sendMessage');
+    Route::post('/SendMessage',[AssignmentController::class,'sendMessage'])->name('sendMessage');
 
-    Route::post('/MMarkAsComplete',[\App\Http\Controllers\AssignmentController::class,'MarketerMarkAsComplete'])->name('MarketerMarkAsComplete');
+    Route::post('/MMarkAsComplete',[AssignmentController::class,'MarketerMarkAsComplete'])->name('MarketerMarkAsComplete');
 
-    Route::post('/IMarkAsComplete',[\App\Http\Controllers\AssignmentController::class,'InfluencerMarkAsComplete'])->name('InfluencerMarkAsComplete');
+    Route::post('/IMarkAsComplete',[AssignmentController::class,'InfluencerMarkAsComplete'])->name('InfluencerMarkAsComplete');
 
 });

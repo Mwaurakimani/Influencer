@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\FinanceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,10 +19,10 @@ Route::middleware([
 
     Route::get('/Finance', function () {
         if(!Auth::check()) {
-            return \Illuminate\Support\Facades\Redirect::to('/');
+            return Redirect::to('/');
         }
 
-        $data = (new \App\Http\Controllers\FinanceController)->FinanceAccount();
+        $data = (new FinanceController)->FinanceAccount();
 
         return Inertia::render('Shared/Finance',[
             'finance' => $data
@@ -36,7 +38,7 @@ Route::middleware([
     });
 
 
-    Route::post('/addCredits', [\App\Http\Controllers\FinanceController::class,'makeDeposit'])->name('makeDeposit');
+    Route::post('/addCredits', [FinanceController::class,'makeDeposit'])->name('makeDeposit');
 
-    Route::post('/withdrawCredits', [\App\Http\Controllers\FinanceController::class,'makeWithdrawal'])->name('makeWithdrawal');
+    Route::post('/withdrawCredits', [FinanceController::class,'makeWithdrawal'])->name('makeWithdrawal');
 });

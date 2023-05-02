@@ -1,10 +1,16 @@
 <?php
 
 use App\Http\Controllers\BidController;
+use App\Http\Controllers\InfluencerController;
+use App\Http\Controllers\MarketersController;
 use App\Http\Controllers\ProjectsController;
+use App\Models\Assignment;
+use App\Models\Bid;
 use App\Models\Influencer;
 use App\Models\InfluencerClass;
+use App\Models\Marketer;
 use App\Models\Platform;
+use App\Models\SocialAccount;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -70,7 +76,7 @@ Route::get('/ViewProject/{id}', function (Request $request, $id) {
             $user->load('influencer');
             $user->influencer = $influencer;
             $bid['user'] = $user;
-            $social_accounts = \App\Models\SocialAccount::
+            $social_accounts = SocialAccount::
             with('platform', 'influencerClass')
                 ->where('influencer_id', $bid->influencer_id)
                 ->get();
@@ -84,7 +90,7 @@ Route::get('/ViewProject/{id}', function (Request $request, $id) {
         $requirement['influencerClass'] = $influencerClass;
     }
 
-    $marketer = (\App\Models\Marketer::find($project->marketer_id));
+    $marketer = (Marketer::find($project->marketer_id));
     $marketer['user'] = $marketer->user;
     $project['marketer'] = $marketer;
 
@@ -99,7 +105,7 @@ Route::get('/ViewProject/{id}', function (Request $request, $id) {
 
         if ($is_bidder) {
             $assigned = Project::where('id', $id)->first();
-            $assigned = count(\App\Models\Assignment::where('bid_id', \App\Models\Bid::where('project_id', $assigned->id)->where('influencer_id', Auth::user()->influencer->id)->first()->id)->get()) > 0;
+            $assigned = count(Assignment::where('bid_id', Bid::where('project_id', $assigned->id)->where('influencer_id', Auth::user()->influencer->id)->first()->id)->get()) > 0;
 
             return Inertia::render('ViewProject', [
                 'project' => $project,
@@ -166,9 +172,9 @@ Route::middleware([
         }
     })->name('ListOwnedProjects');
 
-    Route::get('/ViewOwnedProject/{id}', [\App\Http\Controllers\MarketersController::class, 'ViewProject'])->name('ViewOwnedProject');
+    Route::get('/ViewOwnedProject/{id}', [MarketersController::class, 'ViewProject'])->name('ViewOwnedProject');
 
-    Route::get('/ViewBidProject/{id}', [\App\Http\Controllers\InfluencerController::class, 'ViewProject'])->name('ViewBidProject');
+    Route::get('/ViewBidProject/{id}', [InfluencerController::class, 'ViewProject'])->name('ViewBidProject');
 
     Route::get('/influencerListViableProjects/{id}', function () {
         return "success";
