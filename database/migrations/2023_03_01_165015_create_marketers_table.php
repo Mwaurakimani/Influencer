@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('role')->default('marketer');
-            $table->string('type');
             $table->timestamps();
 
             $table->foreign('user_id')
