@@ -55,7 +55,7 @@ function moveTo(payload) {
         </div>
     </header>
     <div class="content-area">
-        <div v-if="activePanel === 'Account'" class="container">
+        <div v-if="activePanel === 'Account'" class="container" style="max-width: 800px">
             <p class="p3 p-[20px]  mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur,
                 adipisicing elit. Odit
                 asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus

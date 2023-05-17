@@ -44,6 +44,57 @@ if (currentUser == null || currentUser == 'undefined'){
         </MobileInfluencerDashboardLayout>
     </teleport>
     <MobileDashboardHeader class="mb-[10px]" :title="'Account'"/>
+    <DesktopDashbooardLayout>
+        <div class="flex gap-[20px] h-[500px]">
+            <section class="card-shadowed h-[100%] w-[60%] bg-white">
+                <h5 class="p-[20px]" >Account</h5>
+                <form class=" p-[20px] w-[90%] mx-[auto] flex gap-[10px] flex-wrap" action="" @submit.prevent="updateUser()">
+                    <div class="input-group w-[49%]">
+                        <label>First Name</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group w-[49%]">
+                        <label>Last Name</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group w-[100%]">
+                        <label>Email</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group w-[100%] mb-[20px]">
+                        <label>Phone</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-action flex w-[100%] align-middle justify-between">
+                        <button class="px-[20px] py-[10px] purple" type="submit">Update Account</button>
+                        <button class="px-[20px] py-[10px] purple" type="reset">Reset Form</button>
+                    </div>
+                </form>
+
+            </section>
+            <section class="card-shadowed w-[40%] h-[100%] bg-white">
+                <h5 class="p-[20px]" >Password</h5>
+                <form class=" p-[20px] w-[90%] mx-[auto] flex gap-[10px] flex-wrap" action="" @submit.prevent="updateUser()">
+                    <div class="input-group w-[100%]">
+                        <label>Current Password</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group w-[100%] mb-[20px]">
+                        <label>New Password</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group w-[100%] mb-[20px]">
+                        <label>Confirm New Password</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-action flex w-[100%] align-middle justify-between">
+                        <button class="px-[20px] py-[10px] purple" type="submit">Update Password</button>
+                        <button class="px-[20px] py-[10px] purple" type="reset">Reset Form</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </DesktopDashbooardLayout>
     <div class="intro mb-[20px]">
         <p class="p2 mb-[5px] " style="text-align: center"> {{ props.user.first_name }}  {{ props.user.last_name }}</p>
         <div class="h-[25px] flex items-center justify-center" style="width: fit-content">
@@ -60,6 +111,16 @@ if (currentUser == null || currentUser == 'undefined'){
     </div>
     <MarketerAboutCard :user.camel="props.user" class="w-[95%] mx-[auto] mt-[10px] mb-[20px]"></MarketerAboutCard>
 </template>
+
+<script>
+export default {
+    methods:{
+        updateUser(){
+            console.log("submiting")
+        }
+    }
+}
+</script>
 
 <style lang="scss" scoped>
 @import "../sassLoader";
@@ -95,6 +156,22 @@ if (currentUser == null || currentUser == 'undefined'){
 
     span{
         grid-area: edit;
+    }
+}
+
+@include s-screens{
+    form{
+        .input-group{
+            margin-bottom: 20px;
+            label{
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            input{
+                border-radius: 5px !important;
+                width: 100%;
+            }
+        }
     }
 }
 

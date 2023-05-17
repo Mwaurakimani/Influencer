@@ -193,12 +193,12 @@ const categories = reactive([])
         </div>
     </header>
     <div class="content-area">
-        <div v-if="activePanel === 'Account'" class="container">
+        <div v-if="activePanel === 'Account'" class="container" style="max-width: 800px">
             <p class="p3 p-[20px]  mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur,
                 adipisicing elit. Odit
                 asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus
                 illum. Sit autem nesciunt totam deserunt!</p>
-            <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
+            <form class="card-shadowed mb-[50px]" action="" @submit.prevent="submit">
                 <h6 class="p-[15px] mb-[20px]  text-center">Join The Influencer Community</h6>
                 <div class="form-content">
                     <section>
@@ -255,7 +255,7 @@ const categories = reactive([])
                 illum. Sit autem nesciunt totam deserunt!</p>
             <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
                 <h6 class="p-[15px] mb-[20px]  text-center">Add social accounts</h6>
-                <div class="form-content ">
+                <div class="form-content" style="max-width: 700px !important; margin: auto" >
                     <MobileInfleuncerModifySocialAccountsComponent :supportedPlatforms="influencerForm"
                                                                    class="w-[100%]"></MobileInfleuncerModifySocialAccountsComponent>
                 </div>
@@ -272,7 +272,7 @@ const categories = reactive([])
                 illum. Sit autem nesciunt totam deserunt!</p>
             <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
                 <h6 class="p-[15px] mb-[20px]  text-center">Bio</h6>
-                <div class="form-content">
+                <div class="form-content" style="max-width: 700px !important; margin: auto">
                     <textarea class="w-[100%] h-[200px]" @keyup="debounce(keyCount,300)" v-model="influencerForm.bio">
 
                     </textarea>
@@ -281,55 +281,57 @@ const categories = reactive([])
                 <div class="button-section flex justify-between p-[20px]">
                     <button @click.prevent="moveTo('SocialAccounts')" class="purple" type="submit">Social Accounts
                     </button>
-                    <button @click.prevent="moveTo('Categories')" class="purple" type="submit">Categories</button>
-                </div>
-            </form>
-        </div>
-        <div v-if="activePanel === 'Categories'" class="container">
-            <p class="p3 p-[20px]  mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur,
-                adipisicing elit. Odit
-                asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus
-                illum. Sit autem nesciunt totam deserunt!</p>
-            <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
-                <h6 class="p-[15px] mb-[20px]  text-center">Add Categories</h6>
-                <div class="form-content">
-                    <p class="p2  ">Select Categories</p>
-                    <input style="width: 80%">
-                    <button style="width: 40px;height: 40px" class="p-[10px] purple w-[100px] ">+</button>
-                    <div class="mb-[40px] w-[100%]" style="background-color:var(--light-grey)">
-                        <ul>
-                            <li v-for="category in categories" class="p-[5px]">{{ category }}</li>
-                        </ul>
-                    </div>
-                    <ul class="w-[100%] flax flex-wrap gap-1  ">
-                        <li class="inline-flex gap-1">
-                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>
-                            </p>
-                        </li>
-                        <li class="inline-flex gap-1">
-                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>
-                            </p>
-                        </li>
-                        <li class="inline-flex gap-1">
-                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>
-                            </p>
-                        </li>
-                        <li class="inline-flex gap-1">
-                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>
-                            </p>
-                        </li>
-                        <li class="inline-flex gap-1">
-                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>
-                            </p>
-                        </li>
-                    </ul>
-                </div>
-                <div class="button-section flex justify-between         p-[20px]">
-                    <button @click.prevent="moveTo('Bio')" class="purple" type="submit">Bio</button>
                     <button @click.prevent="submit()" class="purple" type="submit">Finish</button>
+
+                    <!--                    <button @click.prevent="moveTo('Categories')" class="purple" type="submit">Categories</button>-->
                 </div>
             </form>
         </div>
+<!--        <div v-if="activePanel === 'Categories'" class="container">-->
+<!--            <p class="p3 p-[20px]  mb-[20px]" style="text-align: center">Lorem ipsum dolor sit amet consectetur,-->
+<!--                adipisicing elit. Odit-->
+<!--                asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex, perferendis minus-->
+<!--                illum. Sit autem nesciunt totam deserunt!</p>-->
+<!--            <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">-->
+<!--                <h6 class="p-[15px] mb-[20px]  text-center">Add Categories</h6>-->
+<!--                <div class="form-content">-->
+<!--                    <p class="p2  ">Select Categories</p>-->
+<!--                    <input style="width: 80%">-->
+<!--                    <button style="width: 40px;height: 40px" class="p-[10px] purple w-[100px] ">+</button>-->
+<!--                    <div class="mb-[40px] w-[100%]" style="background-color:var(&#45;&#45;light-grey)">-->
+<!--                        <ul>-->
+<!--                            <li v-for="category in categories" class="p-[5px]">{{ category }}</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                    <ul class="w-[100%] flax flex-wrap gap-1  ">-->
+<!--                        <li class="inline-flex gap-1">-->
+<!--                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>-->
+<!--                            </p>-->
+<!--                        </li>-->
+<!--                        <li class="inline-flex gap-1">-->
+<!--                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>-->
+<!--                            </p>-->
+<!--                        </li>-->
+<!--                        <li class="inline-flex gap-1">-->
+<!--                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>-->
+<!--                            </p>-->
+<!--                        </li>-->
+<!--                        <li class="inline-flex gap-1">-->
+<!--                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>-->
+<!--                            </p>-->
+<!--                        </li>-->
+<!--                        <li class="inline-flex gap-1">-->
+<!--                            <p class="category-pill"> Travelling <span class="flex items-center justify-center p-[3px]">X</span>-->
+<!--                            </p>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--                <div class="button-section flex justify-between         p-[20px]">-->
+<!--                    <button @click.prevent="moveTo('Bio')" class="purple" type="submit">Bio</button>-->
+<!--                    <button @click.prevent="submit()" class="purple" type="submit">Finish</button>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
         <div v-if="activePanel === 'Finish'" class="container">
             <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
                 <h6 class="p-[15px] mb-[20px]  text-center">Welcome</h6>
@@ -353,6 +355,8 @@ const categories = reactive([])
 
 <style lang="scss" scoped>
 @import "../sassLoader";
+
+
 
 .form-content {
     div {

@@ -33,8 +33,8 @@ const form = useForm({
             </div>
         </div>
     </header>
-    <div class="content-area">
-        <div class="container">
+    <div class="content-area" style="height: 100vh">
+        <div class="container" style="max-width: 600px">
             <form class="card-shadowed pt-[30px] mb-[50px] w-[100%] "  @submit.prevent="form.post(route('login'))">
                 <div class="form-content ">
                     <section>

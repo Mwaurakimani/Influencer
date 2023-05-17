@@ -1,5 +1,5 @@
 <template>
-    <div class="balance flex flex-wrap card-shadowed mb-[20px] w-[95%] mx-[auto]">
+    <div class=" bg-white balance flex flex-wrap card-shadowed mb-[20px] w-[95%] mx-[auto]">
         <div class="w-[40%] m-[5%]  flex flex-col justify-center items-center ">
             <h6 class="text-center mb-[5px] text-grey-200">
                 Credit
@@ -35,9 +35,9 @@
         </div>
 
     </div>
-    <h5 class="w-[96%] mx-[auto] mb-[20px] text-grey-200">Transactions</h5>
+    <h5 class=" w-[96%] mx-[auto] mb-[20px] text-grey-200">Transactions</h5>
     <ul class="p-[10px]">
-        <li v-for="transaction in  balance.transactions" class="flex mb-[10px] justify-between p-[10px] card-shadowed" style="width: 100%;gap: 5px;">
+        <li v-for="transaction in  balance.transactions" class="flex bg-white mb-[10px] justify-between p-[10px] card-shadowed" style="width: 100%;gap: 5px;">
             <div class="grow" style="width: calc(100% - 70px)" >
                 <div v-if="transaction.type"  class="flex items-center w-[100%]">
                     <label class=" p3 p-[10px]" >Type:</label>

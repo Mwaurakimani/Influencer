@@ -19,7 +19,7 @@ function closeModal(){
 </script>
 
 <template>
-    <div class="card bg-white">
+    <div class="card bg-white" id="displayCard">
         <div class="header h-[25px] mb-[10px] pr-[10px] pt-[10px] flex" style="justify-content: flex-end;">
             <div class="w-[20px] h-[20px] bg-red-500"
                  style="border-radius: 50%">
@@ -153,6 +153,9 @@ export default {
 }
 
 @include s-screens {
-
+    #displayCard{
+        max-width: 500px;
+        max-height: 550px;
+    }
 }
 </style>

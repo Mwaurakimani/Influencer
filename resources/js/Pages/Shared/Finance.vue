@@ -65,7 +65,27 @@ function switchTabs(payload) {
         </MobileInfluencerDashboardLayout>
     </teleport>
     <MobileDashboardHeader :backButton="true" :title="'Finance'"/>
-    <nav>
+    <DesktopDashbooardLayout>
+        <nav class="">
+            <ul class="w-[100%] h-[50px] items-center flex justify-around">
+                <li @click.prevent="switchTabs('Balance')"
+                    :class="['w-[33.3%]','text-center',activeTab === 'Balance' ? 'active-tab':'' ]">Balance
+                </li>
+                <li @click.prevent="switchTabs('Deposit')"
+                    :class="['w-[33.3%]','text-center',activeTab === 'Deposit' ? 'active-tab':'' ]">Deposit
+                </li>
+                <li @click.prevent="switchTabs('Withdraw')"
+                    :class="['w-[33.3%]','text-center',activeTab === 'Withdraw' ? 'active-tab':'' ]">Withdraw
+                </li>
+            </ul>
+        </nav>
+        <div class="container">
+            <BalanceComponent  :balance="props.finance.Balance" v-if="activeTab === 'Balance'"/>
+            <Deposit :Deposit="props.finance.Deposit" v-if="activeTab === 'Deposit'"/>
+            <Withdraw :Withdrawal="props.finance.Withdrawal"  v-if="activeTab === 'Withdraw'"/>
+        </div>
+    </DesktopDashbooardLayout>
+    <nav class="m-hide">
         <ul class="w-[100%] h-[50px] items-center flex justify-around">
             <li @click.prevent="switchTabs('Balance')"
                 :class="['w-[33.3%]','text-center',activeTab === 'Balance' ? 'active-tab':'' ]">Balance
@@ -78,7 +98,7 @@ function switchTabs(payload) {
             </li>
         </ul>
     </nav>
-    <div class="container">
+    <div class="m-hide container">
         <BalanceComponent :balance="props.finance.Balance" v-if="activeTab === 'Balance'"/>
         <Deposit :Deposit="props.finance.Deposit" v-if="activeTab === 'Deposit'"/>
         <Withdraw :Withdrawal="props.finance.Withdrawal"  v-if="activeTab === 'Withdraw'"/>
@@ -100,9 +120,21 @@ nav {
     background-color: white;
     margin-bottom: 20px;
     z-index: 500;
+    li{
+        height: 100%;
+        line-height: 50px;
+        cursor: pointer;
+        &:hover{
+            background-color: lightgrey;
+        }
+    }
 }
 
-@media only screen and (min-width: 980px) {
+@include s-screens{
+    .active-tab{
+        background-color: var(--t-pink);
+        color: white;
+    }
 }
 
 @media only screen and (min-width: 849px) {

@@ -35,10 +35,9 @@ export default {
     margin-bottom: 90px;
 }
 
-@media only screen and (min-width: 980px) {
-
-}
-
-@media only screen and (min-width: 849px) {
-}
+@include s-screens{
+    .bid-display{
+        max-width: 350px;
+    }
+};
 </style>

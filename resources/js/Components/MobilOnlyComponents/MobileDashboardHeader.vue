@@ -84,7 +84,12 @@ function backLink(){
             }
         }
     }
+}
 
 
+@include s-screens{
+    .dashboard_header{
+        display: none;
+    }
 }
 </style>

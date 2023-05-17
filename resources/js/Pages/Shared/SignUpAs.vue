@@ -10,6 +10,7 @@ defineProps({
     phpVersion: String,
 });
 
+
 </script>
 
 <template>
@@ -21,7 +22,7 @@ defineProps({
         <div class="modile-header">
             <div class="container">
                 <section>
-                    <h1>Join Comunity</h1>
+                    <h1>Join the Comunity</h1>
                 </section>
             </div>
         </div>

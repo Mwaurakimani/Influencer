@@ -16,7 +16,7 @@ const assignmentDetails = inject('assignmentDetails')
       <div class="flex justify-end mb-[10px]" v-if=" assignmentDetails && assignmentDetails.is_assigned && props.marketerStatus == 'complete'">
           <button @click.prevent="$emit('markAsComplete',assignmentDetails.assignment)" class="purple p4">Mark Project as Complete</button>
       </div>
-      <div class="card-shadowed p-[20px] mb-[20px]">
+      <div class="card-shadowed m-hide p-[20px] mb-[20px]">
           <h6 class="text-grey-200 " >{{ project.marketer.user.first_name }} {{ project.marketer.user.last_name }}</h6>
           <div class="rating-card h-[30px]"></div>
           <hr class="mb-[10px]" style="background-color: var(--light-grey)" >
@@ -39,11 +39,11 @@ const assignmentDetails = inject('assignmentDetails')
               </li>
           </ul>
       </div>
-      <div class="card-shadowed p-[20px] mb-[20px]">
+      <div class="card-shadowed m-hide p-[20px] mb-[20px]">
           <h6 class="text-grey-200 mb-[10px]" >{{ project.title }}</h6>
           <p class="p3" >{{ project.description }}</p>
       </div>
-      <div class="card-shadowed p-[20px] mb-[20px]">
+      <div class="card-shadowed m-hide p-[20px] mb-[20px]">
           <h6 class="text-grey-200 mb-[20px] " >Details</h6>
           <ul>
               <li class="flex justify-between w-[90%] mb-[10px]">
@@ -64,7 +64,7 @@ const assignmentDetails = inject('assignmentDetails')
               </li>
           </ul>
       </div>
-      <div class="card-shadowed p-[20px] mb-[20px]">
+      <div class="card-shadowed m-hide p-[20px] mb-[20px]">
           <h6 class="text-grey-200 mb-[10px]" >Social Account Requirements</h6>
           <div class="social-accounts-display pl-[10px] pb-[20px]">
               <div class="flex" v-for="platform in props.project.platforms">
@@ -84,10 +84,6 @@ const assignmentDetails = inject('assignmentDetails')
           </div>
       </div>
       <MobileProjectBreakdownDisplayCard :ProjectType="project.type" :ProjectRequirements="project.project_requirements"  class="w-[9 9%] pt-[20px]" ></MobileProjectBreakdownDisplayCard>
-      <div class="card-shadowed p-[20px] mb-[80px]">
-          <h6 class="text-grey-200 mb-[10px]" >Notes</h6>
-          <p class="p3" >{{ project.notes }}</p>
-      </div>
   </div>
 </template>
 <script>

@@ -43,7 +43,7 @@ class MarketersController extends Controller
             ]);
 
             $user->marketer()->create([
-                'type' => $request['account_type'],
+                'role' => "marketer",
             ]);
 
 

@@ -30,4 +30,10 @@ body{
     bottom: 0px;
 }
 
+@include s-screens{
+    .mobile-menu{
+        display: none;
+    }
+}
+
 </style>

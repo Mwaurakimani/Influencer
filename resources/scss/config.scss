@@ -192,4 +192,10 @@ button.purple {
 }
 
 
+@include s-screens{
+    .m-hide{
+        display: none;
+    }
+}
+
 

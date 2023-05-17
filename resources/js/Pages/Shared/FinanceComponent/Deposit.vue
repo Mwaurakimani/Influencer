@@ -82,7 +82,7 @@ function makeDeposit(){
 
         <h6 class="mb-[15px]">Agents List</h6>
         <ul v-if="props.Deposit && props.Deposit.agents">
-            <li v-for="agent in  props.Deposit.agents" @click.prevent="selectAgent(agent.name)" class="w-[95%] m-[auto] mb-[20px] card-shadowed">
+            <li v-for="agent in  props.Deposit.agents" @click.prevent="selectAgent(agent.name)" class="w-[95%] md:w-[340px] bg-white  sm:m-[auto] md:m-[0px] m-[auto] mb-[20px] card-shadowed">
                 <div class="user-icon">
                     <p>{{ agent.name[0] }}</p>
                 </div>

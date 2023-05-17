@@ -60,9 +60,10 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="desktop-nav" style="background-color: orange;">
-        <div class="logo-display">
-            <h1 class="w-[100%] h-[100%] text-center" style="font-size:1.3em;line-height:60px;color:white">Vumisha</h1>
+    <div class="desktop-nav" style="background-color: var(--t-purple)">
+        <div class="logo-display" style="display: flex;place-items: center;padding-left: 20px" >
+            <img class="w-[50px] h-[50px] mr-[20px] " src="/storage/DESIGN/WORKSPACE/LOGO/SVG/Asset%201md.svg">
+            <img src="/storage/DESIGN/WORKSPACE/LOGO/SVG/Asset%202md.svg" alt="">
         </div>
         <div class="dropdown-desktop-menu">
             <ul class="m-[15px]">
@@ -157,7 +158,7 @@ onMounted(() => {
 
                 &:hover {
                     background-color: white;
-                    color: orange;
+                    color: var(--t-purple);
                     border-radius: 8px 8px 8px 8px;
                 }
             }
@@ -171,7 +172,7 @@ onMounted(() => {
                 position: relative;
                 display: block;
                 &:hover {
-                    background-color: orange;
+                    background-color: var(--purple);
                 }
 
                 #user-icon{
@@ -186,7 +187,7 @@ onMounted(() => {
                     padding: 15px;
                     height: 60px;
                     &:hover{
-                        background-color: orange;
+                        background-color: var(--t-purple);
                     }
                 }
 
@@ -208,7 +209,7 @@ onMounted(() => {
                         display: block;
                         width: 100%;
                         padding: 0px;
-                        color: orange;
+                        color: var(--t-purple);
 
                         & > li {
                             margin: 0px;
@@ -216,7 +217,7 @@ onMounted(() => {
                         }
 
                         & > li:hover {
-                            background-color: orange;
+                            background-color: var(--t-purple);
                             color: white;
                         }
                     }
