@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('designation')->nullable();
             $table->decimal('creditBalance',15,2)->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -9,6 +9,9 @@ class ProjectRequirements extends Model
 {
     use HasFactory;
 
+    protected $appends = ['platform','influencerClass'];
+
+
     protected $guarded = [];
 
     public function project(){
@@ -21,5 +24,15 @@ class ProjectRequirements extends Model
 
     public function influencerClass(){
         return $this->belongsTo(InfluencerClass::class);
+    }
+
+    public function getPlatformAttribute(){
+        $influencerClass = InfluencerClass::where('id',$this->attributes['influencer_classes_id'])->first();
+        return Platform::where('id',$influencerClass->platform_id)->first();
+    }
+
+    public function getInfluencerClassAttribute(){
+        return InfluencerClass::where('id',$this->attributes['influencer_classes_id'])->first();
+
     }
 }

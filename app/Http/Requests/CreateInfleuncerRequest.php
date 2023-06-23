@@ -27,6 +27,8 @@ class CreateInfleuncerRequest extends FormRequest
             return [
                 'first_name'=>['required','min:3','alpha'],
                 'last_name'=>['required','min:3','alpha'],
+                'gender'=>['required'],
+                'DOB'=>['required','date'],
                 'email'=>['required','email','unique:users'],
                 'phone'=>['required','numeric','min:8'],
                 'password'=>['required','min:8','required_with:password_confirmation','confirmed'],
@@ -43,6 +45,8 @@ class CreateInfleuncerRequest extends FormRequest
             return [
                 'bio'=>['sometimes','max:500'],
             ];
+        }else{
+            return [];
         }
 
     }

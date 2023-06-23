@@ -21,12 +21,13 @@ return new class extends Migration
             $table->string('influencer_status')->default('running');
             $table->string('general_status')->default('running');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('bid_id')
                 ->references('id')
                 ->on('bids')
                 ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
 
         });
     }

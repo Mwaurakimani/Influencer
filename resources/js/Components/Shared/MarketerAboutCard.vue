@@ -3,11 +3,12 @@ const props = defineProps(['user'])
 </script>
 
 <template>
-    <div class="card-shadowed w-[290px] pb-[20px] px-[5px]  bg-white">
+    <div class="card-shadowed pb-[20px] px-[5px]  bg-white">
+        <slot></slot>
         <h6 class="text-grey-400 p-[10px] mb-[5px]">About</h6>
         <div class=" px-[30px] " >
-            <div class="flex justify-between" >
-                <div class="" >
+            <div class="flex justify-between md:justify-start md:gap-2" >
+                <div class="sm:w-[100px]" >
                     <label class="p3" style="color: darkgrey" > First Name</label>
                     <p class="p4 text-grey-200 " style="font-weight: 600" >{{ props.user.first_name }}</p>
                 </div>
@@ -16,13 +17,13 @@ const props = defineProps(['user'])
                     <p class="p4 text-grey-200 " style="font-weight: 600" >{{ props.user.last_name }}</p>
                 </div>
             </div>
-            <div class="" >
+            <div class="sm:w-[100px]" >
                 <div class="" >
                     <label class="p3" style="color: darkgrey" >Email</label>
                     <p class="p4 text-grey-200 " style="font-weight: 600" >{{ props.user.email }}</p>
                 </div>
             </div>
-            <div class="" >
+            <div class="sm:w-[100px]" >
                 <div class="" >
                     <label class="p3" style="color: darkgrey" >Phone</label>
                     <p class="p4 text-grey-200 " style="font-weight: 600" >{{ props.user.phone }}</p>

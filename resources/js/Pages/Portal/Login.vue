@@ -1,8 +1,5 @@
 <script  setup>
 import { useForm } from '@inertiajs/vue3'
-import MobileNavigationComponent from '../../Components/MobileNavigationComponent.vue'
-import DesktopNavigationVue from '../../Components/DesktopNavigation.vue';
-import {useAttrs} from "vue";
 
 const props = defineProps({
     canLogin: Boolean,

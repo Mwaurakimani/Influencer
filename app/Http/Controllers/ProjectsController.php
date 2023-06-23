@@ -94,7 +94,7 @@ class ProjectsController extends Controller
 
     public function fileUpload(AssignmentFileUploadRequest $request)
     {
-        $file = $request->file()['fileData']['data'];
+        $file = $request->file()['Upload'];
         $project = $request['project'];
         $uploadedFile = new UploadedFile($file, $file->getClientOriginalName());
         $filePath = $uploadedFile->getPathname();
@@ -144,17 +144,12 @@ class ProjectsController extends Controller
                 }
             })($mimeType);
 
-            if ($media->type == 'N/A') {
+            if ($media->type === 'N/A') {
                 throw new UnsupportedMediaTypeHttpException();
             }
 
-            $media->assignment_id = (function ($project) {
-                $project_id = $project['id'];
-                $bid = Bid::where('project_id', $project_id)->first();
-                $assignment = Assignment::where('bid_id', $bid->id)->first();
-                return $assignment->id;
-            })($project);
-
+            $project = Project::with('assignment')->where('id',$project)->first();
+            $media->assignment_id = $project->assignment->id;
 
 
             $filePath = $file->storeAs('uploads', time() . '_' . $file->getClientOriginalName(), 'public');

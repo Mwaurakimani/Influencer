@@ -22,9 +22,23 @@ return new class extends Migration
             $table->timestamps();
 
 
-            $table->foreign('assignment_id')->references('id')->on('assignments');
-            $table->foreign('sender_id')->references('id')->on('users');
-            $table->foreign('receiver_id')->references('id')->on('users');
+            $table->foreign('assignment_id')
+                ->references('id')
+                ->on('assignments')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('sender_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('receiver_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

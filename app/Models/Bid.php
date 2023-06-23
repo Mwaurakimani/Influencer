@@ -15,7 +15,7 @@ class Bid extends Model
         return $this->belongsTo(Influencer::class);
     }
 
-    public function assignments(){
+    public function assignment(){
         return $this->hasOne(Assignment::class);
     }
 

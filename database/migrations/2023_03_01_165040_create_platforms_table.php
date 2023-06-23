@@ -16,8 +16,10 @@ return new class extends Migration
         Schema::create('platforms', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('icon');
             $table->string('link')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

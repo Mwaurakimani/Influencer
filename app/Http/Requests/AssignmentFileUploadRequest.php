@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Closure;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\File;
 
@@ -27,7 +28,7 @@ class AssignmentFileUploadRequest extends FormRequest
     public function rules()
     {
         return [
-            'fileData.data' => ['required',
+            'Upload' => ['required',
                 File::types([
                     'image/jpeg',
                     'image/gif',
@@ -38,7 +39,7 @@ class AssignmentFileUploadRequest extends FormRequest
                     'video/x-msvideo',
                     'video/h264',
                     'video/webm']
-                )->max(10 * 1024)],
+                )->max(2000)],
             'project' => ['required']
         ];
     }

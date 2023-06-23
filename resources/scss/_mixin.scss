@@ -17,19 +17,19 @@
 }
 
 @mixin s-screens{
-    @media only screen and (min-width: 730px) {
+    @media only screen and (min-width: 768px) {
         @content
     }
 }
 
 @mixin m-screens{
-    @media only screen and (min-width: 10240px) {
+    @media only screen and (min-width: 1024px) {
         @content
     }
 }
 
-@mixin n-screens{
-    @media only screen and (min-width: 1366px) {
+@mixin lg-screens{
+    @media only screen and (min-width: 1280px) {
         @content
     }
 }

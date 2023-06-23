@@ -11,9 +11,6 @@ const props = defineProps([
 
 const  assignmentDetails = reactive(props.assignmentDetails)
 
-const data = reactive({
-    'data':null
-})
 const pdf_display = ref([])
 
 onMounted(async () => {
@@ -73,9 +70,9 @@ function download(media){
     <div class="media-display">
         <div class="upload-section">
             <div class="input-group ">
-                <input type="file" @input="data.data = $event.target.files[0]">
+                <input type="file" @input="file = $event.target.files[0]">
             </div>
-            <button @click.prevent="$emit('uploadFile',data)">Upload</button>
+            <button @click.prevent="$emit('uploadFile',file)">Upload</button>
         </div>
         <ul class="display-section mb-[80px]">
             <li v-for="media in assignmentDetails.assignment.media"  >
@@ -122,7 +119,12 @@ function download(media){
 
 <script>
 export default {
-    name: "mediaDispay"
+    name: "mediaDispay",
+    data(){
+        return {
+            file:null
+        }
+    }
 }
 </script>
 

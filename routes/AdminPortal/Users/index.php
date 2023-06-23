@@ -40,9 +40,9 @@ Route::post('/AdminLogin', function (Request $request) {
 
     $user = User::where('email', $request->email)->first();
 
-    if ($user->designation == null) {
-        return Redirect::to('/');
-    }
+//    if ($user->designation == null) {
+//        return Redirect::to('/');
+//    }
 
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();

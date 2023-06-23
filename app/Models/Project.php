@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $guarded=[];
 
@@ -31,6 +33,10 @@ class Project extends Model
 
     public function marketer(){
         return $this->belongsTo(Marketer::class);
+    }
+
+    public function assignment(){
+        return $this->hasOneThrough(Assignment::class,Bid::class);
     }
 
 }

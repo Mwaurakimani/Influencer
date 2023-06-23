@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -12,6 +13,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+    use SoftDeletes;
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
@@ -23,7 +25,15 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'password',
+        'designation',
+        'creditBalance',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -55,26 +65,63 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function influencer(){
-        return $this->hasOne(Influencer::class);
+    public function marketer()
+    {
+        return $this->hasOne(Marketer::class);
     }
 
-    public function marketer(){
-        return $this->hasOne(Marketer::class);
+    public function influencer()
+    {
+        return $this->hasOne(Influencer::class);
     }
 
     public function media()
     {
-        return $this->belongsToMany(Media::class, 'media_owner', 'user_id', 'media_id')->withPivot('id');
+        return $this->belongsToMany(
+            Media::class,
+            'media_owner',
+            'user_id',
+            'media_id'
+        )->withPivot('id');
+    }
+
+    public function creditManipulation()
+    {
+        return $this->hasMany(
+            CreditManipulation::class,
+            'agent_id',
+            'id');
     }
 
     public function deposits()
     {
-        return $this->hasMany(Deposit::class,'user_id','id');
+        return $this->hasMany(
+            Deposit::class,
+            'user_id',
+            'id');
     }
 
     public function withdrawals()
     {
-        return $this->hasMany(Withdrawal::class,'user_id','id');
+        return $this->hasMany(Withdrawal::class,
+            'user_id',
+            'id');
     }
+
+    public function CreditsTransferred()
+    {
+        return $this->hasMany(
+            Transfer::class,
+            'from',
+            'id');
+    }
+
+    public function CreditsReceived()
+    {
+        return $this->hasMany(
+            Transfer::class,
+            'to',
+            'id');
+    }
+
 }

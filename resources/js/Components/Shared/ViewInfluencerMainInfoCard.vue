@@ -7,7 +7,8 @@ const props = defineProps(['user'])
 
 <template>
     <div class="card-shadowed pb-[20px] px-[5px] pt-[25px]  bg-white">
-        <img  src="/storage/uploads/user.jpg" class="image mb-[10px] block mx-[auto]  w-[100px] h-[100px]  ">
+        <img v-if="user.influencer.image_path != null" class="image mb-[10px] block mx-[auto]  w-[100px] h-[100px]" :src="'/storage/'+user.influencer.image_path">
+        <img v-else src="/storage/default-avatar.jpg">
         <p class="p2 mb-[5px] " style="text-align: center" > {{ props.user.first_name }} {{ props.user.last_name }}</p>
         <div class="h-[25px] flex items-center justify-center" style="width: fit-content">
             <div   class="star-icon w-[100%] h-[100%] p-[3px]">

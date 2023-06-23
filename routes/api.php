@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('getMarketerDetails/{id}', [\App\Http\Controllers\MarketersController::class,'getMarketerDetails'])->name('getMarketerDetails');
+
+Route::post('mainPageDatasetAction', [\App\Http\Controllers\MarketersController::class,'mainPageDatasetAction'])->name('mainPageDatasetAction');
+
+Route::post('/test',[\App\Http\Controllers\DatabaseTesterController::class,'execute']);

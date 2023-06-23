@@ -8,8 +8,13 @@ import {resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
 import {ZiggyVue} from '../../vendor/tightenco/ziggy/dist/vue.m';
 import {createPinia} from 'pinia';
 import Modal from "./Components/Modal.vue";
-import DesktopDashbooardLayout from "./Layouts/DesktopDashbooardLayout.vue";
+import DesktopDashbooardLayout from "./Layouts/DashboardLayout/DesktopDashboardLayout.vue";
 import { Link } from "@inertiajs/vue3"
+import Footer from "./Components/Footer.vue";
+import MobileNavigationComponent from './Layouts/MainPageComponent/MobileNavigationComponent.vue'
+import DesktopNavigationVue from './Layouts/MainPageComponent/DesktopNavigation.vue';
+import MobileDashboardLayout from "./Layouts/DashboardLayout/MobileDashboardLayout.vue";
+import MobileDashboardHeader from "./Layouts/DashboardLayout/Components/MobileDashboardHeader.vue";
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 const piniaPlugin = createPinia();
@@ -32,11 +37,25 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .mixin({
                 components:{
+                    // dashboard layouts
+                    MobileDashboardLayout,
                     DesktopDashbooardLayout,
+
+                    //dashboard components
+                    MobileDashboardHeader,
+
+
+
+                    //main page layouts
+                    MobileNavigationComponent,
+                    DesktopNavigationVue,
+                    Footer,
+
+                    //global components
                     Link
-                }
+                },
             })
-            .mount(el);
+            .mount(el)
 
     },
     progress: {

@@ -19,7 +19,9 @@ class AssignmentController extends Controller
 {
     public function sendMessage(Request $request)
     {
-        $bid_id = $request['project']['bids'][0]['id'];
+        $assignment = Project::find($request['project']['id'])->assignment()->first();
+
+        $bid_id = $assignment->bid_id;
 
         if (empty($request['message'])) {
             return [
@@ -27,8 +29,6 @@ class AssignmentController extends Controller
                 'message' => 'No message found'
             ];
         }
-
-        $assignment = Assignment::where('bid_id', $bid_id)->first();
 
         $chat = new Chat();
 
@@ -74,7 +74,7 @@ class AssignmentController extends Controller
 
     public function MarketerMarkAsComplete(Request $request)
     {
-        $assignment = Assignment::find($request->id);
+        $assignment = Assignment::find($request['assignment']['id']);
         $bid = null;
         $project = null;
         $marketer = null;
@@ -82,6 +82,7 @@ class AssignmentController extends Controller
 
         if ($assignment) {
             $bid = Bid::where('id', $assignment->bid_id)->first();
+
             $influencer = DB::table('users')->where('id',
                 DB::table('influencers')->where('id',
                     DB::table('influencers')->where('id', $bid->influencer_id)->first()->id
@@ -173,13 +174,14 @@ class AssignmentController extends Controller
 
     public function InfluencerMarkAsComplete(Request $request)
     {
-        $assignment = Assignment::find($request->id);
+        $assignment = Assignment::find($request['assignment']['id']);
 
         if ($assignment) {
             DB::beginTransaction();
 
             try {
-                $assignment->marketer_status = 'complete';
+                $assignment->influencer_status = 'complete';
+                $assignment->general_status = 'complete';
                 $assignment->save();
 
                 DB::commit();

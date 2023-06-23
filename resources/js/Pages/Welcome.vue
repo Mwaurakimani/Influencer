@@ -1,216 +1,60 @@
-<script setup>
-import MobileNavigationComponent from "./../Components/MobileNavigationComponent.vue";
-import DesktopNavigation from "@Components/DesktopNavigation.vue";
-import {inject, ref} from "vue";
-import {Link} from "@inertiajs/vue3";
-
-const currentUser = inject('currentUser');
-
-const activeTab = ref('Marketer')
-
-function changeTagLine() {
-    let elem = $(event.target)
-    let parent = elem.parent();
-
-    $.each(parent.find('li'), function (key, value) {
-        $(value).removeClass('active')
-        if ($(value).text() == elem.text()) {
-            activeTab.value = elem.text()
-            $(value).addClass('active')
-        }
-    })
-}
-
-</script>
-
 <template>
     <nav>
-        <MobileNavigationComponent :active-nav-button="'Home'"></MobileNavigationComponent>
-        <DesktopNavigation>hi</DesktopNavigation>
+        <MobileNavigationComponent :active-nav-button="'Home'"/>
+        <DesktopNavigationVue style="position: absolute;" class="w-[100%]" :alter.camel="true" :activeNavButton="'Home'" :static="true"/>
     </nav>
-    <div class="banner flex flex-col justify-center align-middle mb-[50px]"
-         style="align-items: center; height: calc(100vh - 60px)">
-        <h3 class="text-center text-white mb-[20px] ">Welcome to Vumisha where brands and influencers make magic happen
-            . . .</h3>
-        <img class="p-[10px] w-[90px] mb-[10px]  h-[90px] bg-white" style="border-radius: 50%"
-             src="/storage/DESIGN/WORKSPACE/LOGO/SVG/logo-icon.svg">
-        <div class="banner-image">
-        </div>
+    <div class="banner flex justify-around align-middle" style="align-items: center; height:100vh">
+        <section class="flex flex-col justify-center align-middle w-[500px]">
+            <h3 class="text-center text-white mb-[20px] ">Welcome to Vumisha where brands and influencers make magic happen. . .</h3>
+            <img class="p-[10px] w-[90px] mb-[10px] mx-[auto]  h-[90px] bg-white" style="border-radius: 50%;display: block"
+                 :src="defaults.systemImages+'/logos/colored/icon-colored.svg'">
+            <p class="text-white p-[10px]" >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque eius esse repudiandae tempora. Atque deleniti dolorum, ducimus est eum ex facere itaque, libero nihil quo sed suscipit tempore veniam. Unde?</p>
+            <div class="banner-image ">
+            </div>
+        </section>
+        <section class="d-hide">
+            <div class="w-[550px] h-[360px] bg-white" style="border-radius: 8px;box-shadow: 0 0 8px lightgray">
+
+            </div>
+        </section>
     </div>
-    <section class="mb-[200px]">
-        <h4 class=" text-center text-grey-400 mb-[80px]">What we do ...</h4>
-        <div class="flex flex-wrap">
-            <div class=" mx-[auto] description card-shadowed mb-[10px]   w-[300px] h-[350px]" v-for="item in 3"
-                 style="position: relative;border-radius: 8px">
-                <div class="text-holder pb-[20px] flex" style="align-items: flex-end;justify-content: center">
-                </div>
-                <p class="p4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis laudantium
-                    nisi odit quod reprehenderit. Assumenda deleniti dignissimos doloribus eligendi, et qui. At deserunt
-                    illum libero nulla officia quaerat quibusdam quidem.</p>
-                <h6>Influencer</h6>
-            </div>
-        </div>
-    </section>
-    <section class="mb-[200px]" >
-        <ul class="tab" @click="changeTagLine()">
-            <li class="p3 active">Influencer</li>
-            <li class="p3">Marketer</li>
-        </ul>
-        <div v-if="activeTab == 'Influencer'" id="influencerTagLine" class="body"
-             style="background-color: var(--light-grey)">
-            <p class="px-[7%] py-[20px] p1 text-center ">We have made it easy to work with your favorite brands. No more
-                long meetings
-                trying to negotiate on your pricing or working model. Just join and start
-                bidding on projects </p>
-            <div class="flex journey-map h-[500px] bg-white ">
-                <div>
-                    <ul>
-                        <li class="active-list">
-                            <div class="pick">
-                                <span>
-                                    <span></span>
-                                </span>
-                            </div>
-                            <h6>Influencer</h6>
-                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa
-                                dignissimos earum </p>
-                        </li>
-                        <li>
-                            <div class="pick">
-                                <span>
-                                    <span></span>
-                                </span>
-                            </div>
-                            <h6>Influencer</h6>
-                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa
-                                dignissimos earum eligendi et exercitationem fuga illum laudantium, magnam maxime modi
-                                nihil odio porro qui rerum sed sint.</p>
-                        </li>
-                        <li>
-                            <div class="pick">
-                                <span>
-                                    <span></span>
-                                </span>
-                            </div>
-                            <h6>Influencer</h6>
-                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa
-                                dignissimos earum eligendi et exercitationem fuga illum laudantium, magnam maxime modi
-                                nihil odio porro qui rerum sed sint.</p>
-                        </li>
-                        <li>
-                            <div class="pick">
-                                <span>
-                                    <span></span>
-                                </span>
-                            </div>
-                            <h6>Influencer</h6>
-                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa
-                                dignissimos earum eligendi et exercitationem fuga illum laudantium, magnam maxime modi
-                                nihil odio porro qui rerum sed sint.</p>
-                        </li>
-                        <li>
-                            <div class="pick">
-                                <span>
-                                    <span></span>
-                                </span>
-                            </div>
-                            <h6>Influencer</h6>
-                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa
-                                dignissimos earum eligendi et exercitationem fuga illum laudantium, magnam maxime modi
-                                nihil odio porro qui rerum sed sint.</p>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <section>
-
-                    </section>
-                </div>
-            </div>
-        </div>
-        <div v-if="activeTab == 'Marketer'" id="marketerTagLine" class="body"
-             style="background-color: var(--light-grey)">
-            <p class="px-[7%] py-[20px] p1 text-center ">We bidding on projects </p>
-            <div class="flex journey-map h-[500px] bg-white ">
-                <div>
-                    <ul>
-                        <li class="active-list">
-                            <div class="pick">
-                                <span>
-                                    <span></span>
-                                </span>
-                            </div>
-                            <h6>Influencer</h6>
-                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa
-                                dignissimos earum </p>
-                        </li>
-                        <li>
-                            <div class="pick">
-                                <span>
-                                    <span></span>
-                                </span>
-                            </div>
-                            <h6>Influencer</h6>
-                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa
-                                dignissimos earum eligendi et exercitationem fuga illum laudantium, magnam maxime modi
-                                nihil odio porro qui rerum sed sint.</p>
-                        </li>
-                        <li>
-                            <div class="pick">
-                                <span>
-                                    <span></span>
-                                </span>
-                            </div>
-                            <h6>Influencer</h6>
-                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa
-                                dignissimos earum eligendi et exercitationem fuga illum laudantium, magnam maxime modi
-                                nihil odio porro qui rerum sed sint.</p>
-                        </li>
-                        <li>
-                            <div class="pick">
-                                <span>
-                                    <span></span>
-                                </span>
-                            </div>
-                            <h6>Influencer</h6>
-                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa
-                                dignissimos earum eligendi et exercitationem fuga illum laudantium, magnam maxime modi
-                                nihil odio porro qui rerum sed sint.</p>
-                        </li>
-                        <li>
-                            <div class="pick">
-                                <span>
-                                    <span></span>
-                                </span>
-                            </div>
-                            <h6>Influencer</h6>
-                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa
-                                dignissimos earum eligendi et exercitationem fuga illum laudantium, magnam maxime modi
-                                nihil odio porro qui rerum sed sint.</p>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <section>
-
-                    </section>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="h-[300px] flex flex-col justify-around items-center mb-[200px]">
-        <h3>Join the community</h3>
-        <p class="p4 p-[30px] text-center ">Get to choose which brand to workwit,
-            get value for your content with Vumisha</p>
-        <Link  as="button" href="/SignUpAs" class="pink"> Take me there</Link>
-    </section>
-    <footer>
-    </footer>
 </template>
+<script>
+import {DEFAULTS} from "@stores/DEFAULTS.js";
+
+export default {
+    setup(){
+        const defaults = DEFAULTS()
+
+        return {
+            defaults
+        }
+    },
+    inject:['currentUser'],
+    data(){
+        return {
+            activeTab:'Influencer'
+        }
+    },
+    methods:{
+        changeTagLine() {
+            let elem = $(event.target)
+            let parent = elem.parent();
+
+            $.each(parent.find('li'), function (key, value) {
+                $(value).removeClass('active')
+                if ($(value).text() == elem.text()) {
+                    activeTab.value = elem.text()
+                    $(value).addClass('active')
+                }
+            })
+        }
+    }
+}
+</script>
 
 <style lang="scss" scoped>
-@import 'sassLoader';
-
+@import "sassLoader";
 .description {
     overflow: hidden;
 
@@ -244,10 +88,10 @@ function changeTagLine() {
 }
 
 .banner {
-    background-color: var(--pink);
+    background-image: linear-gradient(200DEG, #ec1489, #ff005d);
 
     .banner-image {
-        width: 80%;
+        width: 100%;
         height: 200px;
     }
 }
@@ -453,3 +297,73 @@ section > .body {
     }
 }
 </style>
+
+
+<!--    <section class="mb-[200px]" >-->
+<!--        <ul class="tab" @click="changeTagLine()">-->
+<!--            <li class="p3 active">Influencer</li>-->
+<!--            <li class="p3">Marketer</li>-->
+<!--        </ul>-->
+<!--        <div v-if="activeTab == 'Influencer'" id="influencerTagLine" class="body"-->
+<!--             style="background-color: var(&#45;&#45;light-grey)">-->
+<!--            <p class="px-[7%] py-[20px] p1 text-center ">We have made it easy to work with your favorite brands. No more-->
+<!--                long meetings-->
+<!--                trying to negotiate on your pricing or working model. Just join and start-->
+<!--                bidding on projects </p>-->
+<!--            <div class="flex journey-map h-[500px] bg-white ">-->
+<!--                <div>-->
+<!--                    <ul>-->
+<!--                        <li class="active-list">-->
+<!--                            <div class="pick">-->
+<!--                                <span>-->
+<!--                                    <span></span>-->
+<!--                                </span>-->
+<!--                            </div>-->
+<!--                            <h6>Influencer</h6>-->
+<!--                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa-->
+<!--                                dignissimos earum </p>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <section>-->
+
+<!--                    </section>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div v-if="activeTab == 'Marketer'" id="marketerTagLine" class="body"-->
+<!--             style="background-color: var(&#45;&#45;light-grey)">-->
+<!--            <p class="px-[7%] py-[20px] p1 text-center ">We bidding on projects </p>-->
+<!--            <div class="flex journey-map h-[500px] bg-white ">-->
+<!--                <div>-->
+<!--                    <ul>-->
+<!--                        <li class="active-list">-->
+<!--                            <div class="pick">-->
+<!--                                <span>-->
+<!--                                    <span></span>-->
+<!--                                </span>-->
+<!--                            </div>-->
+<!--                            <h6>Influencer</h6>-->
+<!--                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa-->
+<!--                                dignissimos earum </p>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                <section>-->
+
+<!--                </section>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+<!--    <section class="h-[300px] flex flex-col justify-around items-center mb-[200px]">-->
+<!--        <h3>Join the community</h3>-->
+<!--        <p class="p4 p-[30px] text-center ">Get to choose which brad to workwit,-->
+<!--            get value for your content with Vumisha</p>-->
+<!--        <Link  as="button" href="/SignUpAs" class="pink"> Take me there</Link>-->
+<!--    </section>-->
+<!--    <footer>-->
+<!--        <Footer></Footer>-->
+<!--    </footer>-->

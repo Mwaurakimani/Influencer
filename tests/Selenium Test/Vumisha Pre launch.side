@@ -1,0 +1,208 @@
+{
+  "id": "8749250c-019d-4810-81a1-99cdc6146629",
+  "version": "2.0",
+  "name": "Vumisha Pre launch",
+  "url": "http://localhost",
+  "tests": [{
+    "id": "0d63bfb4-f509-4780-bb88-f1bc864dd4c2",
+    "name": "Creation Marketer",
+    "commands": [{
+      "id": "3072a7c6-181d-4567-86c2-62a91a2c97fd",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1adc884a-0db1-4ec8-90a0-e0c04167238d",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1382x784",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cc43bb1f-360f-4958-9dcc-be2a91c097fc",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ml-\\[80px\\] > li:nth-child(2)",
+      "targets": [
+        ["css=.ml-\\[80px\\] > li:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='app']/nav/div[2]/div[2]/ul[2]/li[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/ul[2]/li[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6286a8c2-c33e-448e-b0f3-71d4f1f74f43",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(3)",
+      "targets": [
+        ["css=button:nth-child(3)", "css:finder"],
+        ["xpath=//div[@id='app']/div/div/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'A Marketer')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "6555d2e8-bca4-4121-899e-602267ea29b8",
+      "comment": "",
+      "command": "type",
+      "target": "css=.input-group:nth-child(1) > input",
+      "targets": [
+        ["css=.input-group:nth-child(1) > input", "css:finder"],
+        ["xpath=//input[@type='text']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/section/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "marketer"
+    }, {
+      "id": "6fc201e4-9d91-4ec3-a67a-8cb3a98b3619",
+      "comment": "",
+      "command": "type",
+      "target": "css=.input-group:nth-child(2) > input",
+      "targets": [
+        ["css=.input-group:nth-child(2) > input", "css:finder"],
+        ["xpath=(//input[@type='text'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/section/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "one"
+    }, {
+      "id": "b06db968-8ca8-4a32-842f-64c903d25113",
+      "comment": "",
+      "command": "type",
+      "target": "css=.input-group:nth-child(3) > input",
+      "targets": [
+        ["css=.input-group:nth-child(3) > input", "css:finder"],
+        ["xpath=//input[@type='email']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/section/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "marketerone@email.com"
+    }, {
+      "id": "2f281ad1-ec7b-46f3-be8e-5a98ca5224af",
+      "comment": "",
+      "command": "type",
+      "target": "css=.input-group:nth-child(4) > input",
+      "targets": [
+        ["css=.input-group:nth-child(4) > input", "css:finder"],
+        ["xpath=//input[@type='tel']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/section/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "0700000001"
+    }, {
+      "id": "031f6862-fa37-45eb-bf66-36885ebb65e4",
+      "comment": "",
+      "command": "type",
+      "target": "css=.input-group:nth-child(5) > input",
+      "targets": [
+        ["css=.input-group:nth-child(5) > input", "css:finder"],
+        ["xpath=//input[@type='password']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/section/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "password"
+    }, {
+      "id": "070ac95c-5b14-4837-920a-e4ca839d283e",
+      "comment": "",
+      "command": "type",
+      "target": "css=.input-group:nth-child(6) > input",
+      "targets": [
+        ["css=.input-group:nth-child(6) > input", "css:finder"],
+        ["xpath=(//input[@type='password'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/section/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": "password"
+    }, {
+      "id": "f80ed5c8-de32-4024-a412-e46587ad5a46",
+      "comment": "",
+      "command": "click",
+      "target": "css=.purple",
+      "targets": [
+        ["css=.purple", "css:finder"],
+        ["xpath=//div[@id='app']/div/div/form/div[2]/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Register')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "648a8e51-b078-493a-9ac3-a417b5198f68",
+    "name": "Marketer Log in",
+    "commands": [{
+      "id": "e58e1b4a-eea7-4b0b-a096-21345079a3ea",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0ba18e8e-46e6-424d-974e-38533f9ca958",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1058x1024",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "be2b3890-cc77-44c5-8114-00ca0bec71bb",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ml-\\[80px\\] > li:nth-child(1)",
+      "targets": [
+        ["css=.ml-\\[80px\\] > li:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='app']/nav/div[2]/div[2]/ul[2]/li", "xpath:idRelative"],
+        ["xpath=//div[2]/ul[2]/li", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f727b0ab-04e7-4a07-85d9-2a8a4fdd85ae",
+      "comment": "",
+      "command": "type",
+      "target": "css=.input-group:nth-child(1) > input",
+      "targets": [
+        ["css=.input-group:nth-child(1) > input", "css:finder"],
+        ["xpath=//input[@type='email']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/section/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "marketerone@email.com"
+    }, {
+      "id": "f2ff3f37-ee92-4453-be77-f814e9f6600a",
+      "comment": "",
+      "command": "type",
+      "target": "css=.input-group:nth-child(2) > input",
+      "targets": [
+        ["css=.input-group:nth-child(2) > input", "css:finder"],
+        ["xpath=//input[@type='password']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div/section/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "password"
+    }, {
+      "id": "6c49f530-81ef-42ee-8f8a-5ce958335e52",
+      "comment": "",
+      "command": "click",
+      "target": "css=.purple",
+      "targets": [
+        ["css=.purple", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[@id='app']/div/div/form/div[2]/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Log In')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "12feb13b-3aff-4924-819e-435e28902ed0",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": []
+  }],
+  "urls": ["http://localhost/"],
+  "plugins": []
+}

@@ -15,7 +15,6 @@ return new class extends Migration {
         Schema::create('project_requirements', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('project_id');
-            $table->unsignedBigInteger('platform_id')->nullable();
             $table->string('post_location');
             $table->json('targets');
             $table->unsignedBigInteger('influencer_classes_id')->nullable();
@@ -26,15 +25,10 @@ return new class extends Migration {
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->foreign('platform_id')->references('id')
-                ->on('platforms')
-                ->onUpdate('cascade')
-                ->onDelete('set null');
-
             $table->foreign('influencer_classes_id')->references('id')
                 ->on('influencer_classes')
                 ->onUpdate('cascade')
-                ->onDelete('set null');
+                ->onDelete('cascade');
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateMarketer;
 use App\Models\Assignment;
 use App\Models\Bid;
 use App\Models\Chat;
@@ -11,12 +12,15 @@ use App\Models\Marketer;
 use App\Models\Media;
 use App\Models\Platform;
 use App\Models\SocialAccount;
+use App\Models\Transfer;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Ramsey\Collection\Collection;
 use function PHPUnit\Framework\returnArgument;
@@ -26,30 +30,28 @@ class MarketersController extends Controller
     /**
      * @throws Exception
      */
-    public function createMarketer(Request $request)
+    public function createMarketer($request)
     {
-        //TODO:Validation is required
-
         DB::beginTransaction();
 
         try {
 
             $user = User::create([
-                'first_name' => $request['first_name'],
-                'last_name' => $request['last_name'],
-                'email' => $request['email'],
-                'phone' => $request['phone'],
-                'password' => bcrypt($request['password']),
+                'first_name' => $request['first_name'] ?? null,
+                'last_name' => $request['last_name'] ?? null,
+                'email' => $request['email'] ?? null,
+                'phone' => $request['phone'] ?? null,
+                'password' => bcrypt($request['password'] ?? null) ,
             ]);
 
             $user->marketer()->create([
-                'role' => "marketer",
+                'role' => "marketer" ?? null,
             ]);
 
 
             if ($request['account_type'] == 'Company' && $request['company_name'] != null) {
                 $user->marketer->company()->create([
-                    'name' => $request['company_name']
+                    'name' => $request['company_name'] ?? null
                 ]);
             }
 
@@ -60,10 +62,10 @@ class MarketersController extends Controller
             throw new Exception($e->getMessage());
         }
 
-        return 'Marketer account has been created successfully';
+        return true;
     }
 
-    public function hireInfluencer(Request $request,$id)
+    public function hireInfluencer(Request $request, $id)
     {
         $marketer = User::find(Auth::user()->id);
         $bid = Bid::find($id);
@@ -316,7 +318,7 @@ class MarketersController extends Controller
 
             if (count($assignment) > 0) {
                 $assigned_status = $assignment[0]->assignments;
-            }else{
+            } else {
                 $assigned_status = null;
             }
 
@@ -422,7 +424,7 @@ class MarketersController extends Controller
 
         $chats = ((function () use ($project) {
 
-            $data = Bid::where('project_id', $project->id)->where('status','assigned')->get()->transform(function ($item) {
+            $data = Bid::where('project_id', $project->id)->where('status', 'assigned')->get()->transform(function ($item) {
                 $assignment = Assignment::where('bid_id', $item->id)->get();
 
                 return $assignment;
@@ -447,5 +449,156 @@ class MarketersController extends Controller
         return Inertia::render('Employer/ViewProject', [
             'project' => $project
         ]);
+    }
+
+    public function getMarketerDetails(Request $request, $id)
+    {
+        $marketer = Marketer::find($id);
+        $marketer_id = $marketer->id;
+
+        $projects = 0;
+        $assignments = null;
+        $transactions = null;
+
+        $projects = Project::where('marketer_id', $marketer_id)->get();
+
+        if ($projects != null) {
+            $assignments = $projects->map(function ($project) {
+                $bids = $project->bids()->get();
+                if ($bids != null) {
+                    foreach ($bids as $bid) {
+                        if ($bid->status == 'assigned' || $bid->status == 'done') {
+                            return $bid;
+                        }
+                    }
+                } else {
+                    return null;
+                }
+            });
+        }
+
+        $assignments = $assignments->filter(function ($assignment) {
+            return $assignment != null;
+        });
+
+        $user = User::find($marketer->user_id);
+
+        $transactions = Transfer::where('from', $user->id)->sum('amount');
+
+        return [
+            'posted_projects' => $projects != null ? count($projects) : 0,
+            'assigned_projects' => $assignments != null ? count($assignments) : 0,
+            'total_spent' => $transactions != null ? $transactions : 0,
+            'last_active' => null
+        ];
+    }
+
+    public function mainPageDatasetAction(Request $request)
+    {
+        $query = \App\Models\Project::with('projectRequirements');
+
+
+        $platform = $request['dataset']['filters']['platform'];
+        $filterTrigger = false;
+        $filtersQuery = null;
+
+        foreach ($platform as $plat => $platformHolder) {
+            foreach ($platformHolder as $propertyHolder => $value) {
+                if ($propertyHolder != 'sub') {
+                    $name = $propertyHolder;
+                    $itemValue = $value;
+
+                    $sumQueryArray = [];
+
+                    if ($itemValue == '1') {
+                        $filterTrigger = true;
+
+                        $filtersQuery = DB::table('projects')
+                            ->select(
+                                'projects.id',
+                                'projects.title',
+                                'projects.description',
+                                'platforms.name AS platform',
+                                'influencer_classes.name AS influencer_class'
+                            )
+                            ->join('project_requirements', 'projects.id', '=', 'project_requirements.project_id')
+                            ->join('platforms', 'project_requirements.platform_id', '=', 'platforms.id')
+                            ->join('influencer_classes', 'project_requirements.influencer_classes_id', '=', 'influencer_classes.id');
+
+                        foreach ($platformHolder['sub'] as $sub => $subValue) {
+                            if ($subValue == '1') {
+                                array_push($sumQueryArray,str_replace('_','-', strtoupper($sub)));
+                            }
+                        }
+
+                        if (count($sumQueryArray) > 0) {
+                            $filtersQuery->orWhere(function($query) use ($name, $sumQueryArray) {
+                                $query->whereRaw('UPPER(platforms.name) LIKE ?', [strtoupper($name)])
+                                    ->whereIn(DB::raw('UPPER(influencer_classes.name)'), $sumQueryArray);
+                            });
+                        } else {
+                            $filtersQuery->orWhereRaw('upper(platforms.name) LIKE ?', [strtoupper($name)]);
+                        }
+                    }
+                }
+            }
+        }
+
+        if($filterTrigger){
+            $data = $filtersQuery->get()->pluck('id')->unique();
+            $query->whereIn('id',$data->toArray());
+        }
+
+
+        $search = $request['dataset']['search'];
+
+        if (!empty($search)) {
+            $query->where('title', 'LIKE', '%' . $search . '%');
+        }
+
+        $budget = $request['dataset']['filters']['budget'];
+
+        if (!empty($budget['from']) || !empty($budget['to'])) {
+            if (!empty($budget['from'])) {
+                $query->where('budget', '>=', $budget['from']);
+            }
+
+            if (!empty($budget['to'])) {
+                $query->where('budget', '<=', $budget['to']);
+            }
+        }
+
+        $sort = $request['dataset']['sort'];
+
+        if (!empty($sort['by'])) {
+            if (!empty($sort['order'])) {
+                $query->orderBy($sort['by'], $sort['order']);
+            } else {
+                $query->orderBy($sort['by'], 'asc');
+            }
+        }
+
+        $query->get();
+
+        $modified_projects = collect();
+
+        $query->each(function ($project) use ($modified_projects) {
+            $modified_project = $project;
+            if ($project->platforms) {
+                $modified_project->platforms->each(function ($platform) {
+                    if ($platform->pivot) {
+                        $influencer_class_id = $platform->pivot->influencer_classes_id;
+                        $influencer_class = InfluencerClass::find($influencer_class_id);
+                        $platform->pivot['influencer_data'] = $influencer_class;
+                    }
+                });
+            }
+
+            $modified_projects->push($modified_project);
+        });
+
+        return [
+            'projects' => $modified_projects
+        ];
     }
 }

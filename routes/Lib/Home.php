@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\InfluencerClass;
 use App\Models\Platform;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
@@ -29,7 +30,28 @@ Route::get('/ContactUs', function () {
 })->name('ContactUs');
 
 Route::get('/Projects', function () {
+    $projects = \App\Models\Project::with('projectRequirements')->get();
+
+    $modified_projects = collect();
+
+    $projects->each(function ($project) use ($modified_projects) {
+        $modified_project = $project;
+        if ($project->platforms) {
+            $modified_project->platforms->each(function ($platform) {
+                if ($platform->pivot) {
+                    $influencer_class_id = $platform->pivot->influencer_classes_id;
+                    $influencer_class = InfluencerClass::find($influencer_class_id);
+                    $platform->pivot['influencer_data'] = $influencer_class;
+                }
+            });
+        }
+
+        $modified_projects->push($modified_project);
+    });
+
+
     return Inertia::render('Projects', [
+        'projects' => $projects
     ]);
 })->name('Projects');
 

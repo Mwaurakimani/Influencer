@@ -17,9 +17,19 @@ return new class extends Migration {
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('media_id');
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('media_id')->references('id')->on('media')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('media_id')
+                ->references('id')
+                ->on('media')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 

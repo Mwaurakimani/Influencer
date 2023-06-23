@@ -1,5 +1,9 @@
 @import "mixin";
 
+body{
+    background-color: #f3f3f3;
+}
+
 
 //Headings
 h1, h2, h3, h4, h5, h6 {
@@ -181,20 +185,39 @@ button.purple {
     align-items: center;
 
     span {
-        width: 15px;
-        height: 15px;
-        text-align: center;
-        line-height: 15px;
+        display: none;
+        place-content: center;
+        place-items: center;
+        width: 20px;
+        height: 20px;
         margin-left: 5px;
         border-radius: 50%;
         background-color: var(--pale-red-1);
+
+        &:hover{
+            cursor: pointer;
+            background-color: red;
+            color: white;
+        }
     }
+
+    &:hover{
+        span{
+            display: grid;
+        }
+    }
+}
+.d-hide{
+    display: none;
 }
 
 
 @include s-screens{
     .m-hide{
-        display: none;
+        display: none !important;
+    }
+    .d-hide{
+        display: block;
     }
 }
 

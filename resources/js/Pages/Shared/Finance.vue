@@ -1,10 +1,8 @@
 <script setup>
 import {storeToRefs} from 'pinia';
-import {inject, onMounted, reactive, ref} from 'vue';
+import {inject, onMounted, provide, reactive, ref} from 'vue';
 import {authStore} from "../../Store/AuthStore";
 import {usePage} from "@inertiajs/vue3";
-import MobileInfluencerDashboardLayout from "../../Layouts/MobileInfluencerDashboardLayout.vue";
-import MobileDashboardHeader from '../../Components/MobilOnlyComponents/MobileDashboardHeader.vue';
 import Modal from '../../Components/Modal.vue'
 import BalanceComponent from "./FinanceComponent/BalanceComponent.vue";
 import Deposit from "./FinanceComponent/Deposit.vue";
@@ -18,6 +16,8 @@ if (currentUser != null) {
 }
 const {status, user} = storeToRefs(auth)
 const activeTab = ref('Balance')
+provide('activeTab', 'Finance')
+provide('pageName', 'Finance')
 
 
 const props = defineProps(['finance']);
@@ -61,8 +61,7 @@ function switchTabs(payload) {
     <teleport to=body>
                 <Modal :visible="modal.properties.visible">
                 </Modal>
-        <MobileInfluencerDashboardLayout :activePage="'Finance'">
-        </MobileInfluencerDashboardLayout>
+        <MobileDashboardLayout :activePage="'Finance'"/>
     </teleport>
     <MobileDashboardHeader :backButton="true" :title="'Finance'"/>
     <DesktopDashbooardLayout>
@@ -79,30 +78,12 @@ function switchTabs(payload) {
                 </li>
             </ul>
         </nav>
-        <div class="container">
+        <div class="container h-[100vh]">
             <BalanceComponent  :balance="props.finance.Balance" v-if="activeTab === 'Balance'"/>
             <Deposit :Deposit="props.finance.Deposit" v-if="activeTab === 'Deposit'"/>
             <Withdraw :Withdrawal="props.finance.Withdrawal"  v-if="activeTab === 'Withdraw'"/>
         </div>
     </DesktopDashbooardLayout>
-    <nav class="m-hide">
-        <ul class="w-[100%] h-[50px] items-center flex justify-around">
-            <li @click.prevent="switchTabs('Balance')"
-                :class="['w-[33.3%]','text-center',activeTab === 'Balance' ? 'active-tab':'' ]">Balance
-            </li>
-            <li @click.prevent="switchTabs('Deposit')"
-                :class="['w-[33.3%]','text-center',activeTab === 'Deposit' ? 'active-tab':'' ]">Deposit
-            </li>
-            <li @click.prevent="switchTabs('Withdraw')"
-                :class="['w-[33.3%]','text-center',activeTab === 'Withdraw' ? 'active-tab':'' ]">Withdraw
-            </li>
-        </ul>
-    </nav>
-    <div class="m-hide container">
-        <BalanceComponent :balance="props.finance.Balance" v-if="activeTab === 'Balance'"/>
-        <Deposit :Deposit="props.finance.Deposit" v-if="activeTab === 'Deposit'"/>
-        <Withdraw :Withdrawal="props.finance.Withdrawal"  v-if="activeTab === 'Withdraw'"/>
-    </div>
 </template>
 <style lang="scss" scoped>
 @import "../sassLoader";
@@ -116,7 +97,6 @@ function switchTabs(payload) {
 nav {
     box-shadow: 0 3px 2px lightgrey;
     position: sticky;
-    top: 60px;
     background-color: white;
     margin-bottom: 20px;
     z-index: 500;

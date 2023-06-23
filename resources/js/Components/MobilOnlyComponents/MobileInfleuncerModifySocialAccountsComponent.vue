@@ -1,13 +1,17 @@
 <script setup>
 import {reactive, ref, watch} from "vue";
+import {DEFAULTS} from "@stores/DEFAULTS.js";
 
 const activeTab = ref('facebook');
 
 const props = defineProps([
-    'supportedPlatforms'
+    'supportedPlatforms',
+    'edit'
 ])
 
 const supportedPlatforms = props.supportedPlatforms.social_account
+
+const defaults = DEFAULTS()
 
 watch(
     supportedPlatforms,
@@ -29,6 +33,7 @@ for (let platform in supportedPlatforms) {
     let name = platform
 
     for (let platformData in supportedPlatforms[name].platformDetail) {
+
         supportedPlatforms[name].platformDetail[platformData].status = (() => {
 
             return !(supportedPlatforms[name].platformDetail[platformData].value === 'undefined' ||
@@ -53,28 +58,28 @@ function changeTab(payload) {
                 class="social-media-icon-holder h-[40px] w-[40px]"
                 :class="{'active' : activeTab == 'facebook'}"
             >
-                <img class="w-[30px] h-[30px]" src="/storage/DESIGN/WORKSPACE/icons/facebook-icon.png">
+                <img class="w-[30px] h-[30px]" :src="defaults.platformIcons+'/facebook-icon.png'">
             </div>
             <div
                 @click.prevent="changeTab('twitter')"
                 class="social-media-icon-holder h-[40px] w-[40px]"
                 :class="{'active' : activeTab == 'twitter'}"
             >
-                <img class="w-[30px] h-[30px]" src="/storage/DESIGN/WORKSPACE/icons/twitter-icon.png">
+                <img class="w-[30px] h-[30px]" :src="defaults.platformIcons+'/twitter-icon.png'">
             </div>
             <div
                 @click.prevent="changeTab('instagram')"
                 class="social-media-icon-holder h-[40px] w-[40px]"
                 :class="{'active' : activeTab == 'instagram'}"
             >
-                <img class="w-[30px] h-[30px]" src="/storage/DESIGN/WORKSPACE/icons/instagram-icon.png">
+                <img class="w-[30px] h-[30px]" :src="defaults.platformIcons+'/instagram-icon.png'">
             </div>
             <div
                 @click.prevent="changeTab('tiktok')"
                 class="social-media-icon-holder h-[40px] w-[40px]"
                 :class="{'active' : activeTab == 'tiktok'}"
             >
-                <img class="w-[30px] h-[30px]" src="/storage/DESIGN/WORKSPACE/icons/tiktok-icon.png">
+                <img class="w-[30px] h-[30px]" :src="defaults.platformIcons+'/tiktok-icon.png'">
             </div>
         </div>
         <section v-for="(platform,platformKey) in supportedPlatforms">
@@ -96,40 +101,16 @@ function changeTab(payload) {
                     </select>
                 </div>
                 <hr class="mb-[20px] bg-grey">
-<!--                <section class="input-select pl-1 pr-[10px]">-->
-
-<!--                    <div v-for="(detail,key) in supportedPlatforms[activeTab].platformDetail"-->
-<!--                         class="input-g py-[5px] flex align-middle">-->
-<!--                        {{}}-->
-<!--                        <input class=" m-[5px] mr-[10px]" type="checkbox" style="border-radius: 3px"-->
-<!--                               v-model="supportedPlatforms[activeTab].platformDetail[key].status"-->
-<!--                               true-value="true"-->
-<!--                               false-value="false"-->
-<!--                        >-->
-<!--                        <label class=" p-[5px] p4 w-[100px]">{{ key }}</label>-->
-<!--                        <article class="grid" style="flex-wrap: wrap; width: calc(100% - 100px)">-->
-<!--                            <input style="width: 100%;text-align: right" type="number" min="0"-->
-<!--                                   v-model="supportedPlatforms[activeTab].platformDetail[key].value">-->
-
-<!--                            <select-->
-<!--                                v-if="supportedPlatforms[activeTab].platformDetail[key].options && supportedPlatforms[activeTab].platformDetail[key].options.length > 0"-->
-<!--                                style="width:100px;justify-self: flex-end" class="mt-[5px] mr-[0px]"-->
-<!--                                v-model="supportedPlatforms[activeTab].platformDetail[key].unit">-->
-<!--                                <option v-for="option in supportedPlatforms[activeTab].platformDetail[key].options"-->
-<!--                                        :value="option">/{{ option }}-->
-<!--                                </option>-->
-<!--                            </select>-->
-<!--                        </article>-->
-<!--                    </div>-->
-<!--                </section>-->
             </div>
         </section>
-
+        <div  v-if="props.edit != null && props.edit==true ">
+            <button class="button purple m-[10px]" @click.prevent="$emit('removeAccount',activeTab)">Remove Account</button>
+        </div>
     </div>
 </template>
 <script>
 export default {
-    name: 'Mobile-brand-Project-breakdown-Entry-component'
+    name: 'Mobile-brand-Project-breakdown-Entry-component',
 }
 </script>
 <style lang="scss" scoped>

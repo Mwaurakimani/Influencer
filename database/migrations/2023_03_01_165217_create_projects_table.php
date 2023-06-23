@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->string('status')->default('active');
             $table->timestamps();
+            $table->softDeletes();
+
 
             $table->foreign('marketer_id')
                 ->references('id')

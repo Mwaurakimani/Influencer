@@ -8,6 +8,7 @@ export default defineConfig({
             '@': '/resources/js',
             '@PortalComponent': '/resources/js/Pages/Portal/Components',
             '@Components': '/resources/js/Components',
+            '@stores': '/resources/js/Store',
         },
         extensions: ['.js', '.vue', '.json', '.css', '.scss', '.sass']
     },

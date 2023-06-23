@@ -38,12 +38,12 @@
     <h5 class=" w-[96%] mx-[auto] mb-[20px] text-grey-200">Transactions</h5>
     <ul class="p-[10px]">
         <li v-for="transaction in  balance.transactions" class="flex bg-white mb-[10px] justify-between p-[10px] card-shadowed" style="width: 100%;gap: 5px;">
-            <div class="grow" style="width: calc(100% - 70px)" >
-                <div v-if="transaction.type"  class="flex items-center w-[100%]">
+            <div class="grow" style="width: calc(100% - 100px)" >
+                <div v-if="transaction.type"  class="flex items-center">
                     <label class=" p3 p-[10px]" >Type:</label>
                     <p class="p3  ">{{transaction.type}}</p>
                 </div>
-                <div v-if="transaction.type"  class="flex items-center w-[100%]">
+                <div v-if="transaction.type"  class="flex items-center">
                     <label class=" p3 p-[10px]" >Agent:</label>
                     <p class="p3  ">{{transaction.Agent}}</p>
                 </div>
@@ -60,7 +60,7 @@
                     <p class="p3  ">{{transaction.date}}</p>
                 </div>
             </div>
-            <div style="width: 70px">
+            <div style="width: 100px">
                 <p v-if="transaction.status == 'Confirmed'" class="p3" style="color: var(--light-green)">{{transaction.status}}</p>
                 <p v-else class="p3">{{transaction.status}}</p>
             </div>

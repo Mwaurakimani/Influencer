@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Influencer extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $guarded = [];
 
@@ -15,12 +17,8 @@ class Influencer extends Model
         return $this->belongsTo(User::class,'user_id','id');
     }
 
-    public function accounts(){
+    public function socialAccount(){
         return $this->hasMany(SocialAccount::class);
-    }
-
-    public function platform(){
-        return $this->hasOneThrough(Platform::class,SocialAccount::class,'influencer_id','platform_id','id','id');
     }
 
     public function bids(){

@@ -32,7 +32,8 @@ const modal = {
 
 function makeWithdrawal(){
     axios.post(route('makeWithdrawal'),withdraw).then((resp) => {
-        console.log(resp)
+        alert(resp.data.message)
+        modal.closeModal()
     }).catch((err) => {
         console.log(err)
     })

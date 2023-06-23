@@ -84,13 +84,14 @@ class InfluencerController extends Controller
             }
 
             DB::commit();
+
         } catch (Exception $e) {
             DB::rollBack();
 
             throw new Exception($e->getMessage());
         }
 
-        return "Influencer account has been created successfully";
+        return true;
     }
 
     //This method receives a user and returns the user with theis social media account information
@@ -128,7 +129,7 @@ class InfluencerController extends Controller
 
             if ($file) {
                 if ($influencerUpdate->image_path) {
-                    Storage::delete('public/'.$influencerUpdate->image_path);
+                    Storage::delete('public/' . $influencerUpdate->image_path);
                     $influencerUpdate->image_path = null;
                     $influencerUpdate->save();
                     $file_path = $this->uploadProfilePicture($file);
@@ -146,8 +147,14 @@ class InfluencerController extends Controller
 
             $influencerUpdate->update([
                 'bio' => $userUpdate['bio'],
-                'image_path' => $file_path
             ]);
+
+            if ($file) {
+                $influencerUpdate->update([
+                    'image_path' => $file_path
+                ]);
+            }
+
 
             foreach ($social_accountUpdate as $key => $social_account) {
                 $input_platform = $key;
@@ -236,7 +243,10 @@ class InfluencerController extends Controller
             }
         }
 
+        $assignment = null;
+
         foreach ($project->bids as $bid) {
+
             if ($bid->influencer_id) {
                 $influencer_id = $bid->influencer_id;
                 $influencer = Influencer::find($influencer_id);
@@ -251,13 +261,18 @@ class InfluencerController extends Controller
                 $bid['user']['social_accounts'] = $social_accounts;
                 $bid['assignment'] = $bid->assignments()->first();
 
-                if ($bid['assignment']) {
+                if ($bid->assignment != null) {
                     $bid['assignment']['media'] = Media::with('user')->where('assignment_id', $bid['assignment']->id)->get();
                 }
             }
         }
 
-        $assignment = $bid->assignment;
+
+        foreach ($project->bids as $bid){
+            if($bid['assignment'] != null){
+                $assignment = $bid['assignment'];
+            }
+        }
 
 
         foreach ($project->projectRequirements as $requirement) {
@@ -295,7 +310,7 @@ class InfluencerController extends Controller
 
         return Inertia::render('Influencer/ViewProject', [
             'project' => $project,
-            'marketerStatus' => $assignment->marketer_status
+            'marketerStatus' => $assignment?->marketer_status
         ]);
     }
 
@@ -379,5 +394,15 @@ class InfluencerController extends Controller
         }
 
         return $file->storeAs('ProfilePictures', time() . '_' . Auth::user()->id . '_' . $file->getClientOriginalName(), 'public');
+    }
+
+    public function removeAccount(Request $request, $id, $account)
+    {
+        $user = Influencer::where('user_id', $id)->get()[0];
+        $platform = Platform::where('name', 'LIKE', '%' . $account . '%')->get()[0]->id;
+
+        $account = SocialAccount::where('influencer_id', $user->id)->where('platform_id', $platform)->get()[0];
+
+        $account->delete();
     }
 }
