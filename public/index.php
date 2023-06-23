@@ -4,7 +4,7 @@ $username = "VumishaAdmin";
 $password = "vumishaadmin";
 
 // Create connection
-$conn = mysqli_connect($servername, $username, $password);
+$conn = mysqli_connect($servername,$username,$password,'VumishaDevelopemntDatabase','3306');
 
 // Check connection
 if (!$conn) {
