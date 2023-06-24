@@ -20,7 +20,7 @@ export const DEFAULTS = defineStore('DEFAULTS', {
             return this.SYSTEM_FOLDER + '/SystemIcons'
         },
         systemImages(){
-            return this.SYSTEM_FOLDER + '/SystemIMages'
+            return this.SYSTEM_FOLDER + '/SystemImages'
         },
     },
 

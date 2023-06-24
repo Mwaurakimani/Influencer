@@ -1,0 +1,1 @@
+import{A as a}from"./AdminLayout-4bb41a03.js";import{k as e,l as t,o,a as s,I as i}from"./app-b3887409.js";const r=s("h4",{class:"text-grey-300"},"Media",-1),l={__name:"Media",props:{},setup(c){return i("activeSideNavigationLink","Media"),(n,_)=>(o(),e(a,null,{default:t(()=>[r]),_:1}))}};export{l as default};

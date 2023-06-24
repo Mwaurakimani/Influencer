@@ -1,1 +1,0 @@
-import{A as a}from"./AdminLayout-389a8f4c.js";import{k as t,l as e,o,a as s,I as r}from"./app-410688f0.js";const c=s("h4",{class:"text-grey-300"},"Platforms",-1),p={__name:"Platforms",props:{},setup(i){return r("activeSideNavigationLink","Platforms"),(l,n)=>(o(),t(a,null,{default:e(()=>[c]),_:1}))}};export{p as default};
