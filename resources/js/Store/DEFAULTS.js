@@ -14,7 +14,7 @@ export const DEFAULTS = defineStore('DEFAULTS', {
 
     getters: {
         platformIcons(){
-            return this.SYSTEM_FOLDER + '/platformIcons'
+            return this.SYSTEM_FOLDER + '/PlatformIcons'
         },
         systemIcons(){
             return this.SYSTEM_FOLDER + '/SystemIcons'
@@ -26,7 +26,7 @@ export const DEFAULTS = defineStore('DEFAULTS', {
 
     actions:{
         initializeDefaults(){
-            this.PLATFORM_ICONS = this.SYSTEM_FOLDER + '/platformIcons'
+            this.PLATFORM_ICONS = this.SYSTEM_FOLDER + '/PlatformIcons'
             this.SYSTEM_ICONS = this.SYSTEM_FOLDER + '/SystemIcons'
             this.SYSTEM_IMAGES = this.SYSTEM_FOLDER + '/SystemImages'
         }
