@@ -1,23 +1,24 @@
 <template>
-    <nav>
-        <MobileNavigationComponent :active-nav-button="'Home'"/>
-        <DesktopNavigationVue style="position: absolute;" class="w-[100%]" :alter.camel="true" :activeNavButton="'Home'" :static="true"/>
-    </nav>
-    <div class="banner flex justify-around align-middle" style="align-items: center; height:100vh">
-        <section class="flex flex-col justify-center align-middle w-[500px]">
-            <h3 class="text-center text-white mb-[20px] ">Welcome to Vumisha where brands and influencers make magic happen. . .</h3>
-            <img class="p-[10px] w-[90px] mb-[10px] mx-[auto]  h-[90px] bg-white" style="border-radius: 50%;display: block"
-                 :src="defaults.systemImages+'/logos/colored/icon-colored.svg'">
-            <p class="text-white p-[10px]" >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque eius esse repudiandae tempora. Atque deleniti dolorum, ducimus est eum ex facere itaque, libero nihil quo sed suscipit tempore veniam. Unde?</p>
-            <div class="banner-image ">
-            </div>
-        </section>
-        <section class="d-hide">
-            <div class="w-[550px] h-[360px] bg-white" style="border-radius: 8px;box-shadow: 0 0 8px lightgray">
+    <img :src="'/storage/default-avatar.jpg'">
+<!--    <nav>-->
+<!--        <MobileNavigationComponent :active-nav-button="'Home'"/>-->
+<!--        <DesktopNavigationVue style="position: absolute;" class="w-[100%]" :alter.camel="true" :activeNavButton="'Home'" :static="true"/>-->
+<!--    </nav>-->
+<!--    <div class="banner flex justify-around align-middle" style="align-items: center; height:100vh">-->
+<!--        <section class="flex flex-col justify-center align-middle w-[500px]">-->
+<!--            <h3 class="text-center text-white mb-[20px] ">Welcome to Vumisha where brands and influencers make magic happen. . .</h3>-->
+<!--            <img class="p-[10px] w-[90px] mb-[10px] mx-[auto]  h-[90px] bg-white" style="border-radius: 50%;display: block"-->
+<!--                 :src="defaults.systemImages+'/logos/colored/icon-colored.svg'">-->
+<!--            <p class="text-white p-[10px]" >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque eius esse repudiandae tempora. Atque deleniti dolorum, ducimus est eum ex facere itaque, libero nihil quo sed suscipit tempore veniam. Unde?</p>-->
+<!--            <div class="banner-image ">-->
+<!--            </div>-->
+<!--        </section>-->
+<!--        <section class="d-hide">-->
+<!--            <div class="w-[550px] h-[360px] bg-white" style="border-radius: 8px;box-shadow: 0 0 8px lightgray">-->
 
-            </div>
-        </section>
-    </div>
+<!--            </div>-->
+<!--        </section>-->
+<!--    </div>-->
 </template>
 <script>
 import {DEFAULTS} from "@stores/DEFAULTS.js";

@@ -1,1 +1,0 @@
-import{A as e}from"./AdminLayout-4bb41a03.js";import{k as t,l as a,o,a as s,I as r}from"./app-b3887409.js";const c=s("h4",{class:"text-grey-300"},"Projects",-1),d={__name:"Projects",props:{},setup(i){return r("activeSideNavigationLink","Projects"),(n,_)=>(o(),t(e,null,{default:a(()=>[c]),_:1}))}};export{d as default};
