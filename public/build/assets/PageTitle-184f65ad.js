@@ -1,1 +1,0 @@
-import{_ as s,c as a,a as o,t as _,h as n,o as c}from"./app-7ce278c5.js";const d={name:"PageTitle",props:["title"]},r={class:"flex justify-between"},l={class:"text-grey-300"};function i(e,f,t,p,u,g){return c(),a("header",r,[o("h4",l,_(t.title),1),n(e.$slots,"default",{},void 0,!0)])}const m=s(d,[["render",i],["__scopeId","data-v-d94f87df"]]);export{m as default};

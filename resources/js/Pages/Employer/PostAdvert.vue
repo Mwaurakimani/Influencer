@@ -4,7 +4,7 @@
         </MobileDashboardLayout>
     </teleport>
     <MobileDashboardHeader :backButton="true" :title="'Create Projects'"/>
-    <DesktopDashbooardLayout>
+    <DesktopDashboardLayout>
         <div v-if="activeSection == 'intro'" class="content-area">
             <div class="card-shadowed p-[20px] mx-[auto] mt-[30px] mb-[80px] w-[96%]">
                 <h5 class="text-grey-200 pb-[20px] text-center">Project Intro</h5>
@@ -149,7 +149,7 @@
                 </div>
             </div>
         </div>
-    </DesktopDashbooardLayout>
+    </DesktopDashboardLayout>
 </template>
 <script>
 import {authStore} from "@stores/AuthStore.js";

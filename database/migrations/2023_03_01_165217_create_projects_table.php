@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
+use Illuminate\Support\Facades\DB;
 return new class extends Migration
 {
     /**
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('runtime');
             $table->text('notes')->nullable();
             $table->string('location')->nullable();
-            $table->string('status')->default('active');
+            $table->enum('status',['Active','Inactive'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
 
@@ -44,6 +44,8 @@ return new class extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Schema::dropIfExists('projects');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 };

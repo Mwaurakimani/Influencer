@@ -64,7 +64,7 @@ function switchTabs(payload) {
         <MobileDashboardLayout :activePage="'Finance'"/>
     </teleport>
     <MobileDashboardHeader :backButton="true" :title="'Finance'"/>
-    <DesktopDashbooardLayout>
+    <DesktopDashboardLayout>
         <nav class="">
             <ul class="w-[100%] h-[50px] items-center flex justify-around">
                 <li @click.prevent="switchTabs('Balance')"
@@ -83,7 +83,7 @@ function switchTabs(payload) {
             <Deposit :Deposit="props.finance.Deposit" v-if="activeTab === 'Deposit'"/>
             <Withdraw :Withdrawal="props.finance.Withdrawal"  v-if="activeTab === 'Withdraw'"/>
         </div>
-    </DesktopDashbooardLayout>
+    </DesktopDashboardLayout>
 </template>
 <style lang="scss" scoped>
 @import "../sassLoader";

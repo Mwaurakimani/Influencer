@@ -1,56 +1,24 @@
-<script setup>
-import {inject, onMounted, ref} from "vue";
-import {useForm} from "@inertiajs/vue3";
-import convertDate from "../../../Helpers/convertDate";
-
-
-const props = defineProps([
-    'chats',
-])
-
-const emit = defineEmits(['sendMessage'])
-
-const currentUser = inject('currentUser');
-const user = currentUser;
-
-const chatWindow = ref(null)
-const message = useForm({
-    message: null
-})
-
-function sendM(){
-    emit('sendMessage',message)
-    message.message = null
-}
-
-onMounted(() => {
-    chatWindow.value.scrollTop = chatWindow.value.scrollHeight
-})
-</script>
-
 <template>
-    <div class="chats-display mb-[80px]">
+    <div class="chats-display sm:mb-[80px] md:mb-[0px]">
         <div class="chat-holder">
             <div id="chatWindow" class="chat-timeline" ref="chatWindow">
                 <ul>
                     <li v-for="chat in chats" :class="[chat.sender_id == user.id?'right-chat':'left-chat']">
                         <div class="message">
                             <div class="p3 message-content">
-<!--                                <h6 class="p3" v-if="chat.sender_id == user.id">You</h6>-->
-<!--                                <h6 class="p3" v-else>Other</h6>-->
                                 {{ chat.message }}
                             </div>
                             <div class="carret">
 
                             </div>
                         </div>
-<!--                        <div class="message-details p3">{{ convertDate(chat.created_at) }}</div>-->
+                        <div class="message-details p3">{{ convertDate(chat.created_at) }}</div>
                     </li>
                 </ul>
             </div>
             <div class="send-pannel">
                 <div class="input-group">
-                    <textarea class="h-[40px]" v-model="message.message"></textarea>
+                    <textarea id="autoresizing" class="h-[40px]" v-model="message"></textarea>
                 </div>
                 <div class="button-holder">
                     <button class="purple" @click.prevent="sendM()">Send</button>
@@ -61,8 +29,51 @@ onMounted(() => {
 </template>
 
 <script>
+import convertDate from "@/Helpers/convertDate";
+
 export default {
-    name: "chatsDisplay"
+    setup(){
+
+      return {
+          convertDate
+      }
+    },
+    name: "chatsDisplay",
+    props:['chats'],
+    data(){
+        return {
+            user: this.currentUser,
+            message:null
+        }
+    },
+    inject:['currentUser'],
+    methods:{
+        sendM(){
+            this.$emit('sendMessage',this.message)
+            this.message = null
+        }
+    },
+    mounted() {
+        let element = $('#chatWindow');
+
+        element.animate({
+            scrollTop: element.get(0).scrollHeight
+        }, 1000)
+
+        $('#autoresizing').on('input', function () {
+            this.style.height = 'auto';
+
+            this.style.height =
+                (this.scrollHeight) + 'px';
+        });
+
+        $('#autoresizing').on('', function () {
+            this.style.height = 'auto';
+
+            this.style.height =
+                (this.scrollHeight) + 'px';
+        });
+    }
 }
 </script>
 
@@ -134,12 +145,12 @@ export default {
                         position: relative;
                         width: 250px;
                         border-radius: 20px;
-                        background-image: linear-gradient(320deg, #f13d9f, pink);
+                        background-image: linear-gradient(320deg, #f63a9e, #f58694);
 
                         .message-content {
                             width: 100%;
                             height: 100%;
-                            color: #313131;
+                            color: white;
                         }
 
                         .carret {

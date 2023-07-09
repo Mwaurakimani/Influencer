@@ -74,60 +74,65 @@ class BidController extends Controller
 
     public function canBid($user, $project)
     {
-        //get project requirements
-        $project_requirements = ProjectRequirements::where('project_id', $project->id)->get();
-        $user_platforms = SocialAccount::with('platform', 'influencerClass')->where('influencer_id', (function ($user) {
-            return $user->influencer->id;
-        })($user))->get();
-        $pass = [
-            'status' => false,
-            'message' => 'Unprocessed'
-        ];
+        $account_verification_required = false;
+        $project_requirement = [];
 
+        if ($project['platformRequirements'] != null) {
+            foreach ($project['platformRequirements'] as $key => $requirement) {
+                $influencerClass = InfluencerClass::find($requirement['influencer_classes_id']);
 
-        $requirement_status = $project_requirements->map(function ($item) use ($user_platforms) {
-            $status = [
-                'required_platform' => Platform::find($item->platform_id)->name,
-                'minimum_followers' => InfluencerClass::find($item->influencer_classes_id)->min_count,
-                'platform_requirements_met' => false,
-                'follower_requirements_met' => false,
-            ];
-
-            $platform_id = $item->platform_id;
-
-
-            $user_platforms->each(function ($user_account) use ($platform_id, &$status) {
-                if ($user_account->platform->id == $platform_id) {
-                    $status['platform_requirements_met'] = true;
-
-
-                    if ($user_account->following >= $status['minimum_followers']) {
-                        $status['follower_requirements_met'] = true;
-                    }
-                }
-            });
-
-            return $status;
-        });
-
-
-        foreach ($requirement_status as $key => $value) {
-            if ($value['platform_requirements_met'] || $value['follower_requirements_met']) {
-                $pass['status'] = true;
-                $pass['message'] = 'pass';
-            } else {
-                $pass['status'] = false;
-                if (!$value['platform_requirements_met']) {
-                    $pass['message'] = "You dont seem to have a " . $value['required_platform'] . " account registered with us.";
-                }
-
-                if (!$value['follower_requirements_met']) {
-                    $pass['message'] = "Your followers on " . $value['required_platform'] . ' do not meet the minimum class requirement for this project';
-                }
-                break;
+                array_push($project_requirement,
+                    [
+                        "platform_id" => $influencerClass['platform_id'],
+                        "min_count" => $influencerClass['min_count'],
+                        "max_count" => $influencerClass['max_count'],
+                    ]
+                );
             }
         }
 
-        return $pass;
+        $influencer = $user->influencer;
+
+        if ($account_verification_required) {
+            $influencer_account_influencer_ids = $influencer->socialAccount()->where('status', 'verified')->pluck('influencer_class_id')->toArray();
+        }else{
+            $influencer_account_influencer_ids = $influencer->socialAccount()->pluck('influencer_class_id')->toArray();
+        }
+
+        if ($influencer_account_influencer_ids) {
+            $influencer_class_details = DB::table('platforminfluencerview')->whereIn('influencer_class_id', $influencer_account_influencer_ids)->get();
+
+            $result = array_filter($project_requirement, function ($requirement) use ($influencer_class_details) {
+                foreach ($influencer_class_details as $influencerClass) {
+
+                    if ($requirement['platform_id'] === $influencerClass->platform_id && $influencerClass->min_count >= $requirement['min_count']) {
+                        return true;
+                    }
+
+                }
+
+                return false;
+            });
+
+            $result = array_values($result);
+
+            if (count($project_requirement) == count($result)) {
+                return [
+                    'status' => true
+                ];
+            } else {
+                return [
+                    'status' => false,
+                    'message' => "You do not meet the minimum requirements to bid on this project.s"
+                ];
+            }
+        } else {
+            return [
+                'status' => false,
+                'message' => "You do not meet the minimum requirements to bid on this project.s"
+            ];
+        }
     }
+
+
 }

@@ -9,5 +9,8 @@ class Chat extends Model
 {
     use HasFactory;
 
+    /**
+     * @var \Illuminate\Database\Eloquent\HigherOrderBuilderProxy|mixed
+     */
     protected $guarded = [];
 }

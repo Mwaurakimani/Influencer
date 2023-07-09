@@ -6,6 +6,7 @@
                     :influencer="bid"
                     class="w-[98%] h-[90%] m-[auto]"
                     style="overflow: auto"
+                    :display="display"
                     v-on:closeModal="modal.closeModal()"
                 />
             </Modal>
@@ -31,7 +32,7 @@
                 </li>
                 <li class="flex">
                     <label class="w-[100px]">Bid Status</label>
-                    <p>{{ bid.status }}</p>
+                    <p>{{ bid.assignment != null ? "Assigned" : "Unassigned" }}</p>
                 </li>
             </ul>
         </div>
@@ -43,7 +44,7 @@
         <div class="flex justify-between py-[20px] px-[10px] ">
             <button @click.click="modal.openModal()" class="button text-white " style="background-color: var(--bright-blue)">View Influencer</button>
             <div v-if="display == 'Marketer' && !assignmentDetails.is_assigned" class="flex">
-                <button  @click.prevent="hireBid(bid.id)" class="button text-white " style="background-color: var(--light-green)">Hire</button>
+                <button id="click" @click.prevent="hireBid(bid.id)" class="button text-white " style="background-color: var(--light-green)">Hire</button>
             </div>
         </div>
     </div>
@@ -90,10 +91,11 @@ export default {
     },
     methods:{
         hireBid(bidID){
+
             axios.post(route('AcceptBid',[this.bid.id])).then((resp) => {
-                console.log(resp)
+                alert(resp.data.message)
             }).catch((err)=>{
-                console.log("Error: "+ err)
+                alert("Error Assigning bid")
             }).finally(() => {
                 window.location.reload();
             })

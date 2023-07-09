@@ -5,11 +5,11 @@
                 v-for="bid in bids"
                 :display="display"
                 :bid="bid"
-                class="comp w-[90%] md:w-[350px] mb-[20px]"
+                class=""
             />
         </div>
         <div v-else>
-            <p>No Bid was Made</p>
+            <p>No Bid Made</p>
         </div>
     </div>
 </template>
@@ -26,10 +26,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "../../Pages/sassLoader";
-
-.comp:last-of-type {
-    margin-bottom: 90px;
-}
 
 @include s-screens {
     .bid-display {

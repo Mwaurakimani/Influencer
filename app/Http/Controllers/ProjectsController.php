@@ -22,6 +22,33 @@ use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 
 class ProjectsController extends Controller
 {
+    protected array $file_types_image = [
+        "name" => "image",
+        "type" => [
+            'image/jpeg',
+            'image/gif',
+            'image/png',
+        ]
+    ];
+
+    protected array $file_types_document = [
+        "name" => "PDF",
+        "type" => [
+            'application/pdf',
+        ]
+    ];
+
+    protected array $file_types_video = [
+        "name" => "video",
+        "type" => [
+            'video/mp4',
+            'video/x-ms-wmv',
+            'video/x-msvideo',
+            'video/h264',
+            'video/webm'
+        ]
+    ];
+
     public function createProject(CreateProjectRequest $request)
     {
         $marketer = User::find(Auth::user()->id)->marketer;
@@ -59,7 +86,7 @@ class ProjectsController extends Controller
 
 
                 $projectRequirements = $project->projectRequirements()->create([
-                    'platform_id' => $platform_id,
+//                    'platform_id' => $platform_id,
                     'post_location' => $value['selected'],
                     'influencer_classes_id' => $influencer_class_id,
                     'targets' => json_encode($value['target']),
@@ -94,10 +121,15 @@ class ProjectsController extends Controller
 
     public function fileUpload(AssignmentFileUploadRequest $request)
     {
+        //initialize variables
         $file = $request->file()['Upload'];
         $project = $request['project'];
+
+        //get extension
         $uploadedFile = new UploadedFile($file, $file->getClientOriginalName());
         $filePath = $uploadedFile->getPathname();
+
+
         $mimeType = null;
         if (extension_loaded('fileinfo')) {
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -113,56 +145,46 @@ class ProjectsController extends Controller
             $media = new Media();
             $media->type = (function ($mimeType) {
 
-                $file_types_image = [
-                    'image/jpeg',
-                    'image/gif',
-                    'image/png',
+                $holder = [
+                    $this->file_types_image,
+                    $this->file_types_document,
+                    $this->file_types_video
                 ];
 
-                $file_types_document = [
-                    'application/pdf',
-                ];
+                $assigned_mime = "N/A";
 
-                $file_types_video = [
-                    'video/mp4',
-                    'video/x-ms-wmv',
-                    'video/x-msvideo',
-                    'video/h264',
-                    'video/webm'
-                ];
+                foreach ($holder as $key => $value){
 
+                    $check_array = $value["type"];
 
-
-                if (in_array($mimeType, $file_types_image)) {
-                    return 'image';
-                } elseif (in_array($mimeType, $file_types_document)) {
-                    return 'PDF';
-                } elseif (in_array($mimeType, $file_types_video)) {
-                    return 'video';
-                } else {
-                    return 'N/A';
+                    if (in_array($mimeType,$check_array)){
+                        $assigned_mime = $value['name'];
+                        break;
+                    }
                 }
+
+                return $assigned_mime;
             })($mimeType);
+
 
             if ($media->type === 'N/A') {
                 throw new UnsupportedMediaTypeHttpException();
             }
 
-            $project = Project::with('assignment')->where('id',$project)->first();
+
+            $project = Project::with('assignment')->where('id', $project)->first();
+
             $media->assignment_id = $project->assignment->id;
 
-
             $filePath = $file->storeAs('uploads', time() . '_' . $file->getClientOriginalName(), 'public');
+
             $media->path = $filePath;
             $media->name = $file->getClientOriginalName();
-
             $media->save();
 
             $media_owner = new MediaOwner();
-
             $media_owner->media_id = $media->id;
             $media_owner->user_id = Auth::user()->id;
-
             $media_owner->save();
 
             return [
@@ -177,20 +199,21 @@ class ProjectsController extends Controller
         }
     }
 
-    public function validateBudget(Request $request){
+    public function validateBudget(Request $request)
+    {
         $budget = $request['budget'];
 
-        $credits = User::where('id',Auth::user()->id)->first()->creditBalance;
-        $marketer = Marketer::where('user_id',Auth::user()->id)->first();
-        $activeProjectsValue = Project::where('marketer_id',$marketer->id)->where('status','<>', 'completed')->sum('projects.budget');
+        $credits = User::where('id', Auth::user()->id)->first()->creditBalance;
+        $marketer = Marketer::where('user_id', Auth::user()->id)->first();
+        $activeProjectsValue = Project::where('marketer_id', $marketer->id)->where('status', '<>', 'completed')->sum('projects.budget');
 
         $credits = $credits - $activeProjectsValue;
 
-        if($budget <= $credits){
+        if ($budget <= $credits) {
             return [
                 'status' => true
             ];
-        }else{
+        } else {
             return [
                 'status' => false
             ];

@@ -34,8 +34,6 @@ Route::middleware([
         }
     })->name('AdminViewDeposits');
 
-
-
     Route::get('/Admin/Withdraws', function () {
 
         $Withdraws = (new FinanceController)->listAllWithdraws();
@@ -58,14 +56,11 @@ Route::middleware([
         }
     })->name('AdminViewWithdrawal');
 
-
     Route::post('/Admin/Transaction/update/{id}/{type}', function (Request $request, $id,$type) {
 
         return (new FinanceController)->updateTransaction($request,$id,$type);
 
     })->name('AdminUpdateTransaction');
-
-
 
 });
 

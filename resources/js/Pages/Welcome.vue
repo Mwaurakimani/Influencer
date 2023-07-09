@@ -1,20 +1,23 @@
 <template>
     <nav>
         <MobileNavigationComponent :active-nav-button="'Home'"/>
-        <DesktopNavigationVue style="position: absolute;" class="w-[100%]" :alter.camel="true" :activeNavButton="'Home'" :static="true"/>
+        <DesktopNavigationVue style="position: absolute;" class="w-[100%]" :alter.camel="true" :activeNavButton="'Home'"
+                              :static="true"/>
     </nav>
-    <div class="banner flex justify-around align-middle" style="align-items: center; height:100vh">
-        <section class="flex flex-col justify-center align-middle w-[500px]">
-            <h3 class="text-center text-white mb-[20px] ">Welcome to Vumisha where brands and influencers make magic happen. . .</h3>
-            <img class="p-[10px] w-[90px] mb-[10px] mx-[auto]  h-[90px] bg-white" style="border-radius: 50%;display: block"
+    <div class="banner p-[20px] flex flex-wrap gap-[10px] justify-around h-[calc(100vh-60px)] md:h-[100vh]" style="align-items: center; justify-content: space-around;overflow: hidden">
+        <section class=" sm:w-[100%] mb-[20px] md:w-[40%] flex flex-col justify-center align-middle">
+            <h3 class="text-center text-white mb-[20px] ">Welcome to Vumisha where brands and influencers make magic
+                happen. . .</h3>
+            <img class="p-[10px] w-[90px] mb-[20px] mx-[auto]  h-[90px] bg-white"
+                 style="border-radius: 50%;display: block"
                  :src="defaults.systemImages+'/logos/colored/icon-colored.svg'">
-            <p class="text-white p-[10px]" >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque eius esse repudiandae tempora. Atque deleniti dolorum, ducimus est eum ex facere itaque, libero nihil quo sed suscipit tempore veniam. Unde?</p>
-            <div class="banner-image ">
-            </div>
+            <p class="line-1 text-center text-white p1 anim-typewriter">Create... Inspire... Connect...</p>
         </section>
-        <section class="d-hide">
-            <div class="w-[550px] h-[360px] bg-white" style="border-radius: 8px;box-shadow: 0 0 8px lightgray">
-
+        <section class="sm:w-[100%] md:w-[45%] mx-h-[50%]">
+            <div class="w-[100%] h-[500px]" style="overflow: hidden">
+                <div class="w-[100%] h-[100%]" style="">
+                    <img class="w-[90%]" style="object-fit: contain"  :src="defaults.systemImages+'/banner.svg'">
+                </div>
             </div>
         </section>
     </div>
@@ -23,20 +26,20 @@
 import {DEFAULTS} from "@stores/DEFAULTS.js";
 
 export default {
-    setup(){
+    setup() {
         const defaults = DEFAULTS()
 
         return {
             defaults
         }
     },
-    inject:['currentUser'],
-    data(){
+    inject: ['currentUser'],
+    data() {
         return {
-            activeTab:'Influencer'
+            activeTab: 'Influencer'
         }
     },
-    methods:{
+    methods: {
         changeTagLine() {
             let elem = $(event.target)
             let parent = elem.parent();
@@ -49,11 +52,12 @@ export default {
                 }
             })
         }
-    }
+    },
 }
 </script>
 <style lang="scss" scoped>
 @import "sassLoader";
+
 .description {
     overflow: hidden;
 
@@ -87,7 +91,7 @@ export default {
 }
 
 .banner {
-    background-image: linear-gradient(200DEG, #ec1489, #ff005d);
+    background-image: linear-gradient(200DEG, #570ca8, rgba(255, 0, 93, 0.85), rgba(87, 12, 168, 0.82));
 
     .banner-image {
         width: 100%;
@@ -295,74 +299,33 @@ section > .body {
         }
     }
 }
+
+/* Google Fonts */
+@import url(https://fonts.googleapis.com/css?family=Anonymous+Pro);
+
+/* Global */
+.line-1{
+    position: relative;
+    top: 50%;
+    margin: 0 auto;
+    border-right: 2px solid rgba(255,255,255,.75);
+    text-align: center;
+    white-space:nowrap;
+    overflow: hidden;
+    transform: translateY(-50%);
+}
+
+/* Animation */
+.anim-typewriter{
+    animation: typewriter 4s steps(44) 1s 1 normal both,
+    blinkTextCursor 500ms steps(44) infinite normal;
+}
+@keyframes typewriter{
+    from{width: 0;}
+    to{width: 13em;}
+}
+@keyframes blinkTextCursor{
+    from{border-right-color: rgba(255,255,255,.75);}
+    to{border-right-color: transparent;}
+}
 </style>
-
-
-<!--    <section class="mb-[200px]" >-->
-<!--        <ul class="tab" @click="changeTagLine()">-->
-<!--            <li class="p3 active">Influencer</li>-->
-<!--            <li class="p3">Marketer</li>-->
-<!--        </ul>-->
-<!--        <div v-if="activeTab == 'Influencer'" id="influencerTagLine" class="body"-->
-<!--             style="background-color: var(&#45;&#45;light-grey)">-->
-<!--            <p class="px-[7%] py-[20px] p1 text-center ">We have made it easy to work with your favorite brands. No more-->
-<!--                long meetings-->
-<!--                trying to negotiate on your pricing or working model. Just join and start-->
-<!--                bidding on projects </p>-->
-<!--            <div class="flex journey-map h-[500px] bg-white ">-->
-<!--                <div>-->
-<!--                    <ul>-->
-<!--                        <li class="active-list">-->
-<!--                            <div class="pick">-->
-<!--                                <span>-->
-<!--                                    <span></span>-->
-<!--                                </span>-->
-<!--                            </div>-->
-<!--                            <h6>Influencer</h6>-->
-<!--                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa-->
-<!--                                dignissimos earum </p>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--                <div>-->
-<!--                    <section>-->
-
-<!--                    </section>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div v-if="activeTab == 'Marketer'" id="marketerTagLine" class="body"-->
-<!--             style="background-color: var(&#45;&#45;light-grey)">-->
-<!--            <p class="px-[7%] py-[20px] p1 text-center ">We bidding on projects </p>-->
-<!--            <div class="flex journey-map h-[500px] bg-white ">-->
-<!--                <div>-->
-<!--                    <ul>-->
-<!--                        <li class="active-list">-->
-<!--                            <div class="pick">-->
-<!--                                <span>-->
-<!--                                    <span></span>-->
-<!--                                </span>-->
-<!--                            </div>-->
-<!--                            <h6>Influencer</h6>-->
-<!--                            <p class="p3">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias amet aut culpa-->
-<!--                                dignissimos earum </p>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--                <div>-->
-<!--                <section>-->
-
-<!--                </section>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
-<!--    <section class="h-[300px] flex flex-col justify-around items-center mb-[200px]">-->
-<!--        <h3>Join the community</h3>-->
-<!--        <p class="p4 p-[30px] text-center ">Get to choose which brad to workwit,-->
-<!--            get value for your content with Vumisha</p>-->
-<!--        <Link  as="button" href="/SignUpAs" class="pink"> Take me there</Link>-->
-<!--    </section>-->
-<!--    <footer>-->
-<!--        <Footer></Footer>-->
-<!--    </footer>-->

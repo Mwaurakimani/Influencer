@@ -32,7 +32,6 @@ Route::get('/Portal', function () {
 
 Route::post('/AdminLogin', function (Request $request) {
 
-
     $credentials = $request->validate([
         'email' => ['required', 'email'],
         'password' => ['required'],
@@ -60,6 +59,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
+
     Route::get('/AdminAddUser',function (){
         return Inertia::render('Portal/User/AddUsers');
     })->name('AdminAddUser');

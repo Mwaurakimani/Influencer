@@ -18,7 +18,7 @@
                         asperiores ea neque quae eaque possimus vel amet quisquam fugiat sequi repudiandae ex,
                         perferendis minus
                         illum. Sit autem nesciunt totam deserunt!</p>
-                    <form class="card-shadowed mb-[50px] w-[100%] " action="" @submit.prevent="submit">
+                    <form class="card-shadowed mb-[50px] w-[100%] bg-white " action="" @submit.prevent="submit">
                         <h6 class="p-[15px] mb-[20px]  text-center">Join The Influencer Community</h6>
                         <div class="form-content">
                             <section>

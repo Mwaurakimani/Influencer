@@ -4,7 +4,7 @@
         </MobileDashboardLayout>
     </teleport>
     <MobileDashboardHeader :backButton="true" :title="'Projects'"/>
-    <DesktopDashbooardLayout>
+    <DesktopDashboardLayout>
         <div class="flex justify-end mb-[10px]"
              v-if="
              assignmentDetails &&
@@ -12,13 +12,11 @@
              assignmentDetails.assignment.marketer_status == 'complete' &&
              assignmentDetails.assignment.influencer_status != 'complete'"
         >
-            <button @click.prevent="markAsComplete()" class="purple p4">Mark Project
-                as Complete
-            </button>
+            <button @click.prevent="markAsComplete()" class="purple p4">Mark Project as Complete</button>
         </div>
-        <ViewProject :project="project" :display="'Influencer'">
+        <ViewProject :project="project" :marketer="marketer" :display="'Influencer'">
         </ViewProject>
-    </DesktopDashbooardLayout>
+    </DesktopDashboardLayout>
 
 </template>
 
@@ -110,7 +108,7 @@ export default {
     components: {
         ViewProject,
     },
-    props: ['project'],
+    props: ['project','marketer'],
     inject: ['currentUser'],
 }
 </script>

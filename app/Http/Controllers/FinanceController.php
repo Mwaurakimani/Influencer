@@ -291,12 +291,12 @@ class FinanceController extends Controller
             $marketer = Marketer::where('user_id', Auth::user()->id)->first();
 
             $un_bid_projects_value = Project::where('marketer_id', $marketer->id)
-                ->where('status', '<>', 'completed')->sum('projects.budget');
+                ->where('status', '<>', 'Inactive')->sum('projects.budget');
 
             $sum = intval($un_bid_projects_value);
 
             $projects = Project::where('marketer_id', $marketer->id)
-                ->where('status', '<>', 'completed')->get();
+                ->where('status', '<>', 'Inactive')->get();
 
             foreach ($projects as $key => $project) {
                 $bid = Bid::where('project_id', $project->id)->first();

@@ -1,7 +1,7 @@
 <template>
     <div class="dashboard-container md:grid w-[100vw] h-[100vh] overflow-auto">
         <div
-            class="side-section hidden md:block overflow-auto w-[100%] h-[100%]"
+            class="side-section hidden md:block overflow-auto w-[100%] bg-white h-[100%]"
             style="box-shadow: 0 0 6px #c9c9c9;z-index: 1000">
             <div class="logo-section h-[100px] grid place-content-center mb-[20px]">
                 <img class="w-[80px]" :src="defaults.systemImages+'/logos/colored/icon-colored.svg'">

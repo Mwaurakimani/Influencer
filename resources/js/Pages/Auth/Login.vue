@@ -13,7 +13,7 @@
             </header>
             <div class="content-area">
                 <div class="container p-[50px]">
-                    <form class="card-shadowed pt-[30px] mb-[50px] w-[100%] "
+                    <form class="card-shadowed bg-white pt-[30px] mb-[50px] w-[100%] "
                           @submit.prevent="form.post(route('login'))">
                         <div class="form-content ">
                             <section>

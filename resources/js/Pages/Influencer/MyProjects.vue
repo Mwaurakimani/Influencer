@@ -3,7 +3,7 @@
         <MobileDashboardLayout :activePage="'Projects'"/>
     </teleport>
     <MobileDashboardHeader :title="'Projects'"/>
-    <DesktopDashbooardLayout>
+    <DesktopDashboardLayout>
         <DesktopFilterContainer/>
 
         <header v-if="projects && projects.length > 0"  class="hidden md:bock h-[60px] flex items-center justify-between px-[10px]">
@@ -25,17 +25,20 @@
         <div v-if="projects && projects.length > 0" class="content-area">
             <div class="mobile-content-area">
                 <div class="container mb-[30px] " v-for="project in projects">
-                    <MobileProjectDisplayCard :project="project" :link="'ViewBidProject'"/>
+                    <MobileProjectDisplayCard
+                        :project="project"
+                        class="w-[100%] md:w-[49%] mb-4 lg:w-[30%] xl:w-[300px] 2xl:w-[350px]"
+                        :link="'ViewBidProject'"/>
                 </div>
-                <div class="container flex justify-center items-center">
-                    <pagination-component class="mb-[100px]"/>
-                </div>
+<!--                <div class="container flex justify-center items-center">-->
+<!--                    <pagination-component class="mb-[100px]"/>-->
+<!--                </div>-->
             </div>
         </div>
         <div v-else class="w-[100%] mx-[auto] h-[100vh] flex" style="justify-content: center">
             <h5>No Projects Found..</h5>
         </div>
-    </DesktopDashbooardLayout>
+    </DesktopDashboardLayout>
 </template>
 
 <script>

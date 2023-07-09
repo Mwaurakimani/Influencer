@@ -1,15 +1,40 @@
-<script setup>
-</script>
-
 <template>
     <ul style="width: fit-content" >
-        <li><p>1</p></li>
-        <li  class="active-page"><p>2</p></li>
-        <li><p>3</p></li>
-        <li class="span"><span>. . .</span></li>
-        <li><p>5</p></li>
+        <Link as="li" v-for="link in paginationData.links" :href="link.url != null ? link.url : '#'" :class="{'active-page':link.active == true}">
+            <p>{{ formatter(link.label) }}</p>
+        </Link>
     </ul>
 </template>
+
+<script>
+
+export default {
+    setup(){
+        return {
+
+        }
+    },
+    methods:{
+        formatter(data){
+            let value = parseInt(data)
+
+            if(!Number(value)){
+                if (data.includes("Previous")){
+                    value = "<<"
+                }else {
+                    value = ">>"
+                }
+            }
+
+            return value
+        }
+    },
+    props:['paginationData'],
+}
+
+
+</script>
+
 
 <style lang="scss" scoped>
 @import './../../Pages/sassLoader';

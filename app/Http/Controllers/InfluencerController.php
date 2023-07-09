@@ -7,10 +7,12 @@ use App\Models\Bid;
 use App\Models\Chat;
 use App\Models\Influencer;
 use App\Models\InfluencerClass;
+use App\Models\Marketer;
 use App\Models\Media;
 use App\Models\Platform;
 use App\Models\Project;
 use App\Models\SocialAccount;
+use App\Models\Transfer;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -73,8 +75,7 @@ class InfluencerController extends Controller
                         ->first();
 
                     if ($influencerClass != null) {
-                        $social_account = $influencer->accounts()->create([
-                            'platform_id' => $platform->id,
+                        $social_account = $influencer->socialAccount()->create([
                             'influencer_class_id' => $influencerClass->id,
                             'username' => $socialAccount['username'],
                             'status' => 'unverified'
@@ -103,7 +104,7 @@ class InfluencerController extends Controller
                 if ($key == 'influencer') {
                     $social_accounts = [];
 
-                    $item['social_accounts'] = SocialAccount::with('platform', 'influencerClass')->where('influencer_id', $item['id'])->get();
+                    $item['social_accounts'] = SocialAccount::with('influencerClass')->where('influencer_id', $item['id'])->get();
                 }
                 return $item;
             });
@@ -145,9 +146,11 @@ class InfluencerController extends Controller
                 'phone' => $userUpdate['phone'],
             ]);
 
+
             $influencerUpdate->update([
                 'bio' => $userUpdate['bio'],
             ]);
+
 
             if ($file) {
                 $influencerUpdate->update([
@@ -155,50 +158,49 @@ class InfluencerController extends Controller
                 ]);
             }
 
-
-            foreach ($social_accountUpdate as $key => $social_account) {
+            foreach ($social_accountUpdate as $key => $socialAccount) {
                 $input_platform = $key;
-                $platform_id = null;
 
-                if (($social_account['username'] == null)) {
+                if (($socialAccount['username'] == null)) {
                     continue;
                 }
-
-                $platforms = Platform::all();
-
-                foreach ($platforms as $key1 => $platform) {
-                    if ($platform->name == $input_platform) {
-                        $platform_id = $platform->id;
-                    }
-                }
+                $platform_id = Platform::where('name', $input_platform)->first()->id;
 
                 if ($platform_id != null) {
-//                    if exist update
-                    if (count($user->influencer->accounts()->where('platform_id', $platform_id)->get()) > 0) {
-                        $account = $user->influencer->accounts()->where('platform_id', $platform_id)->first();
 
-                        $account->username = $social_account['username'];
-                        $account->influencer_class_id = $this->getInfluencerClassID($platform_id, $social_account['influencerClass']);
-                        $account->status = 'unverified';
+                    $account_exist = function ($user, $platform) {
+                        $platform_ids = InfluencerClass::where('platform_id', $platform->id)->get('id')->values();
+                        $influencer = $user->influencer()->first();
+                        return SocialAccount::where('influencer_id', $influencer->id)->whereIn('influencer_class_id', $platform_ids)->first();
+                    };
 
-                        $account->save();
+                    $social_account = $account_exist($user, Platform::find($platform_id));
+
+                    if ($social_account != null) {
+
+                        $social_account->username = $social_account['username'];
+                        $social_account->influencer_class_id = $this->getInfluencerClassID($platform_id, $socialAccount['influencerClass']);
+                        $social_account->status = 'unverified';
+
+                        $social_account->save();
                     } //                    else create
                     else {
-                        $user->influencer->accounts()->create([
-                            'platform_id' => $platform_id,
-                            'influencer_class_id' => $this->getInfluencerClassID($platform_id, $social_account['influencerClass']),
-                            'username' => $social_account['username'],
+                        $influencer = $user->influencer()->first();
+
+                        $influencer->socialAccount()->create([
+                            'influencer_class_id' => $this->getInfluencerClassID($platform_id, $socialAccount['influencerClass']),
+                            'username' => $socialAccount['username'],
                         ]);
                     }
                 } else {
-                    return 'No platform with that name found';
+                    throw new Exception("Platform does not exist");
                 }
             }
 
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            return [$e];
+            throw new Exception($e);
         }
 
         return ['success'];
@@ -206,158 +208,89 @@ class InfluencerController extends Controller
 
     public function getInfluencerClassID(mixed $platform_id, mixed $class_name)
     {
-        $class_id = InfluencerClass::where('name', 'LIKE', $class_name)
-            ->where('platform_id', $platform_id)->first()->id;
 
-        return $class_id;
+        return InfluencerClass::where('name', 'LIKE', $class_name)
+            ->where('platform_id', $platform_id)->first()->id;
     }
 
     public function ViewProject(Request $request, $id)
     {
         $user = User::find(Auth::user()->id);
+        $influencer = $user->influencer()->first();
 
-        //get logged in user
-        if (!$user) {
-            return redirect()->to('/');
-        }
-
-        //confirm he is a marketer
-        $influencer = $user->influencer;
         if ($influencer == null) {
             return redirect()->to('/');
         }
 
+        $project = Project::where('id', $id)->with('bids', 'projectRequirements')->first();
 
-        $project = Project::where('id', $id)->with('platforms', 'bids', 'projectRequirements')->first();
-
-        //confirm if project was found
         if ($project == null) {
             return redirect()->to('/');
         }
 
-        foreach ($project->platforms as $platform) {
-            if ($platform->pivot) {
-                $influencer_class_id = $platform->pivot->influencer_classes_id;
-                $influencer_class = InfluencerClass::find($influencer_class_id);
-                $platform->pivot['influencer_data'] = $influencer_class;
+        $project->bids->transform(function ($item) use (&$project) {
+            $user = $item->influencer()->first()->user()->first();
+            $user->load('influencer');
+            $user->influencer->load('socialAccount');
+            $item->user = $user;
+            $item->load('assignment');
+
+            if ($item->assignment != null) {
+                $item->assignment->load('chats');
+                $project['assignment'] = $item->assignment;
+                $project['chats'] = $item->assignment->chats;
+                $project['media'] = $item->assignment->media()->get();
             }
-        }
 
-        $assignment = null;
+            return $item;
+        });
 
-        foreach ($project->bids as $bid) {
+        $userArray = User::with('influencer')->find($user->id);
+        $influencerArray = $userArray->toArray();
 
-            if ($bid->influencer_id) {
-                $influencer_id = $bid->influencer_id;
-                $influencer = Influencer::find($influencer_id);
-                $user = User::find($influencer->user_id);
-                $user->load('influencer');
-                $user->influencer = $influencer;
-                $bid['user'] = $user;
-                $social_accounts = SocialAccount::
-                with('platform', 'influencerClass')
-                    ->where('influencer_id', $bid->influencer_id)
-                    ->get();
-                $bid['user']['social_accounts'] = $social_accounts;
-                $bid['assignment'] = $bid->assignments()->first();
+        $userMarketer = User::find(Marketer::find($project->marketer_id)->user_id);
+        $userMarketerArray = $userMarketer->toArray();
 
-                if ($bid->assignment != null) {
-                    $bid['assignment']['media'] = Media::with('user')->where('assignment_id', $bid['assignment']->id)->get();
-                }
-            }
-        }
-
-
-        foreach ($project->bids as $bid){
-            if($bid['assignment'] != null){
-                $assignment = $bid['assignment'];
-            }
-        }
-
-
-        foreach ($project->projectRequirements as $requirement) {
-            $platform = Platform::find($requirement['platform_id']);
-            $influencerClass = InfluencerClass::find($requirement['influencer_classes_id']);
-            $requirement['platform'] = $platform;
-            $requirement['influencerClass'] = $influencerClass;
-        }
-
-        $chats = ((function () use ($project) {
-
-            $data = Bid::where('project_id', $project->id)->where('status', 'assigned')->get()->transform(function ($item) {
-                $assignment = Assignment::where('bid_id', $item->id)->get();
-
-                return $assignment;
-            });
-
-            if (count($data) > 0) {
-                $assignment = $data->flatten()[0];
-
-                $chats = Chat::where('assignment_id', $assignment->id)->get();
-
-                return $chats;
-            } else {
-                return null;
-            }
-        })());
-
-
-        $influencer['user'] = User::find(Auth::user()->id);
-        $marketer = $project->marketer()->with('user')->first();
-        $project['marketer'] = $marketer;
-        $project['influencer'] = $influencer;
-        $project['chats'] = $chats;
+        $project->influencer = $influencerArray;
+        $project['marketer']['user'] = $userMarketerArray;
 
         return Inertia::render('Influencer/ViewProject', [
             'project' => $project,
-            'marketerStatus' => $assignment?->marketer_status
+            'marketer' => $this->getMarketerRelatedContent(Marketer::find($project->marketer_id))
         ]);
+    }
+
+    public function getMarketerRelatedContent($marketer){
+        $assigned_projects = DB::select('select count(project_id) as assigned_projects from projectassignment where marketer_id=?',[$marketer->id]);
+
+        if (count($assigned_projects) > 0){
+            $assigned_projects = $assigned_projects[0]->assigned_projects;
+        }else{
+            $assigned_projects = 0;
+        }
+
+        return [
+            'posted_projects' => $projects_posted = count(Project::where('marketer_id',$marketer->id)->get()),
+            'assigned_projects' => $assigned_projects,
+            'total_spent' => Transfer::where('from',User::find($marketer->user_id)->id)->sum('amount')
+        ];
     }
 
     public function getActiveProjects(Request $request)
     {
-        $user = User::find(Auth::user()->id);
+        $influencer = User::find(Auth::user()->id)->influencer()->first();
 
-        if ($user) {
-            $influencer = $user->influencer;
-            if ($influencer) {
-
-                $project = $user->influencer->projects()->with('bids', 'platforms', 'projectRequirements')->get();
-                $modified_projects = collect();
-
-
-                $influencer['projects'] = (function () use ($influencer) {
-                    $influencer_id = $influencer->id;
-                    $bids = Bid::where('influencer_id', $influencer_id)->get();
-
-                    $projects = [];
-
-                    $bids->map(function ($item, $key) use (&$projects) {
-                        $project = Project::with('bids', 'platforms')->where('id', $item->project_id)->first();
-
-                        if ($project->platforms) {
-                            $project->platforms = $project->platforms->transform(function ($platform) {
-                                if ($platform->pivot) {
-                                    $influencer_class_id = $platform->pivot->influencer_classes_id;
-                                    $influencer_class = InfluencerClass::find($influencer_class_id);
-                                    $platform->pivot['influencer_data'] = $influencer_class;
-                                }
-
-                                return $platform;
-                            });
-                        }
-                        array_push($projects, $project);
-
-                    });
-                    return $projects;
-                })();
-
-                return Inertia::render('Influencer/MyProjects', [
-                    'influencer' => $influencer,
-                    'projects' => $influencer['projects']
-                ]);
-            }
+        if ($influencer == null) {
+            return redirect('/');
         }
+
+        $active_bids = collect(DB::select("select id from projects where id IN (select project_id from bids where influencer_id = ?);",[$influencer->id]))->pluck("id")->values()->toArray();
+
+        $projects = Project::whereIn('id',$active_bids)->with('projectRequirements')->get();
+
+        return Inertia::render('Influencer/MyProjects', [
+            'projects' => $projects
+        ]);
     }
 
     private function uploadProfilePicture(array|UploadedFile $file)
@@ -398,11 +331,11 @@ class InfluencerController extends Controller
 
     public function removeAccount(Request $request, $id, $account)
     {
-        $user = Influencer::where('user_id', $id)->get()[0];
-        $platform = Platform::where('name', 'LIKE', '%' . $account . '%')->get()[0]->id;
 
-        $account = SocialAccount::where('influencer_id', $user->id)->where('platform_id', $platform)->get()[0];
-
+        $user = Influencer::where('user_id', $id)->first();
+        $platform = Platform::where('name', 'LIKE', '%' . $account . '%')->first()->id;
+        $influencerClasses = InfluencerClass::where('platform_id', $platform)->get('id')->values();
+        $account = SocialAccount::where('influencer_id', $user->id)->whereIn('influencer_class_id', $influencerClasses)->first();
         $account->delete();
     }
 }

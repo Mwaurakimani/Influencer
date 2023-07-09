@@ -10,18 +10,32 @@ use App\Models\Marketer;
 use App\Models\Project;
 use App\Models\Transfer;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use PHPUnit\Util\Exception;
 
 class AssignmentController extends Controller
 {
     public function sendMessage(Request $request)
     {
-        $assignment = Project::find($request['project']['id'])->assignment()->first();
+        $account = null;
+        $project_details= null;
 
-        $bid_id = $assignment->bid_id;
+        if(Auth::user()->marketer()->first() != null){
+            $account = "marketer";
+            $project_details = DB::table('projectassignment')
+                ->where('project_id',$request['project'])
+                ->where('marketer_id',Auth::user()->marketer()->first()->id)
+                ->first();
+        }else{
+            $account = "influencer";
+            $project_details = DB::table('projectassignment')
+                ->where('influencer_id',Auth::user()->influencer()->first()->id)
+                ->first();
+        }
+
+        $assignment = Assignment::find($project_details->id);
 
         if (empty($request['message'])) {
             return [
@@ -34,22 +48,18 @@ class AssignmentController extends Controller
 
         $chat->assignment_id = $assignment->id;
         $chat->sender_id = Auth::user()->id;
-        $chat->receiver_id = ((function ($user) use ($assignment) {
-            if ($user->influencer != null) {
-                //its influencer
-                return (Marketer::find(Project::find(Bid::find($assignment->bid_id)->project_id)->marketer_id)->user_id);
-            } else if ($user->marketer != null) {
-                //its marketer
-                //get the user who got the assignment
-                $bid = Bid::find($assignment->bid_id);
-                $influencer_id = Influencer::find($bid->influencer_id);
 
-                return $influencer_id->user_id;
-            }
-        })(Auth::user()));
+        $user = null;
+
+        if($account == "marketer"){
+            $user = Influencer::with('user')->find($project_details->influencer_id);
+        }else{
+            $user = Marketer::with('user')->find($project_details->marketer_id);
+        }
+
+        $chat->receiver_id = $user->user->id;
         $chat->message = $request['message'];
         $chat->save();
-
 
         return [
             'status' => true,
@@ -72,6 +82,9 @@ class AssignmentController extends Controller
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function MarketerMarkAsComplete(Request $request)
     {
         $assignment = Assignment::find($request['assignment']['id']);
@@ -81,6 +94,7 @@ class AssignmentController extends Controller
         $influencer = null;
 
         if ($assignment) {
+
             $bid = Bid::where('id', $assignment->bid_id)->first();
 
             $influencer = DB::table('users')->where('id',
@@ -101,8 +115,8 @@ class AssignmentController extends Controller
         }
 
         $admin = User::where('designation','Administrator')
-            ->where('first_name', 'Administrator')
-            ->where('last_name', 'Administrator')
+            ->where('first_name', 'Admin')
+            ->where('last_name', 'Admin')
             ->first();
 
         if($assignment->marketer_status == 'complete'){
@@ -119,10 +133,7 @@ class AssignmentController extends Controller
                 $assignment->marketer_status = 'complete';
                 $assignment->save();
 
-                $bid->status = 'done';
-                $bid->save();
-
-                $project->status = 'completed';
+                $project->status = 'Inactive';
                 $project->save();
 
                 Transfer::create([
@@ -155,9 +166,6 @@ class AssignmentController extends Controller
                 $admin->creditBalance = $admin->creditBalance + intval(($bid->bid_amount) * 0.1);
                 $admin->save();
 
-
-
-
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -172,6 +180,9 @@ class AssignmentController extends Controller
         ];
     }
 
+    /**
+     * @throws Exception
+     */
     public function InfluencerMarkAsComplete(Request $request)
     {
         $assignment = Assignment::find($request['assignment']['id']);
@@ -197,5 +208,34 @@ class AssignmentController extends Controller
             'status' => true,
         ];
 
+    }
+
+    public function RateInfluencer(Request $request,Project $Project){
+        $assignment = $Project->assignment()->first();
+
+        $rating = $request['rating'];
+        $comment = $request['comment'];
+
+        $assignment->marketer_rating_count = $rating;
+        $assignment->marketer_comment = $comment;
+
+        $assignment->save();
+
+        return [true];
+    }
+
+    public function RateMarketer(Request $request, Project $Project)
+    {
+        $assignment = $Project->assignment()->first();
+
+        $rating = $request['rating'];
+        $comment = $request['comment'];
+
+        $assignment->influencer_rating_count = $rating;
+        $assignment->influencer_comment = $comment;
+
+        $assignment->save();
+
+        return [true];
     }
 }

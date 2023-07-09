@@ -8,7 +8,7 @@
         <MobileDashboardLayout :activePage="'Account'"></MobileDashboardLayout>
     </teleport>
     <MobileDashboardHeader :title="'Account'"/>
-    <DesktopDashbooardLayout>
+    <DesktopDashboardLayout>
         <div class="button-action-button w-[100%] h-[45px] mb-[10px] flex justify-end">
             <button v-if="displayMode == 'ViewMode'" class="purple mx-[10px]" style="padding: 5px 20px"
                     @click="changeViewMode('EditMode')">Edit
@@ -148,17 +148,17 @@
                       @submit.prevent="validatePassword()" style="height: 400px !important;">
                     <div class="input-group w-[100%]">
                         <label>Current Password</label>
-                        <input type="text" v-model="userPassword.currentPassword">
+                        <input type="password" v-model="userPassword.currentPassword">
                         <span style="color: red">{{ this.$attrs.errors.currentPassword }}</span>
 
                     </div>
                     <div class="input-group w-[100%] mb-[20px]">
                         <label>New Password</label>
-                        <input type="text" v-model="userPassword.newPassword">
+                        <input type="password" v-model="userPassword.newPassword">
                     </div>
                     <div class="input-group w-[100%] mb-[20px]">
                         <label>Confirm New Password</label>
-                        <input type="text" v-model="userPassword.confirmPassword">
+                        <input type="password" v-model="userPassword.confirmPassword">
                         <span style="color: red">{{ userPassword.confirmPasswordError }}</span>
                         <span style="color: red">{{ this.$attrs.errors.confirmPasswordError }}</span>
                     </div>
@@ -169,7 +169,7 @@
                 </form>
             </section>
         </div>
-    </DesktopDashbooardLayout>
+    </DesktopDashboardLayout>
 </template>
 
 <script>

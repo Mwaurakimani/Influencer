@@ -2,6 +2,7 @@
 
 use App\Models\InfluencerClass;
 use App\Models\Project;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -54,4 +55,6 @@ include 'Lib/marketer.php';
 include 'Lib/media.php';
 include 'Lib/project.php';
 include 'Lib/user.php';
-include 'AdminPortal/index.php';
+
+
+//include 'AdminPortal/index.php';

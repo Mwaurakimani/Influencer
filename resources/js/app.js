@@ -8,7 +8,7 @@ import {resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
 import {ZiggyVue} from '../../vendor/tightenco/ziggy/dist/vue.m';
 import {createPinia} from 'pinia';
 import Modal from "./Components/Modal.vue";
-import DesktopDashbooardLayout from "./Layouts/DashboardLayout/DesktopDashboardLayout.vue";
+import DesktopDashboardLayout from "./Layouts/DashboardLayout/DesktopDashboardLayout.vue";
 import { Link } from "@inertiajs/vue3"
 import Footer from "./Components/Footer.vue";
 import MobileNavigationComponent from './Layouts/MainPageComponent/MobileNavigationComponent.vue'
@@ -39,7 +39,7 @@ createInertiaApp({
                 components:{
                     // dashboard layouts
                     MobileDashboardLayout,
-                    DesktopDashbooardLayout,
+                    DesktopDashboardLayout,
 
                     //dashboard components
                     MobileDashboardHeader,

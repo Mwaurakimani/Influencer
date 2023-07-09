@@ -59,6 +59,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
     Route::get('/Admin/Dashboard', function () {
         return Inertia::render('Portal/Dashboard');
     })->name('AdminDashboard');
@@ -86,7 +87,6 @@ Route::middleware([
     Route::get('/Admin/Tags', function () {
         return Inertia::render('Portal/Tags');
     })->name('AdminTags');
-
 
     Route::get('/Admin/Settings', function () {
         return Inertia::render('Portal/Settings');

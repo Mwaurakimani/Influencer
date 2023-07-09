@@ -35,7 +35,8 @@ class MarketerClass extends UserClass
                 'email' => $varArgs['email'] ?? null,
                 'phone' => $varArgs['phone'] ?? null,
                 'password' => $varArgs['password'] ?? null,
-                'creditBalance' => $varArgs['creditBalance'] ?? null
+                'creditBalance' => $varArgs['creditBalance'] ?? null,
+                'designation' => $varArgs['designation'] ?? null
             ];
 
             $marketerData = [
@@ -44,22 +45,23 @@ class MarketerClass extends UserClass
             ];
 
 
-
             parent::__construct($userData);
 
 
             if (Marketer::where('user_id', $this->model->id)->get()->count() > 0) {
                 $marketer_model = $this->model->marketer()->first();
 
-                $this->updateModel($marketerData,$marketer_model);
+                $this->updateModel($marketerData, $marketer_model);
             } else {
-                $this->createMarketer($marketerData);
+                if ($marketerData && isset($marketerData['role'])) {
+                    $this->createMarketer($marketerData);
+                }
             }
 
             $this->model = $this->model->refresh();
-            $this->model['marketer'] = $this->model->marketer()->first();
-
-
+            if (isset($marketerData['role'])) {
+                $this->model['marketer'] = $this->model->marketer()->first();
+            }
         } else {
             throw new \Exception('Error creating model Marketer');
         }

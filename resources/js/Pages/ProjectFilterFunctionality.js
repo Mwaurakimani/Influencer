@@ -51,9 +51,6 @@ function filterInfluencerClass(input, label) {
     }
 }
 
-
-
-
 const setUp = () => {
     $('.platformSelectX').on('change', (event) => {
         event.stopImmediatePropagation();

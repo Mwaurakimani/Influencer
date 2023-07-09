@@ -40,12 +40,13 @@ class InfluencerClass extends UserClass
                 'email' => $varArgs['email'] ?? null,
                 'phone' => $varArgs['phone'] ?? null,
                 'password' => $varArgs['password'] ?? null,
-                'creditBalance' => $varArgs['creditBalance'] ?? null
+                'creditBalance' => $varArgs['creditBalance'] ?? null,
+                'designation' => $varArgs['designation'] ?? null
             ];
 
             $influencerData = [
                 'gender' => $varArgs['gender'] ?? null,
-                'date_of_birth' => $varArgs['date_of_birth'] ?? null,
+                'date_of_birth' => date('Y-m-d', strtotime($varArgs['date_of_birth'])) ?? null,
                 'country' => $varArgs['country'] ?? null,
                 'location' => $varArgs['location'] ?? null,
                 'role' => $varArgs['role'] ?? null,
@@ -62,7 +63,9 @@ class InfluencerClass extends UserClass
 
                 $this->updateModel($influencerData, $influencer_model);
             } else {
-                $this->createInfluencer($influencerData);
+                if ($influencerData['role'] != null) {
+                    $this->createInfluencer($influencerData);
+                }
             }
 
             if ($socialAccounts != null) {
@@ -73,7 +76,7 @@ class InfluencerClass extends UserClass
                         $platform = Platform::where('name', 'LIKE', '%' . $accountValue['platform'] . '%')->first();
                         $platform_id = $platform != null ? $platform->id : null;
 
-                        $influencerClass = $platform_id != null ? \App\Models\InfluencerClass::where('platform_id', $platform_id)->where('name', 'LIKE', '%' . $accountValue['influencerClass'] . '%')->first():null;
+                        $influencerClass = $platform_id != null ? \App\Models\InfluencerClass::where('platform_id', $platform_id)->where('name', 'LIKE', '%' . $accountValue['influencerClass'] . '%')->first() : null;
 
                         if ($platform != null && $influencerClass != null) {
                             $influencerClass_id = $influencerClass->id;
@@ -82,16 +85,16 @@ class InfluencerClass extends UserClass
 
                             $requirement = null;
 
-                            foreach ($userSocialAccount as $key => $value){
-                                if($value['platform']->name == $accountValue['platform']){
+                            foreach ($userSocialAccount as $key => $value) {
+                                if ($value['platform']->name == $accountValue['platform']) {
                                     $requirement = $value;
                                 }
                             }
 
-                            if($requirement == null){
-                                $this->createSocialAccount($accountValue['username'],$influencerClass_id);
-                            }else{
-                                $this->updateSocialAccount($requirement,$accountValue['username'],$influencerClass_id);
+                            if ($requirement == null) {
+                                $this->createSocialAccount($accountValue['username'], $influencerClass_id);
+                            } else {
+                                $this->updateSocialAccount($requirement, $accountValue['username'], $influencerClass_id);
                             }
 
                         } else {
@@ -100,12 +103,28 @@ class InfluencerClass extends UserClass
                     }
                 }
             }
+
+
+            $this->model = $this->model->refresh();
+
+            if ($influencerData['role'] != null) {
+                $this->model['influencer'] = $this->model->influencer()->first();
+            }
+
+            if ($socialAccounts != null) {
+                $this->model['socialAccounts'] = $this->model['influencer']->socialAccount()->get();
+            }
         } else {
             throw new \Exception('Error creating model Influencer');
         }
+
         $this->model = $this->model->refresh();
         $this->model['influencer'] = $this->model->influencer()->first();
-        $this->model['socialAccounts'] = $this->model['influencer']->socialAccount()->get();
+
+        if($this->model['influencer'] != null){
+            $this->model['socialAccounts'] = $this->model['influencer']->socialAccount()->get();
+        }
+
     }
 
     public function createInfluencer($data)

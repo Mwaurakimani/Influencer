@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-wrap h-[100vh]">
+    <div class="flex flex-wrap">
         <section class="w-[100%] h-fit flex flex-wrap mb-[20px]">
-            <article class=" w-[100%] flex flex-wrap gap-2 mb-[20px]">
+            <article class=" w-[100%] flex md:justify-around flex-wrap gap-2 mb-[20px]">
                 <div class="w-[100%] lg:w-[48%] lg:h-[100]">
                     <div class="card-shadowed bg-white p-[10px] h-[100%] mb-[20px]">
                         <h6 class="text-grey-200 mb-[10px]">{{ project.title }}</h6>
@@ -41,19 +41,30 @@
                             class="w-[100%]"
                             :class="['text-center',activeSubTab === 'Bids' ? 'active-tab':'' ]">Bids
                         </li>
-                        <li @click.prevent="switchTabs('Media')" v-if="is_assigned() && assignmentDetails.assignment.marketer_status != 'complete'"
+                        <li @click.prevent="switchTabs('Media')"
+                            v-if="is_assigned() && assignmentDetails.assignment.marketer_status != 'complete'"
                             class="w-[100%]"
                             :class="['text-center',activeSubTab === 'Media' ? 'active-tab':'' ]">Media
                         </li>
-                        <li @click.prevent="switchTabs('Chat')" v-if="is_assigned() && assignmentDetails.assignment.marketer_status != 'complete'"
+                        <li @click.prevent="switchTabs('Chat')"
+                            v-if="is_assigned() && assignmentDetails.assignment.marketer_status != 'complete'"
                             class="w-[100%]"
                             :class="['text-center',activeSubTab === 'Chat' ? 'active-tab':'' ]">Chat
+                        </li>
+
+                        <li @click.prevent="switchTabs('RateMarketer')"
+                            v-if="is_assigned() && project.assignment.marketer_status == 'complete' && (project.marketer.user.id == currentUser.id)"
+                            class="w-[100%]"
+                            :class="['text-center',activeSubTab === 'RateMarketer' ? 'active-tab':'' ]">Rate
+                        </li>
+                        <li @click.prevent="switchTabs('RateInfluencer')"
+                            v-if="is_assigned() && project.assignment.influencer_status == 'complete' && project.influencer &&  (project.influencer.id == currentUser.id)"
+                            class="w-[100%]"
+                            :class="['text-center',activeSubTab === 'RateInfluencer' ? 'active-tab':'' ]">Rate
                         </li>
                     </ul>
                 </nav>
                 <div class="container">
-                    <!--                        :marketerStatus="props.marketerStatus"-->
-                    <!--                        :assignmentDetails="assignmentDetails"-->
                     <slot>
                         <ProjectDisplay
                             v-if="activeSubTab === 'Project'"
@@ -67,11 +78,12 @@
                             :bids="project.bids"
                         />
 
+
                         <media-dispay
                             v-if="activeSubTab === 'Media'"
                             v-on:uploadFile="uploadFile"
                             v-on:DeleteMedia="remove"
-                            :assignmentDetails="assignmentDetails"
+                            :medias="project.media"
                         />
 
                         <chats-display
@@ -79,46 +91,59 @@
                             v-on:sendMessage="sendMessage"
                             :chats="project.chats"
                         />
-                    </slot>
 
+                        <RatingComponent
+                            v-if="activeSubTab === 'RateMarketer'"
+                            v-on:rate="marketerRating"
+                            :user_type="'marketer'"
+                            :assignment="project.assignment"
+                        />
+
+                        <RatingComponent
+                            v-if="activeSubTab === 'RateInfluencer'"
+                            v-on:rate="influencerRating"
+                            :user_type="'influencer'"
+                            :assignment="project.assignment"
+                        />
+                    </slot>
                 </div>
             </article>
         </section>
         <section class="w-[100%] h-fit flex flex-wrap items-stretch justify-between">
             <div class="card-shadowed w-[100%]  lg:w-[calc(100%-340px)] xl:w-[350px] bg-white p-[20px] mb-[20px]">
-                <h6 class="text-grey-200 ">{{ project.marketer.user.first_name }} {{ project.marketer.user.last_name }}</h6>
+                <h6 class="text-grey-200 ">{{ project.marketer.user.first_name }} {{
+                        project.marketer.user.last_name
+                    }}</h6>
                 <hr class="mb-[10px]" style="background-color: var(--light-grey)">
                 <ul>
                     <li class=" w-[100%] flex justify-between mb-[10px]">
                         <label class="p3">Projects Posted:</label>
-                        <p class="p3">{{ MarketerDetails.posted_projects }}</p>
+                        <p class="p3">{{ marketer.posted_projects }}</p>
                     </li>
                     <li class="flex justify-between w-[100%] mb-[10px]">
                         <label class="p3">Influencers Hired:</label>
-                        <p class="p3">{{ MarketerDetails.assigned_projects }}</p>
+                        <p class="p3">{{ marketer.assigned_projects }}</p>
                     </li>
                     <li class="flex justify-between w-[100%] mb-[10px]">
                         <label class="p3">Total Spent:</label>
-                        <p class="p3">Ksh {{ MarketerDetails.total_spent }}</p>
-                    </li>
-                    <li v-if="MarketerDetails.last_active" class="flex justify-between w-[90%] mb-[10px]">
-                        <label class="p3">Last Active:</label>
-                        <p class="p3">{{ MarketerDetails.last_active }}</p>
+                        <p class="p3">Ksh {{ marketer.total_spent }}</p>
                     </li>
                 </ul>
             </div>
             <div class="card-shadowed w-[100%]  lg:w-[300px] bg-white xl:w-[350px] p-[20px] mb-[20px]">
                 <h6 class="text-grey-200 mb-[10px]">Social Account Requirements</h6>
                 <div class="social-accounts-display pl-[10px] pb-[20px]">
-                    <div class="flex" v-for="platform in project.platforms">
+                    <div class="flex" v-for="project_requirement in project.project_requirements">
+
                         <div class="social-media-icon-holder h-[30px] w-[30px]">
-                            <img class="w-[27px] h-[27px]" style="border-radius: 50%;padding: 2px" :src="defaults.platformIcons+'/'+displayIcon(platform.name)">
+                            <img class="w-[27px] h-[27px]" style="border-radius: 50%;padding: 2px"
+                                 :src="defaults.platformIcons+'/'+displayIcon(project_requirement.platform.name)">
                         </div>
                         <p class="p3 pt-[5px] text-grey-200 ml-[10px]">
-                            {{ platform.pivot.influencer_data.name }}
-                            ({{ followersFormat(platform.pivot.influencer_data.min_count) }}
+                            {{ project_requirement.influencerClass.name }}
+                            ({{ followersFormat(project_requirement.influencerClass.min_count) }}
                             -
-                            {{ followersFormat(platform.pivot.influencer_data.max_count) }})</p>
+                            {{ followersFormat(project_requirement.influencerClass.max_count) }})</p>
                     </div>
                 </div>
             </div>
@@ -142,8 +167,15 @@ import {usePage} from "@inertiajs/vue3";
 import {authStore} from "@stores/AuthStore";
 import {DEFAULTS} from "@stores/DEFAULTS";
 import route from "ziggy-js/src/js/index";
+import projects from "../../Pages/Projects.vue";
+import RatingComponent from "@Components/ViewProjectComponent/RatingComponent.vue";
 
 export default {
+    computed: {
+        projects() {
+            return projects
+        }
+    },
     setup(props) {
         const defaults = DEFAULTS()
         const auth = authStore()
@@ -166,7 +198,7 @@ export default {
 
         function is_assigned() {
             let response = false;
-            if (props.project != null && props.project.bids != null) {
+            if (props.project.assignment != null) {
                 for (let bid of props.project.bids) {
                     if (bid.assignment != null) {
                         response = true;
@@ -226,9 +258,10 @@ export default {
             displayIcon,
         }
     },
-    props: ['project','display'],
+    props: ['project', 'display', 'marketer'],
     inject: ['currentUser', 'activeTab', 'pageName', 'assignmentDetails'],
     components: {
+        RatingComponent,
         BidDisplay,
         ProjectDisplay,
         mediaDispay,
@@ -310,13 +343,14 @@ export default {
             }
         },
         sendMessage(message) {
+
+
             let payload = {
-                project: this.project,
-                message: message.message
+                project: this.project.id,
+                message: message
             }
 
-            axios.post(route('sendMessage'),
-                payload)
+            axios.post(route('sendMessage'), payload)
                 .then((resp) => {
                     let element = $('#chatWindow');
 
@@ -327,6 +361,26 @@ export default {
                     }, 1000)
                 }).catch((err) => {
                 console.log(err)
+            })
+        },
+        marketerRating(payload) {
+            axios.post(
+                route('rateInfluencer', [this.project.id]),
+                payload
+            ).then((resp) => {
+                alert("Updated")
+            }).catch((err) => {
+                alert("Could not update rating")
+            })
+        },
+        influencerRating(payload) {
+            axios.post(
+                route('rateMarketer', [this.project.id]),
+                payload
+            ).then((resp) => {
+                alert("Updated")
+            }).catch((err) => {
+                alert("Could not update rating")
             })
         }
     },
