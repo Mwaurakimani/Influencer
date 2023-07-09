@@ -41,9 +41,9 @@ class FinanceController extends Controller
         $transaction = null;
 
         if ($type == 'deposit') {
-            $transaction = Deposit::with('Agent', 'User')->where('id',$id)->first();
+            $transaction = Deposit::with('Agent', 'User')->where('id', $id)->first();
         } elseif ($type = 'withdrawal') {
-            $transaction = Withdrawal::with('Agent', 'User')->where('id',$id)->first();
+            $transaction = Withdrawal::with('Agent', 'User')->where('id', $id)->first();
         }
 
         //verify agent
@@ -315,12 +315,14 @@ class FinanceController extends Controller
 
     private function influencerEscrowValue($user)
     {
-        if (count($user->influencer->projects) <= 0) {
-            return 0;
-        } else {
-            $influencer = Influencer::where('user_id', Auth::user()->id)->first();
-            return Bid::where('influencer_id', $influencer->id)->where('status', 'assigned')->sum('bids.bid_amount');
-        }
+        return collect(DB::select('
+        select
+            sum(bid_amount) as total_bid_amount
+        from bids
+        join assignments a on bids.id = a.bid_id
+        join influencers i on bids.influencer_id = i.id
+        where a.marketer_status != "complete" and i.id = ?;
+        ',[2]))->first()->total_bid_amount ?? 0;
     }
 
     private function getAgents()
@@ -354,48 +356,49 @@ class FinanceController extends Controller
         return User::where('first_name', $name)->firstOrFail();
     }
 
-    private function getTransactions($id){
-        $deposits = Deposit::where('user_id',$id)->get();
-        $withdrawals = Withdrawal::where('user_id',$id)->get();
-        $payments = Transfer::where('from',$id)->orWhere('to',$id)->get();
+    private function getTransactions($id)
+    {
+        $deposits = Deposit::where('user_id', $id)->get();
+        $withdrawals = Withdrawal::where('user_id', $id)->get();
+        $payments = Transfer::where('from', $id)->orWhere('to', $id)->get();
         $combined = [];
 
-        if($deposits){
-            foreach ($deposits as $deposits){
+        if ($deposits) {
+            foreach ($deposits as $deposits) {
                 $data = [];
                 $data['type'] = 'deposits';
-                $data['Agent'] = User::where('id',$deposits->agent_id)->first()->first_name;
+                $data['Agent'] = User::where('id', $deposits->agent_id)->first()->first_name;
                 $data['value'] = $deposits->amount;
-                $data['ref'] = 'DP-'.$deposits->id;
+                $data['ref'] = 'DP-' . $deposits->id;
                 $data['status'] = $deposits->status;
                 $data['date'] = date('y-m-d', strtotime($deposits->created_at));
-                array_push($combined,$data);
+                array_push($combined, $data);
             }
         }
 
-        if($withdrawals){
-            foreach ($withdrawals as $withdrawals){
+        if ($withdrawals) {
+            foreach ($withdrawals as $withdrawals) {
                 $data = [];
                 $data['type'] = 'withdrawals';
-                $data['Agent'] = User::where('id',$withdrawals->agent_id)->first()->first_name;
+                $data['Agent'] = User::where('id', $withdrawals->agent_id)->first()->first_name;
                 $data['value'] = $withdrawals->amount;
-                $data['ref'] = 'WD-'.$withdrawals->id;
+                $data['ref'] = 'WD-' . $withdrawals->id;
                 $data['status'] = $withdrawals->status;
                 $data['date'] = date('y-m-d', strtotime($withdrawals->created_at));
-                array_push($combined,$data);
+                array_push($combined, $data);
             }
         }
 
-        if($payments){
-            foreach ($payments as $payments){
+        if ($payments) {
+            foreach ($payments as $payments) {
                 $data = [];
                 $data['type'] = 'payments';
                 $data['Agent'] = null;
                 $data['value'] = $payments->amount;
-                $data['ref'] = 'TS-'.$payments->id;
+                $data['ref'] = 'TS-' . $payments->id;
                 $data['status'] = $payments->status;
                 $data['date'] = date('y-m-d', strtotime($payments->created_at));
-                array_push($combined,$data);
+                array_push($combined, $data);
             }
         }
 
