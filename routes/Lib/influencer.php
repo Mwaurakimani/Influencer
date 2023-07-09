@@ -19,6 +19,8 @@ Route::middleware([
 
     Route::post('/updateInfluencer', [InfluencerController::class,'update'])->name('updateInfluencer');
 
+    Route::get('/ListMyProjects', [InfluencerController::class, 'getActiveProjects'])->name('ListActiveInfluencerProjects');
+
     Route::post('/removeAccount/{id}/{account}', [InfluencerController::class, 'removeAccount'])->name('removeAccount');
 
 });
