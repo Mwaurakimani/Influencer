@@ -56,5 +56,4 @@ include 'Lib/media.php';
 include 'Lib/project.php';
 include 'Lib/user.php';
 
-
-//include 'AdminPortal/index.php';
+include 'AdminPortal/index.php';
