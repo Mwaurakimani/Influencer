@@ -1,0 +1,1 @@
+import{A as a}from"./AdminLayout-6d3f0fd3.js";import{k as o,o as r,I as e}from"./app-db7343c9.js";const n={__name:"Dashboard",props:{},setup(t){return e("activeSideNavigationLink","dashboard"),(s,i)=>(r(),o(a))}};export{n as default};

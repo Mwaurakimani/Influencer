@@ -6,7 +6,8 @@
     <DesktopDashboardLayout>
         <DesktopFilterContainer/>
 
-        <header v-if="projects && projects.length > 0"  class="hidden md:bock h-[60px] flex items-center justify-between px-[10px]">
+        <header v-if="projects && projects.length > 0"
+                class="hidden md:bock h-[60px] flex items-center justify-between px-[10px]">
             <p class="p3 text-grey-100 ">{{ projects.length }} projects found</p>
         </header>
         <header class="m-hide h-[60px] flex items-center justify-between px-[10px]">
@@ -23,17 +24,15 @@
         </header>
 
         <div v-if="projects && projects.length > 0" class="content-area">
-            <div class="mobile-content-area">
-                <div class="container mb-[30px] " v-for="project in projects">
-                    <MobileProjectDisplayCard
-                        :project="project"
-                        class="w-[100%] md:w-[49%] mb-4 lg:w-[30%] xl:w-[300px] 2xl:w-[350px]"
-                        :link="'ViewBidProject'"/>
-                </div>
-<!--                <div class="container flex justify-center items-center">-->
-<!--                    <pagination-component class="mb-[100px]"/>-->
-<!--                </div>-->
+            <div class="mobile-content-area flex flex-wrap justify-around flex-row">
+                <MobileProjectDisplayCard
+                    v-for="project in projects"
+                    :project="project"
+                    class="w-[100%] md:w-[49%] mb-4 lg:w-[30%] xl:w-[300px] 2xl:w-[350px]"
+                    :link="'ViewBidProject'"/>
             </div>
+<!--            <div class="container bg-red-500 w-[100%] h-[50px] flex justify-center items-center">-->
+<!--            </div>-->
         </div>
         <div v-else class="w-[100%] mx-[auto] h-[100vh] flex" style="justify-content: center">
             <h5>No Projects Found..</h5>
@@ -54,11 +53,8 @@ import {storeToRefs} from "pinia";
 import {router} from "@inertiajs/vue3";
 
 
-
-
-
 export default {
-    setup(){
+    setup() {
         const defaults = DEFAULTS()
 
         const auth = authStore()
@@ -68,14 +64,14 @@ export default {
         return {
             defaults,
             status,
-            user,auth
+            user, auth
         }
     },
-    props:['projects'],
-    inject:['currentUser'],
-    provide:{
-        activeTab:'All Projects',
-        pageName:'All Projects'
+    props: ['projects'],
+    inject: ['currentUser'],
+    provide: {
+        activeTab: 'All Projects',
+        pageName: 'All Projects'
     },
     components: {
         DesktopFilterContainer,
@@ -100,9 +96,5 @@ header {
     .icon-holder {
         z-index: 500;
     }
-}
-
-@include s-screens {
-
 }
 </style>

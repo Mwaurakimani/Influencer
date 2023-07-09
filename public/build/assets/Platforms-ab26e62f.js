@@ -1,0 +1,1 @@
+import{A as a}from"./AdminLayout-6d3f0fd3.js";import{k as t,l as e,o,a as s,I as r}from"./app-db7343c9.js";const c=s("h4",{class:"text-grey-300"},"Platforms",-1),p={__name:"Platforms",props:{},setup(i){return r("activeSideNavigationLink","Platforms"),(l,n)=>(o(),t(a,null,{default:e(()=>[c]),_:1}))}};export{p as default};
