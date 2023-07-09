@@ -24,13 +24,13 @@ class AssignmentController extends Controller
 
         if(Auth::user()->marketer()->first() != null){
             $account = "marketer";
-            $project_details = DB::table('projectassignment')
+            $project_details = DB::table('ProjectAssignment')
                 ->where('project_id',$request['project'])
                 ->where('marketer_id',Auth::user()->marketer()->first()->id)
                 ->first();
         }else{
             $account = "influencer";
-            $project_details = DB::table('projectassignment')
+            $project_details = DB::table('ProjectAssignment')
                 ->where('influencer_id',Auth::user()->influencer()->first()->id)
                 ->first();
         }
