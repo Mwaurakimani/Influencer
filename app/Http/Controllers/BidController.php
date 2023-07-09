@@ -100,7 +100,7 @@ class BidController extends Controller
         }
 
         if ($influencer_account_influencer_ids) {
-            $influencer_class_details = DB::table('platforminfluencerview')->whereIn('influencer_class_id', $influencer_account_influencer_ids)->get();
+            $influencer_class_details = DB::table('PlatformInfluencerView')->whereIn('influencer_class_id', $influencer_account_influencer_ids)->get();
 
             $result = array_filter($project_requirement, function ($requirement) use ($influencer_class_details) {
                 foreach ($influencer_class_details as $influencerClass) {
