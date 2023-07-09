@@ -261,7 +261,7 @@ class InfluencerController extends Controller
     }
 
     public function getMarketerRelatedContent($marketer){
-        $assigned_projects = DB::select('select count(project_id) as assigned_projects from projectassignment where marketer_id=?',[$marketer->id]);
+        $assigned_projects = DB::select('select count(project_id) as assigned_projects from ProjectAssignment where marketer_id=?',[$marketer->id]);
 
         if (count($assigned_projects) > 0){
             $assigned_projects = $assigned_projects[0]->assigned_projects;
