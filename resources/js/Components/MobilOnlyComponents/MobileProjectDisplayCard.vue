@@ -1,20 +1,22 @@
 <template>
     <Link as="div" :href="route(link,project.id)" class="card-shadowed p-[5px] bg-white">
-        <h6 class="p2 text-grey-400 px-[10px] pt-[20px]">{{ project.title }}</h6>
-        <p class="p-[10px] p4 ">{{ project.description }}</p>
-        <p class="p2 text-grey-400 p-[10px]">Social Account Requirements</p>
-        <div class="social-accounts-display pl-[20px] pb-[20px]">
-            <div class="flex" v-for="platform in project.platforms">
-                <div class="social-media-icon-holder h-[30px] w-[30px]">
-                    <img class="w-[27px] h-[27px]" style="border-radius: 50%;padding: 2px" :src="defaults.platformIcons+'/'+displayIcon(platform.name)">
+        <div>
+            <h6 class="p2 text-grey-400 px-[10px] pt-[20px]">{{ project.title }}</h6>
+            <p class="p-[10px] p4 ">{{ project.description }}</p>
+            <p class="p2 text-grey-400 p-[10px]">Social Account Requirements</p>
+            <div class="social-accounts-display pl-[20px] pb-[20px]">
+                <div class="flex" v-for="projectRequirement in project.project_requirements">
+                    <div class="social-media-icon-holder h-[30px] w-[30px]">
+                        <img class="w-[27px] h-[27px]" style="border-radius: 50%;padding: 2px" :src="defaults.platformIcons+'/'+displayIcon(projectRequirement.platform.name)">
+                    </div>
+                    <p class="p3 pt-[5px] text-grey-200 ml-[10px] ">{{ projectRequirement.influencerClass.name }} ({{
+                            followersFormat(projectRequirement.influencerClass.min_count)
+                        }} - {{ followersFormat(projectRequirement.influencerClass.max_count) }})</p>
                 </div>
-                <p class="p3 pt-[5px] text-grey-200 ml-[10px] ">{{ platform.pivot.influencer_data.name }} ({{
-                        followersFormat(platform.pivot.influencer_data.min_count)
-                    }} - {{ followersFormat(platform.pivot.influencer_data.max_count) }})</p>
             </div>
-        </div>
-        <div class="w-[80%] m-[auto] pb-[30px] flex justify-end">
-            <h6 class="text-grey-500">Ksh {{ project.budget }}</h6>
+            <div class="w-[80%] m-[auto] pb-[30px] flex justify-end">
+                <h6 class="text-grey-500">Ksh {{ project.budget }}</h6>
+            </div>
         </div>
     </Link>
 </template>
@@ -76,7 +78,7 @@ export default {
 .social-accounts-display {
     & > div {
         margin-bottom: 10px;
-        width: 90%;
+        width: 96%;
         border-bottom: 1px solid #e3e1e1;
     }
 }

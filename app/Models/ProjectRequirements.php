@@ -18,14 +18,6 @@ class ProjectRequirements extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function platform(){
-        return $this->belongsTo(Platform::class);
-    }
-
-    public function influencerClass(){
-        return $this->belongsTo(InfluencerClass::class);
-    }
-
     public function getPlatformAttribute(){
         $influencerClass = InfluencerClass::where('id',$this->attributes['influencer_classes_id'])->first();
         return Platform::where('id',$influencerClass->platform_id)->first();
@@ -33,6 +25,5 @@ class ProjectRequirements extends Model
 
     public function getInfluencerClassAttribute(){
         return InfluencerClass::where('id',$this->attributes['influencer_classes_id'])->first();
-
     }
 }

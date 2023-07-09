@@ -107,7 +107,7 @@ export default {
         return {
         }
     },
-    props:['influencer','marketerHandle','owner'],
+    props:['influencer','marketerHandle','owner','display'],
     name: 'Mobile-brand-Project-breakdown-Entry-component',
     methods:{
         closeModal(){

@@ -1,71 +1,27 @@
 <?php
 
-use App\Http\Controllers\BidController;
 use App\Http\Controllers\InfluencerController;
 use App\Http\Controllers\MarketersController;
 use App\Http\Controllers\ProjectsController;
 use App\Models\Assignment;
 use App\Models\Bid;
 use App\Models\Influencer;
-use App\Models\InfluencerClass;
 use App\Models\Marketer;
-use App\Models\Platform;
 use App\Models\SocialAccount;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 use App\Models\Project;
-
-//no auth needed
-Route::get('/AllProjects', function () {
-
-    $projects = Project::with('platforms', 'bids', 'projectRequirements')->get();
-
-
-    $modified_projects = collect();
-
-    $projects->each(function ($project) use ($modified_projects) {
-        $modified_project = $project;
-        if ($project->platforms) {
-            $modified_project->platforms->each(function ($platform) {
-                if ($platform->pivot) {
-                    $influencer_class_id = $platform->pivot->influencer_classes_id;
-                    $influencer_class = InfluencerClass::find($influencer_class_id);
-                    $platform->pivot['influencer_data'] = $influencer_class;
-                }
-            });
-        }
-        $modified_projects->push($modified_project);
-    });
-
-    return Inertia::render('Projects', [
-        'projects' => $modified_projects
-    ]);
-
-})->name('AllProjects');
 
 Route::get('/ViewProject/{id}', function (Request $request, $id) {
 
-    $projects = Project::where('id', $id)->with('platforms', 'bids', 'projectRequirements')->get();
+    $project = Project::where('id', $id)->with('bids','projectRequirements')->first();
 
     //confirm if project was found
-    if (count($projects) < 0) {
+    if ($project == null) {
         return redirect()->to('/');
-    }
-
-    $project = $projects[0];
-
-
-    foreach ($project->platforms as $platform) {
-        if ($platform->pivot) {
-            $influencer_class_id = $platform->pivot->influencer_classes_id;
-            $influencer_class = InfluencerClass::find($influencer_class_id);
-            $platform->pivot['influencer_data'] = $influencer_class;
-        }
     }
 
     foreach ($project->bids as $bid) {
@@ -76,18 +32,11 @@ Route::get('/ViewProject/{id}', function (Request $request, $id) {
             $user->load('influencer');
             $user->influencer = $influencer;
             $bid['user'] = $user;
-            $social_accounts = SocialAccount::
-            with('platform', 'influencerClass')
+            $social_accounts = SocialAccount::with( 'influencerClass')
                 ->where('influencer_id', $bid->influencer_id)
                 ->get();
             $bid['user']['social_accounts'] = $social_accounts;
         }
-    }
-    foreach ($project->projectRequirements as $requirement) {
-        $platform = Platform::find($requirement['platform_id']);
-        $influencerClass = InfluencerClass::find($requirement['influencer_classes_id']);
-        $requirement['platform'] = $platform;
-        $requirement['influencerClass'] = $influencerClass;
     }
 
     $marketer = (Marketer::find($project->marketer_id));
@@ -100,7 +49,6 @@ Route::get('/ViewProject/{id}', function (Request $request, $id) {
                 if (Auth::user() && Auth::user()->influencer && Auth::user()->influencer->id == $value->influencer_id) {
                     return $value;
                 }
-
             })) > 0;
 
         if ($is_bidder) {
@@ -125,8 +73,6 @@ Route::get('/ViewProject/{id}', function (Request $request, $id) {
 
 })->name('ViewProject');
 
-
-//required
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -143,32 +89,13 @@ Route::middleware([
     Route::get('/ListOwnedProjects', function (Request $request) {
         $user = User::find(Auth::user()->id);
 
-        if ($user) {
-            $marketer = $user->marketer;
-            if ($marketer) {
+        if ($user && $user->marketer) {
 
-                $projects = $marketer->projects()->with('platforms', 'bids')->get();
-                $modified_projects = collect();
+            $projects = $user->marketer->projects()->with('projectRequirements')->get();
 
-                $projects->each(function ($project) use ($modified_projects) {
-                    $modified_project = $project;
-                    if ($project->platforms) {
-                        $modified_project->platforms->each(function ($platform) {
-                            if ($platform->pivot) {
-                                $influencer_class_id = $platform->pivot->influencer_classes_id;
-                                $influencer_class = InfluencerClass::find($influencer_class_id);
-                                $platform->pivot['influencer_data'] = $influencer_class;
-                            }
-                        });
-                    }
-
-                    $modified_projects->push($modified_project);
-                });
-
-                return Inertia::render('Employer/MyProjects', [
-                    'projects' => $modified_projects
-                ]);
-            }
+            return Inertia::render('Employer/MyProjects', [
+                'projects' => $projects
+            ]);
         }
     })->name('ListOwnedProjects');
 
@@ -176,18 +103,9 @@ Route::middleware([
 
     Route::get('/ViewBidProject/{id}', [InfluencerController::class, 'ViewProject'])->name('ViewBidProject');
 
-    Route::get('/influencerListViableProjects/{id}', function () {
-        return "success";
-    });
-
-    Route::get('/randomizeProjects', function () {
-        return "success";
-    });
-
     Route::post('/fileUpload', [ProjectsController::class, 'fileUpload'])->name('uploadFile');
 
     Route::post('/validateBudget', [ProjectsController::class, 'validateBudget'])->name('validateBudget');
-
 
 
 });

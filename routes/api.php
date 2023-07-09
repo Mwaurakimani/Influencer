@@ -23,3 +23,10 @@ Route::post('getMarketerDetails/{id}', [\App\Http\Controllers\MarketersControlle
 Route::post('mainPageDatasetAction', [\App\Http\Controllers\MarketersController::class,'mainPageDatasetAction'])->name('mainPageDatasetAction');
 
 Route::post('/test',[\App\Http\Controllers\DatabaseTesterController::class,'execute']);
+
+Route::get('/setUpDB',function (){
+//    $feedback = \Illuminate\Support\Facades\Artisan::call('db:seed --class=UsersSeeder');
+    $feedback = \Illuminate\Support\Facades\Artisan::call('db:seed');
+
+    dd($feedback);
+});

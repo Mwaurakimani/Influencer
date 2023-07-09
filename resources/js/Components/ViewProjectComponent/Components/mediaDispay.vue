@@ -6,7 +6,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 
 const props = defineProps([
     'fileForm',
-    'assignmentDetails'
+    'medias'
 ])
 
 const  assignmentDetails = reactive(props.assignmentDetails)
@@ -65,8 +65,6 @@ function download(media){
     document.body.removeChild(a);
 }
 
-
-
 </script>
 
 <template>
@@ -78,7 +76,7 @@ function download(media){
             <button @click.prevent="$emit('uploadFile',data)">Upload</button>
         </div>
         <ul class="display-section mb-[80px]">
-            <li v-for="media in assignmentDetails.assignment.media"  >
+            <li v-for="media in medias"  >
                 <div v-if="media.type == 'image'" class="image-display">
                     <img :src="'/storage/'+media.path">
                     <div class="image-overlay">

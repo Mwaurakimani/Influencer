@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Fortify\Fortify;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -34,6 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(array_merge([
                 'two_factor_secret',
@@ -42,5 +44,6 @@ return new class extends Migration
                 'two_factor_confirmed_at',
             ] : []));
         });
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 };

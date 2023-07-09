@@ -1,9 +1,11 @@
 <template>
-    <div class="ProjectDetails ">
+    <div class="ProjectDetails">
+<!--        :class="['w-[99%]','pt-[20px]']"-->
+
         <MobileProjectBreakdownDisplayCard
             :ProjectType="project.type"
             :ProjectRequirements="project.project_requirements"
-            class="w-[99%] pt-[20px]"/>
+            />
     </div>
 </template>
 <script>

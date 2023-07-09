@@ -2,45 +2,35 @@
 
 use App\Http\Controllers\InfluencerController;
 use App\Http\Controllers\MarketersController;
+use App\Http\Controllers\UserController;
 use App\Http\Requests\CreateUser;
 use App\Models\User;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-//guest routes
 Route::middleware(['guest'])->group(function () {
 
     //Sign up page
     Route::get('/SignUpAs', function () {
         return Inertia::render('Shared/SignUpAs');
-    })
-        ->name('SignUpAs');
+    })->name('SignUpAs');
 
     //sign up as an Influencer Page
     Route::get('/SignUpAsInfluencer', function () {
         return Inertia::render('Influencer/CreateInfluencer');
-    })
-        ->name('SignUpAsInfluencer');
+    })->name('SignUpAsInfluencer');
 
     //sign up as a marketer
     Route::get('/SignUpAsEmployer', function () {
         return Inertia::render('Employer/CreateEmployer');
-    })
-        ->name('SignUpAsEmployer');
+    })->name('SignUpAsEmployer');
 
-    //checks to see if the user is already signed in
-    Route::post('/testIfLoggedIn', function () {
-        dd("hi");
-        return Auth::check();
-    })->name('routeIsLoggedIn');
-
+    //log in page
     Route::get('/login', function () {
         return Inertia::render('Auth/Login');
-    })
-        ->name('login');
+    })->name('login');
 
     //create user
     Route::post('/createUser/{type}', function (\App\Http\Requests\CreateUser $request, $type) {
@@ -67,7 +57,6 @@ Route::middleware(['guest'])->group(function () {
     })->name('createUser');
 });
 
-//Authenticated routes
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -124,5 +113,6 @@ Route::middleware([
 
     })->name('updateEmployer');
 
-    Route::post('updateUserPassword/{id}', [\App\Http\Controllers\UserController::class,'updatePassword'])->name('updateUserPassword');
+    Route::post('updateUserPassword/{id}', [UserController::class, 'updatePassword'])->name('updateUserPassword');
+
 });

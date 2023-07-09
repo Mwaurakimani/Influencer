@@ -4,7 +4,7 @@
         </MobileDashboardLayout>
     </teleport>
     <MobileDashboardHeader :title="'Projects'"/>
-    <DesktopDashbooardLayout>
+    <DesktopDashboardLayout>
         <DesktopFilterContainer v-on:createProject="createProject"/>
 
         <header v-if="projects && projects.length > 0"  class="hidden md:bock h-[60px] flex items-center justify-between px-[10px]">
@@ -14,8 +14,7 @@
             <p v-if="projects && projects.length > 0" class="p3 text-grey-100 ">{{ projects.length }}
                 projects found</p>
             <div class="icon-holder flex items-center justify-center flex-wrap ml-[auto] ">
-                <img class="w-[50px] h-[50px]" :src="defaults.systemIcons+'/icons8-configuration-67.png'"
-                     alt="">
+<!--                <img class="w-[50px] h-[50px]" :src="defaults.systemIcons+'/icons8-configuration-67.png'" alt="">-->
                 <div @click.prevent="createProject">
                     <img @click.prevent="" class="w-[30px] h-[30px]"
                          :src="defaults.systemIcons+'/icons8-add-new-100.png'" alt="">
@@ -24,19 +23,22 @@
         </header>
 
         <div v-if="projects && projects.length > 0" class="content-area">
-            <div class="mobile-content-area">
-                <div class="container mb-[30px] " v-for="project in projects">
-                    <MobileProjectDisplayCard :project="project" :link="'ViewOwnedProject'"></MobileProjectDisplayCard>
+            <div class="mobile-content-area md:flex md:flex-wrap" style="justify-content: space-between" >
+                <div class="container mb-[30px] md:flex-row md:w-[fit-content]" v-for="project in projects">
+                    <MobileProjectDisplayCard
+                        :project="project"
+                        class="w-[100%] md:w-[49%] mb-4 lg:w-[30%] xl:w-[300px] 2xl:w-[350px]"
+                        :link="'ViewOwnedProject'"></MobileProjectDisplayCard>
                 </div>
-                <div class="container flex justify-center items-center">
-                    <pagination-component class="mb-[100px]"></pagination-component>
-                </div>
+<!--                <div class="container flex  items-center">-->
+<!--&lt;!&ndash;                    <pagination-component class="mb-[100px]"></pagination-component>&ndash;&gt;-->
+<!--                </div>-->
             </div>
         </div>
         <div v-else class="w-[100%] mx-[auto] h-[100vh] flex" style="justify-content: center">
             <h5>No Projects Found..</h5>
         </div>
-    </DesktopDashbooardLayout>
+    </DesktopDashboardLayout>
 </template>
 
 <script>

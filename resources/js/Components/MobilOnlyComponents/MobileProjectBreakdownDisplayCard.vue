@@ -24,10 +24,10 @@
                     <div>
                         <ul>
                             <li v-if="ProjectType == 'Airtime'" class="flex items-center w-[210px] justify-between">
-                                <p class="p4 text-grey-100 ">{{( openTargets(requirement.targets)).unit}}</p>
-                                <span>{{( openTargets(requirement.targets)).value}}</span>
+                                <p v-if="requirement.targets != null" class="p4 text-grey-100 ">{{( openTargets(requirement.targets)).unit}}</p>
+                                <span v-if="requirement.targets != null" >{{( openTargets(requirement.targets)).value}}</span>
                             </li>
-                            <li v-else class="flex w-[210px] items-center justify-between" v-for="(target,index) in openTargets(requirement.targets)" >
+                            <li v-else-if="requirement.targets != null" class="flex w-[210px] items-center justify-between" v-for="(target,index) in openTargets(requirement.targets)" >
                                 <p class="p4 text-grey-100 ">{{ index }}</p>
                                 <span>{{target.value}}</span>
                             </li>
@@ -47,6 +47,7 @@ export default {
     setup (props){
 
         const ProjectRequirements = reactive(props.ProjectRequirements)
+
         const defaults = DEFAULTS()
 
         function openTargets(targets) {

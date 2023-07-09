@@ -3,7 +3,7 @@
         <MobileDashboardLayout :activePage="'Account'"/>
     </teleport>
     <MobileDashboardHeader :title="'Account'"/>
-    <DesktopDashbooardLayout>
+    <DesktopDashboardLayout>
         <div class="flex gap-[20px] flex-wrap" style="height: fit-content">
             <MarketerAboutCard v-if="mode != 'editMode'"  :user.camel="userForm" class="w-[100%] mx-[auto]">
                 <div class="intro">
@@ -22,8 +22,8 @@
                 </div>
             </MarketerAboutCard>
             <div v-if="mode == 'editMode'" class=" pr-[10px] flex justify-end items-end w-[100%] gap-[10px]" >
-                <button class="px-[20px] py-[10px] purple" @click.prevent="changeMode('viewMode')">View</button>
-                <button class="px-[20px] py-[10px] purple" @click.prevent="changeMode('viewMode')">Cancel</button>
+                <button class="px-[20px] py-[10px] purple" @click.prevent="changeMode('viewMode')">View Account</button>
+                <button class="px-[20px] py-[10px] purple" @click.prevent="changeMode('viewMode')">Cancel Changes</button>
             </div>
             <section class="w-[100%] h-[100%] flex flex-wrap md:flex-nowrap gap-[10px]">
                 <section v-if="mode == 'editMode'" class="card-shadowed h-[100%] w-[100%] md:w-[60%] mb-[20px]  bg-white">
@@ -49,7 +49,6 @@
                         </div>
                         <div class="form-action flex w-[100%] align-middle justify-between">
                             <button class="px-[20px] py-[10px] purple" type="submit">Update Account</button>
-                            <button class="px-[20px] py-[10px] purple" type="reset">Reset Form</button>
                         </div>
                     </form>
 
@@ -59,29 +58,28 @@
                     <form class=" p-[10px] w-[100%] flex gap-[10px] flex-wrap" action="" @submit.prevent="validatePassword()">
                         <div class="input-group w-[100%]">
                             <label>Current Password</label>
-                            <input type="text" v-model="userPassword.currentPassword">
+                            <input type="password" v-model="userPassword.currentPassword">
                             <span style="color: red">{{ this.$attrs.errors.currentPassword }}</span>
 
                         </div>
                         <div class="input-group w-[100%] mb-[20px]">
                             <label>New Password</label>
-                            <input type="text" v-model="userPassword.newPassword">
+                            <input type="password" v-model="userPassword.newPassword">
                         </div>
                         <div class="input-group w-[100%] mb-[20px]">
                             <label>Confirm New Password</label>
-                            <input type="text" v-model="userPassword.confirmPassword">
+                            <input type="password" v-model="userPassword.confirmPassword">
                             <span style="color: red">{{ userPassword.confirmPasswordError }}</span>
                             <span style="color: red">{{ this.$attrs.errors.confirmPasswordError }}</span>
                         </div>
                         <div class="form-action flex w-[100%] align-middle justify-between">
                             <button class="px-[20px] py-[10px] purple" type="submit">Update Password</button>
-                            <button class="px-[20px] py-[10px] purple" type="reset">Reset Form</button>
                         </div>
                     </form>
                 </section>
             </section>
         </div>
-    </DesktopDashbooardLayout>
+    </DesktopDashboardLayout>
 </template>
 
 <script>

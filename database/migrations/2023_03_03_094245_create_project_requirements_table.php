@@ -3,6 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
 
 return new class extends Migration {
     /**
@@ -15,8 +17,8 @@ return new class extends Migration {
         Schema::create('project_requirements', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('project_id');
-            $table->string('post_location');
-            $table->json('targets');
+            $table->string('post_location')->nullable();
+            $table->json('targets')->nullable();
             $table->unsignedBigInteger('influencer_classes_id')->nullable();
             $table->timestamps();
 
@@ -39,6 +41,8 @@ return new class extends Migration {
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Schema::dropIfExists('project_requirements');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 };

@@ -4,17 +4,16 @@
         </MobileDashboardLayout>
     </teleport>
     <MobileDashboardHeader :backButton="true" :title="'Projects'"/>
-    <DesktopDashbooardLayout>
-        <div class="flex justify-end mb-[10px]"
-             v-if="assignmentDetails && assignmentDetails.is_assigned && project.status != 'completed'">
-            <button @click.prevent="markAsComplete()" class="purple p4">Mark Project
-                as Complete
-            </button>
+    <DesktopDashboardLayout>
+        <div class="flex justify-end mb-[10px]" v-if="assignmentDetails && assignmentDetails.is_assigned && project.status != 'Inactive'">
+            <button @click.prevent="markAsComplete()" class="purple p4">Mark Project as Complete</button>
         </div>
-        <ViewProject :project="project" :display="'Marketer'">
-
-        </ViewProject>
-    </DesktopDashbooardLayout>
+        <ViewProject
+            :project="project"
+            :display="'Marketer'"
+            :marketer="marketer"
+        />
+    </DesktopDashboardLayout>
 
 </template>
 
@@ -46,19 +45,21 @@ export default {
 
         function markAsComplete() {
             if (true || confirm('Please confirm project completion.')) {
+
                 axios.post(route('MarketerMarkAsComplete', assignmentDetails))
                     .then((response) => {
                         if (response.data.status) {
-                            // alert("Project was marked as complete.");
-                            // alert("Credits have been transferred to the influencer");
+                            alert("Project was marked as complete.");
+                            alert("Credits have been transferred to the influencer");
                             window.location.reload();
                         } else {
-                            // alert("Error marking project as complete.");
+                            alert("Error marking project as complete.");
                         }
                     })
                     .catch((error) => {
-                        // alert("Error marking project as complete.");
+                        alert("Error marking project as complete.");
                     });
+
             }
         }
 
@@ -106,7 +107,7 @@ export default {
     components:{
         ViewProject,
     },
-    props: ['project'],
+    props: ['project','marketer'],
     inject: ['currentUser'],
 }
 </script>

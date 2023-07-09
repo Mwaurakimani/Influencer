@@ -13,19 +13,23 @@ class Influencer extends Model
 
     protected $guarded = [];
 
-    public function user(){
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(User::class,'user_id','id');
     }
 
-    public function socialAccount(){
+    public function socialAccount(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(SocialAccount::class);
     }
 
-    public function bids(){
+    public function bids(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(Bid::class);
     }
 
-    public function projects(){
+    public function projects(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
         return $this->belongsToMany(
             Project::class,
             'bids',

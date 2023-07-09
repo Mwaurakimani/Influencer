@@ -29,41 +29,34 @@
         <MobileNavigationComponent :activeNavButton="'Projects'"></MobileNavigationComponent>
         <DesktopNavigationVue class="scrolled" :activeNavButton="'Projects'"></DesktopNavigationVue>
     </nav>
-    <header>
-        <div class="modile-header">
-            <div class="container">
-                <section class="m-hide">
-                    <h1 class="pt-[13px]" style="color: var(--t-purple)">Project</h1>
+    <header class="bg-white">
+        <section class="flex items-center sm:justify-items-start sm:flex-wrap md:justify-between">
+            <h3 class=" sm:w-[100%] pt-[10px] md:w-[100px]" style="color: #565656">Projects</h3>
+            <div class="">
+                <section class="flex justify-end">
                     <div class="actions pt-[10px]">
-                        <button v-if="activeTab =='project'" @click.prevent="openBids" class="pink mr-[10px]"
-                                style="padding-top: 8px">View Bids
-                        </button>
-                        <button v-else @click.prevent="openProject" class="pink mr-[10px]" style="padding-top: 8px">View
-                            Project
-                        </button>
-                        <button @click.prevent="modal.openModal()" class="purple" style="padding-top: 8px">Bid Project
-                        </button>
-                    </div>
-                </section>
-                <section class="d-hide">
-                    <h1 class="pt-[13px]" style="color: var(--t-purple)">Project</h1>
-                    <div class="actions pt-[10px]">
-                        <button v-if="activeTab =='project'" @click.prevent="router.visit('/Projects')"
-                                class="pink mr-[10px]" style="padding-top: 8px">Projects
-                        </button>
-                        <button v-else @click.prevent="openProject" class="pink mr-[10px]" style="padding-top: 8px">View
-                            Project
-                        </button>
-                        <button @click.prevent="modal.openModal()" class="purple" style="padding-top: 8px">Bid Project
-                        </button>
+                        <button @click.prevent="modal.openModal()" class="purple" style="padding-top: 8px">Bid on Project</button>
                     </div>
                 </section>
             </div>
-        </div>
+        </section>
+        <section class="sm:flex-wrap items-center hidden">
+            <div aria-label="breadcrumb" style="height: 20px">
+                <ol class="breadcrumb">
+                    <li class="p4 breadcrumb-item">
+                        <Link href="/">Home</Link>
+                    </li>
+                    <li class="p4 breadcrumb-item">
+                        <Link href="/Projects">Projects</Link>
+                    </li>
+                </ol>
+            </div>
+        </section>
     </header>
-    <div class="flex flex-wrap md:flex-nowrap">
-        <section class="sm:w-[100%] sm:p-[10px] md:pt-[0px] md:w-[calc(100%-300px)] h-fit flex flex-wrap mb-[20px]">
-            <article class=" w-[100%] flex flex-wrap gap-2 mb-[20px]">
+
+    <div class="flex flex-wrap md:flex-nowrap px-[10px]">
+        <section class="sm:w-[100%] sm:p-[10px] md:pt-[0px] md:w-[calc(100%-300px)] flex-wrap mb-[20px] h-fit flex">
+            <article class=" w-[100%] flex flex-wrap gap-2 mb-[20px] md:justify-between">
                 <div class="w-[100%] lg:w-[48%] lg:h-[100]">
                     <div class="card-shadowed bg-white p-[10px] h-[100%] mb-[20px]">
                         <h6 class="text-grey-200 mb-[10px]">{{ project.title }}</h6>
@@ -93,11 +86,14 @@
                 </div>
             </article>
             <article class="w-[100%]">
-                <ProjectDisplay
-                    :project="project"
-                    :MarketerDetails="MarketerDetails"
-                />
-                <div class="w-[100%] bg-white p-[10px]">
+                <div class="w-[100%] bg-white card-shadowed mb-[20px] pt-[10px]" style="overflow: hidden">
+                    <ProjectDisplay
+                        :project="project"
+                        :MarketerDetails="MarketerDetails"
+                    />
+                </div>
+
+                <div class="w-[100%] bg-white p-[10px] card-shadowed">
                     <h6 class="text-grey-200 mb-[10px]">Bids</h6>
                     <BidDisplay
                         :display="null"
@@ -134,16 +130,16 @@
             <div class="card-shadowed w-[100%]  lg:w-[300px] bg-white xl:w-[350px] p-[20px] mb-[20px]">
                 <h6 class="text-grey-200 mb-[10px]">Social Account Requirements</h6>
                 <div class="social-accounts-display pl-[10px] pb-[20px]">
-                    <div class="flex" v-for="platform in project.platforms">
+                    <div class="flex" v-for="project_requirement in project.project_requirements">
                         <div class="social-media-icon-holder h-[30px] w-[30px]">
                             <img class="w-[27px] h-[27px]" style="border-radius: 50%;padding: 2px"
-                                 :src="defaults.platformIcons+'/'+displayIcon(platform.name)">
+                                 :src="defaults.platformIcons+'/'+displayIcon(project_requirement.platform.name)">
                         </div>
                         <p class="p3 pt-[5px] text-grey-200 ml-[10px]">
-                            {{ platform.pivot.influencer_data.name }}
-                            ({{ followersFormat(platform.pivot.influencer_data.min_count) }}
+                            {{ project_requirement.influencerClass.name }}
+                            ({{ followersFormat(project_requirement.influencerClass.min_count) }}
                             -
-                            {{ followersFormat(platform.pivot.influencer_data.max_count) }})</p>
+                            {{ followersFormat(project_requirement.influencerClass.max_count) }})</p>
                     </div>
                 </div>
             </div>
@@ -153,6 +149,8 @@
             </div>
         </section>
     </div>
+
+
     <footer>
         <Footer></Footer>
     </footer>
@@ -288,16 +286,16 @@ export default {
         submitBid() {
             axios.post(route('MakeBid', [this.project.id]), this.bidForm).then((resp) => {
                 if (resp.data.status) {
-                    alert("Bid was made successfully");
+                    // alert("Bid was made successfully");
                     window.location.href = window.location.href
                 } else {
-                    alert("Bid could not be made")
+                    // alert("Bid could not be made")
                 }
             }).catch((err) => {
                 if (err.response.data.message) {
-                    alert(err.response.data.message)
+                    // alert(err.response.data.message)
                 } else if (err.response.data) {
-                    alert(err.response.data)
+                    // alert(err.response.data)
                 }
             }).finally(() => {
                 this.modal.closeModal()
@@ -308,7 +306,7 @@ export default {
         if (this.currentUser != null) {
             this.auth.authenticate()
         }
-        this.fetchMarketerDetails(this.project.marketer.id);
+        // this.fetchMarketerDetails(this.project.marketer.id);
     }
 }
 </script>
