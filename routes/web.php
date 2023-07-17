@@ -46,6 +46,10 @@ Route::middleware([
     })->name('Notifications');
 });
 
+Route::get('/learnCss',function (){
+    return Inertia::render('test');
+});
+
 include 'Lib/assignment.php';
 include 'Lib/bid.php';
 include 'Lib/finance.php';
@@ -57,3 +61,5 @@ include 'Lib/project.php';
 include 'Lib/user.php';
 
 include 'AdminPortal/index.php';
+
+
